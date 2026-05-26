@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tropical Dinner 2026 - Live Lucky Draw</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+
+   width:100%;
+   //margin:auto;
+
+
+   margin:0;
+  // padding:30;
+   //width:100%;
+   //min-height:100vh;
+
+  color:white;
+  overflow:scroll;
+
+  background:
+  linear-gradient(rgba(0,0,20,0.82), rgba(0,0,20,0.82)),
+  url('https://i.ibb.co/5x6qDRfX/BG.png');
+
+  background-size:fit;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment: fixed;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at top left, rgba(0,170,255,0.25), transparent 25%),
+  radial-gradient(circle at bottom right, rgba(0,120,255,0.25), transparent 25%);
+  pointer-events:none;
+}
+
+.container{
+   width:100%;
+   max-width:1200px;
+   margin:auto;
+   padding:5px;
+   box-sizing:border-box;
+
+
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.sub-title{
+  font-size:20px;
+  letter-spacing:6px;
+  color:#ff3b3b;
+  font-weight:600;
+  text-shadow:0 0 20px rgba(255,0,0,0.5);
+
+}
+
+.title{
+  font-size:60px;
+  font-weight:700;
+  color:white;
+  margin-top:10px;
+  text-shadow:0 0 25px rgba(0,170,255,0.5);
+}
+
+.live-box{
+  margin-top:15px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 20px;
+  border-radius:999px;
+
+  background:rgba(0,150,255,0.15);
+  border:1px solid rgba(0,180,255,0.3);
+
+  backdrop-filter:blur(10px);
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#00ff88;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.5);opacity:0.5;}
+  100%{transform:scale(1);opacity:1;}
+}
+
+.main-content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  //overflow:hidden;
+}
+
+.table-wrapper{
+  flex:1;
+  font-size:60px;
+  text-transform: uppercase;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+
+  border-radius:25px;
+  overflow:hidden;
+
+  backdrop-filter:blur(10px);
+
+  box-shadow:
+  0 0 30px rgba(0,150,255,0.15),
+  inset 0 0 20px rgba(255,255,255,0.03);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+thead{
+  background:linear-gradient(90deg,#0066ff,#00bfff);
+}
+
+thead th{
+  padding:20px;
+  text-align:left;
+  font-size:16px;
+  font-weight:600;
+  color:white;
+}
+
+tbody tr{
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  transition:0.3s;
+}
+
+tbody tr:hover{
+  background:rgba(255,255,255,0.05);
+}
+
+tbody td{
+  padding:18px 20px;
+  font-size:15px;
+  color:#ecf7ff;
+}
+
+.place-badge{
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:linear-gradient(135deg,#008cff,#00d4ff);
+
+  font-weight:700;
+
+  box-shadow:0 0 15px rgba(0,180,255,0.5);
+}
+
+.footer{
+  margin-top:1px;
+  margin-bottom:30px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+
+  color:#c7eaff;
+}
+
+.page-number{
+  font-size:14px;
+  font-weight:600;
+}
+
+.notice{
+  margin-bottom:50px;
+  font-size:18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+@media(max-width:768px){
+
+  .title{
+    font-size:34px;
+  }
+
+  thead th{
+    font-size:12px;
+    padding:12px;
+  }
+
+  tbody td{
+    font-size:11px;
+    padding:12px;
+  }
+
+  .place-badge{
+    width:32px;
+    height:32px;
+    font-size:12px;
+  }
+
+}
+
+.pagination{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.pagination button{
+
+  min-width:45px;
+  height:45px;
+  padding:5px;
+
+  border:none;
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.08);
+  color:white;
+
+  cursor:pointer;
+
+  font-weight:300;
+  font-size:12px;
+
+  transition:0.3s;
+
+  backdrop-filter:blur(8px);
+
+  border:1px solid rgba(255,255,255,0.08);
+
+}
+
+.pagination button:hover{
+  background:#009dff;
+  transform:translateY(-2px);
+}
+
+.pagination button.active{
+  background:linear-gradient(135deg,#008cff,#00d4ff);
+  box-shadow:0 0 15px rgba(0,180,255,0.5);
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+
+  <div class="header">
+
+    <div class="sub-title">
+      TROPICAL DINNER 2026
+    </div>
+
+    <div class="title">
+      LIVE LUCKY DRAW WINNERS
+    </div>
+
+    <div class="live-box">
+      <div class="dot"></div>
+      LIVE UPDATING
+    </div>
+
+  </div>
+
+  <div class="main-content">
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>PLACE</th>
+            <th>LUCKY NO.</th>
+            <th>WINNER</th>
+            <th>COMPANY</th>
+            <th>PRIZE</th>
+          </tr>
+        </thead>
+
+        <tbody id="winnerTable"></tbody>
+
+      </table>
+
+    </div>
+
+    <div class="footer">
+
+      <div class="page-number" id="pageNumber">
+<div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+
+  </div>
+
+
+      <div class="notice">
+        **Kindly collect your lucky draw prize at the registration counter before leaving the event.
+      </div>
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
+
+let allData = [];
+let currentPage = 1;
+
+const ROWS_PER_PAGE = 10;
+
+async function loadData(){
+
+  try{
+
+    const response = await fetch(API_URL);
+    allData = await response.json();
+
+    renderPage(currentPage);
+    renderPagination();
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+function renderPage(page){
+
+  const tbody = document.getElementById("winnerTable");
+
+  tbody.innerHTML = "";
+
+  const start = (page - 1) * ROWS_PER_PAGE;
+  const end = start + ROWS_PER_PAGE;
+
+  const pageData = allData.slice(start,end);
+
+  pageData.forEach(item => {
+
+    tbody.innerHTML += `
+      <tr>
+
+        <td>
+          <div class="place-badge">
+            ${item.place}
+          </div>
+        </td>
+
+        <td>${item.luckyNo}</td>
+        <td>${item.winner}</td>
+        <td>${item.company}</td>
+        <td>${item.prize}</td>
+
+      </tr>
+    `;
+
+  });
+
+  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+
+
+}
+
+function renderPagination(){
+
+  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+  let html = "";
+
+  html += `
+    <button onclick="prevPage()">Previous</button>
+  `;
+
+  let startPage = currentPage - 1;
+  let endPage = currentPage + 1;
+
+  if(startPage < 1){
+    startPage = 1;
+    endPage = 3;
+  }
+
+  if(endPage > totalPages){
+    endPage = totalPages;
+    startPage = totalPages - 2;
+  }
+
+  if(startPage < 1){
+    startPage = 1;
+  }
+
+  for(let i = startPage; i <= endPage; i++){
+
+    html += `
+      <button
+        class="${i === currentPage ? 'active' : ''}"
+        onclick="goToPage(${i})"
+      >
+        ${i}
+      </button>
+    `;
+
+  }
+
+  html += `
+    <button onclick="nextPage()">Next</button>
+  `;
+
+  document.getElementById("pagination").innerHTML = html;
+
+}
+
+function goToPage(page){
+
+  currentPage = page;
+
+  renderPage(currentPage);
+  renderPagination();
+
+}
+
+function nextPage(){
+
+  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+  currentPage++;
+
+  if(currentPage > totalPages){
+    currentPage = 1;
+  }
+
+  renderPage(currentPage);
+  renderPagination();
+
+}
+
+function prevPage(){
+
+  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+  currentPage--;
+
+  if(currentPage < 1){
+    currentPage = totalPages;
+  }
+
+  renderPage(currentPage);
+  renderPagination();
+
+}
+
+loadData();
+
+setInterval(loadData,3000);
+
+/* auto next page */
+setInterval(nextPage,8000);
+</script>
+
+
+
+</body>
+
+</html>
