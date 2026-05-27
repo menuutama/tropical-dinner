@@ -263,12 +263,46 @@ tbody td{
   font-weight:300;
   font-size:12px;
 
-  transition:0.3s;
+  transition:0.7s;
 
   backdrop-filter:blur(8px);
 
   border:1px solid rgba(255,255,255,0.08);
 
+}
+
+.control-buttons{
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+.control-buttons button{
+
+  min-width:90px;
+  height:45px;
+
+  border:none;
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.08);
+  color:white;
+
+  cursor:pointer;
+
+  font-size:14px;
+  font-weight:500;
+
+  transition:0.3s;
+
+  backdrop-filter:blur(8px);
+
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.control-buttons button:hover{
+  background:#009dff;
 }
 
 .pagination button:hover{
@@ -331,7 +365,19 @@ tbody td{
     <div class="footer">
 
       <div class="page-number" id="pageNumber">
-<div class="pagination" id="pagination"></div>
+<div class="pagination-wrapper">
+
+  <div class="pagination" id="pagination"></div>
+
+  <div class="control-buttons">
+
+    <button onclick="playSlide()">▶ Play</button>
+
+    <button onclick="pauseSlide()">⏸ Pause</button>
+
+  </div>
+
+</div>
       </div>
     </div>
 
@@ -357,7 +403,11 @@ async function loadData(){
   try{
 
     const response = await fetch(API_URL);
-    allData = await response.json();
+allData = await response.json();
+
+allData = allData.filter(item => {
+  return (item.luckyNo ?? "").toString().trim() !== "";
+});
 
     renderPage(currentPage);
     renderPagination();
@@ -495,15 +545,27 @@ function prevPage(){
 
 }
 
+function pauseSlide(){
+
+  clearInterval(autoSlide);
+
+}
+
+function playSlide(){
+
+  clearInterval(autoSlide);
+
+  autoSlide = setInterval(nextPage,10000);
+
+}
+
 loadData();
 
 setInterval(loadData,3000);
 
-/* auto next page */
-setInterval(nextPage,8000);
+/* auto next page & play pause button */
+let autoSlide = setInterval(nextPage,10000);
 </script>
-
-
 
 </body>
 
