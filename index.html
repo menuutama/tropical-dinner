@@ -323,28 +323,17 @@ tbody td{
 <div class="container">
 
   <div class="header">
-
-    <div class="sub-title">
-      TROPICAL DINNER 2026
-    </div>
-
-    <div class="title">
-      LIVE LUCKY DRAW WINNERS
-    </div>
-
+    <div class="sub-title">TROPICAL DINNER 2026</div>
+    <div class="title">LIVE LUCKY DRAW WINNERS</div>
     <div class="live-box">
       <div class="dot"></div>
       LIVE UPDATING
     </div>
-
   </div>
 
   <div class="main-content">
-
     <div class="table-wrapper">
-
       <table>
-
         <thead>
           <tr>
             <th>PLACE</th>
@@ -354,216 +343,189 @@ tbody td{
             <th>PRIZE</th>
           </tr>
         </thead>
-
         <tbody id="winnerTable"></tbody>
-
       </table>
-
     </div>
 
     <div class="footer">
-
       <div class="page-number" id="pageNumber">
-<div class="pagination-wrapper">
-
-  <div class="pagination" id="pagination"></div>
-
-  <div class="control-buttons">
-
-    <button onclick="playSlide()">▶ Play</button>
-
-    <button onclick="pauseSlide()">⏸ Pause</button>
-
-  </div>
-
-</div>
+        <div class="pagination-wrapper">
+          <div class="pagination" id="pagination"></div>
+          <div class="control-buttons">
+            <button onclick="playSlide()">▶ Play</button>
+            <button onclick="pauseSlide()">⏸ Pause</button>
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
 
-
-      <div class="notice">
-        **Kindly collect your lucky draw prize at the registration counter before leaving the event.
-      </div>
+  <div class="notice">
+    **Kindly collect your lucky draw prize at the registration counter before leaving the event.
+  </div>
 </div>
 
 <script>
-
 const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
 
 let allData = [];
 let currentPage = 1;
-
+let lastDataString = ""; // Menyimpan cache data untuk elak render berulang
+let autoSlide;
 const ROWS_PER_PAGE = 10;
 
+/* 1. MUAT TURUN DATA (Lebih Pintar & Tiada Buffering Grafik) */
 async function loadData(){
-
   try{
-
     const response = await fetch(API_URL);
-allData = await response.json();
+    const rawData = await response.json();
 
-allData = allData.filter(item => {
-  return (item.luckyNo ?? "").toString().trim() !== "";
-});
+    // Tapis baris kosong & Susun data ikut turutan 'Place' (1st, 2nd, 3rd...)
+    const filteredData = rawData
+      .filter(item => (item.luckyNo ?? "").toString().trim() !== "")
+      .sort((a, b) => {
+        const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999, 10);
+        const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999, 10);
+        return numA - numB;
+      });
+
+    // Tukar data kepada String untuk semak jika ada perubahan sebenar di Google Sheets
+    const currentDataString = JSON.stringify(filteredData);
+    
+    // Jika data sama dengan sebelum ini, jangan render semula (Elak skrin berkelip/lag)
+    if (currentDataString === lastDataString) return;
+    
+    // Jika ada data baharu, kemas kini cache dan paparan
+    allData = filteredData;
+    lastDataString = currentDataString;
+
+    // Laraskan halaman jika data berkurangan
+    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+    if (currentPage > totalPages && totalPages > 0) {
+      currentPage = totalPages;
+    }
 
     renderPage(currentPage);
     renderPagination();
 
-  }catch(error){
-
-    console.log(error);
-
+  } catch(error){
+    console.error("Fetch Error:", error);
   }
-
 }
 
+/* 2. PAPARKAN HALAMAN (Sangat Laju Menggunakan `.map`) */
 function renderPage(page){
-
   const tbody = document.getElementById("winnerTable");
-
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
   const start = (page - 1) * ROWS_PER_PAGE;
   const end = start + ROWS_PER_PAGE;
+  const pageData = allData.slice(start, end);
 
-  const pageData = allData.slice(start,end);
-
-  pageData.forEach(item => {
-
-    tbody.innerHTML += `
-      <tr>
-
-        <td>
-          <div class="place-badge">
-            ${item.place}
-          </div>
-        </td>
-
-        <td>${item.luckyNo}</td>
-        <td>${item.winner}</td>
-        <td>${item.company}</td>
-        <td>${item.prize}</td>
-
-      </tr>
-    `;
-
-  });
-
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-
-
-
+  // Guna join() untuk kemas kini DOM sekali gus sahaja
+  tbody.innerHTML = pageData.map(item => `
+    <tr>
+      <td>
+        <div class="place-badge">
+          ${item.place || ""}
+        </div>
+      </td>
+      <td>${item.luckyNo || ""}</td>
+      <td>${item.winner || ""}</td>
+      <td>${item.company || ""}</td>
+      <td>${item.prize || ""}</td>
+    </tr>
+  `).join("");
 }
 
+/* 3. PAPARKAN PAGINATION BUTTON */
 function renderPagination(){
+  const paginationContainer = document.getElementById("pagination");
+  if (!paginationContainer) return;
 
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = "";
+    return;
+  }
 
-  let html = "";
-
-  html += `
-    <button onclick="prevPage()">Previous</button>
-  `;
+  let html = `<button onclick="prevPage()">Previous</button>`;
 
   let startPage = currentPage - 1;
   let endPage = currentPage + 1;
 
   if(startPage < 1){
     startPage = 1;
-    endPage = 3;
+    endPage = Math.min(3, totalPages);
   }
 
   if(endPage > totalPages){
     endPage = totalPages;
-    startPage = totalPages - 2;
-  }
-
-  if(startPage < 1){
-    startPage = 1;
+    startPage = Math.max(1, totalPages - 2);
   }
 
   for(let i = startPage; i <= endPage; i++){
-
     html += `
-      <button
-        class="${i === currentPage ? 'active' : ''}"
-        onclick="goToPage(${i})"
-      >
+      <button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
         ${i}
       </button>
     `;
-
   }
 
-  html += `
-    <button onclick="nextPage()">Next</button>
-  `;
-
-  document.getElementById("pagination").innerHTML = html;
-
+  html += `<button onclick="nextPage()">Next</button>`;
+  paginationContainer.innerHTML = html;
 }
 
 function goToPage(page){
-
   currentPage = page;
-
   renderPage(currentPage);
   renderPagination();
-
 }
 
 function nextPage(){
-
+  if (allData.length === 0) return;
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
   currentPage++;
-
   if(currentPage > totalPages){
     currentPage = 1;
   }
 
   renderPage(currentPage);
   renderPagination();
-
 }
 
 function prevPage(){
-
+  if (allData.length === 0) return;
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
   currentPage--;
-
   if(currentPage < 1){
     currentPage = totalPages;
   }
 
   renderPage(currentPage);
   renderPagination();
-
 }
 
+/* 4. KAWALAN AUTOMATIK SLIDE */
 function pauseSlide(){
-
   clearInterval(autoSlide);
-
 }
 
 function playSlide(){
-
   clearInterval(autoSlide);
-
-  autoSlide = setInterval(nextPage,10000);
-
+  autoSlide = setInterval(nextPage, 10000);
 }
 
-loadData();
+// Mulakan sistem
+loadData().then(() => {
+  // Hanya mulakan auto-slide selepas data pertama berjaya dimuat turun
+  playSlide();
+});
 
-setInterval(loadData,3000);
-
-/* auto next page & play pause button */
-let autoSlide = setInterval(nextPage,10000);
+// Semak data baharu setiap 3 saat di latar belakang tanpa mengganggu grafik
+setInterval(loadData, 3000);
 </script>
 
 </body>
