@@ -236,17 +236,16 @@ function pauseSlide(){
 }
 
 /* =========================
-   PROJECTOR FULLSCREEN MODE
+   TRUE PROJECTOR FULLSCREEN
 ========================= */
 
 async function openProjectorMode(){
 
-  /* Browser support check */
   if(!("getScreenDetails" in window)){
 
     alert(
-      "Browser tak support automatic projector fullscreen.\n\n" +
-      "Sila guna Google Chrome / Microsoft Edge terbaru."
+      "Browser tak support automatic projector mode.\n" +
+      "Please use latest Chrome / Edge."
     );
 
     return;
@@ -255,22 +254,19 @@ async function openProjectorMode(){
 
   try{
 
-    /* Detect screens */
     const screenDetails = await window.getScreenDetails();
 
-    /* Cari second screen */
     const secondScreen = screenDetails.screens.find(
       screen => !screen.isPrimary
     );
 
     if(!secondScreen){
 
-      alert("Second screen / projector tak dikesan.");
+      alert("Second screen / projector not detected.");
       return;
 
     }
 
-    /* Window position dekat second screen */
     const features = `
       left=${secondScreen.availLeft},
       top=${secondScreen.availTop},
@@ -280,10 +276,10 @@ async function openProjectorMode(){
       toolbar=no,
       location=no,
       status=no,
+      scrollbars=no,
       resizable=yes
-    `.replace(/\s+/g, "");
+    `.replace(/\s+/g,'');
 
-    /* Open new window */
     const projectorWindow = window.open(
       "",
       "_blank",
@@ -292,36 +288,35 @@ async function openProjectorMode(){
 
     if(!projectorWindow){
 
-      alert(
-        "Popup blocked.\n\n" +
-        "Please allow popup untuk website ni."
-      );
-
+      alert("Popup blocked. Please allow popup.");
       return;
 
     }
 
-    /* Copy current HTML */
     projectorWindow.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
+
         ${document.head.innerHTML}
 
         <style>
 
           html,
           body{
+            margin:0 !important;
+            padding:0 !important;
             width:100%;
             height:100%;
             overflow:hidden !important;
-            margin:0 !important;
-            padding:0 !important;
             background:#000814 !important;
           }
 
-          #projectorBtn,
           .control-buttons{
+            display:none !important;
+          }
+
+          #projectorBtn{
             display:none !important;
           }
 
@@ -336,10 +331,6 @@ async function openProjectorMode(){
 
           .sub-title{
             font-size:28px !important;
-          }
-
-          table{
-            width:100% !important;
           }
 
           thead th{
@@ -359,7 +350,43 @@ async function openProjectorMode(){
           }
 
           .notice{
-            font-size:24px !important;
+            font-size:22px !important;
+          }
+
+          /* FULLSCREEN OVERLAY */
+
+          #fullscreenOverlay{
+
+            position:fixed;
+            inset:0;
+
+            z-index:999999;
+
+            background:#000814;
+
+            display:flex;
+            flex-direction:column;
+
+            justify-content:center;
+            align-items:center;
+
+            gap:20px;
+
+            color:white;
+
+            cursor:pointer;
+
+            font-family:Poppins,sans-serif;
+
+          }
+
+          #fullscreenOverlay h1{
+            font-size:50px;
+          }
+
+          #fullscreenOverlay p{
+            font-size:22px;
+            opacity:0.8;
           }
 
         </style>
@@ -368,7 +395,47 @@ async function openProjectorMode(){
 
       <body>
 
+        <div id="fullscreenOverlay">
+
+          <div style="font-size:100px;">
+            🖥️
+          </div>
+
+          <h1>CLICK TO START PROJECTOR MODE</h1>
+
+          <p>
+            Fullscreen akan aktif selepas klik
+          </p>
+
+        </div>
+
         ${document.body.innerHTML}
+
+        <script>
+
+          const overlay =
+            document.getElementById("fullscreenOverlay");
+
+          overlay.addEventListener("click", async () => {
+
+            try{
+
+              await document.documentElement.requestFullscreen();
+
+              overlay.style.display = "none";
+
+            }
+            catch(err){
+
+              alert(
+                "Fullscreen blocked by browser."
+              );
+
+            }
+
+          });
+
+        <\/script>
 
       </body>
       </html>
@@ -376,83 +443,12 @@ async function openProjectorMode(){
 
     projectorWindow.document.close();
 
-    /* Tunggu window fully loaded */
-    projectorWindow.onload = async () => {
-
-      try{
-
-        /* TRUE FULLSCREEN */
-        if(projectorWindow.document.documentElement.requestFullscreen){
-
-          await projectorWindow.document.documentElement.requestFullscreen({
-            screen: secondScreen
-          });
-
-        }
-
-      }
-      catch(err){
-
-        console.log("Fullscreen blocked:", err);
-
-      }
-
-    };
-
   }
   catch(error){
 
     console.error(error);
 
-    alert("Failed buka projector mode.");
-
-  }
-
-}
-
-/* =========================
-   CHECK SECOND SCREEN
-========================= */
-
-async function checkSecondScreen(){
-
-  const projectorBtn = document.getElementById("projectorBtn");
-
-  if(!projectorBtn){
-    return;
-  }
-
-  /* Mobile / Tablet */
-  if(window.innerWidth <= 1024){
-
-    projectorBtn.style.display = "none";
-    return;
-
-  }
-
-  /* Browser tak support */
-  if(!('getScreenDetails' in window)){
-
-    projectorBtn.style.display = "none";
-    return;
-
-  }
-
-  try{
-
-    const screenDetails = await window.getScreenDetails();
-
-    const hasSecondScreen = screenDetails.screens.some(
-      screen => !screen.isPrimary
-    );
-
-    projectorBtn.style.display =
-      hasSecondScreen ? "inline-flex" : "none";
-
-  }
-  catch(error){
-
-    projectorBtn.style.display = "none";
+    alert("Failed to open projector mode.");
 
   }
 
