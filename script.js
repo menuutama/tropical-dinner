@@ -1,4 +1,5 @@
-const API_URL = "https://google.com";
+// KEMASKINI: URL API baharu anda telah dimasukkan dengan selamat di sini
+const API_URL = "https://script.google.com/macros/s/AKfycbymH8u2HPYuTayguREV8qBlyO1a8zZJzy15QQgScxUpbmL5Y5zA4QwD8BsjSiHg86Di/exec";
 
 const ROWS_PER_PAGE = 10;
 
@@ -145,7 +146,7 @@ async function loadData(){
     })
     .sort((a,b) => {
 
-      // PEMBETULAN DI SINI: Memperbaiki sintaksis match yang menyebabkan ralat sistem
+      // PEMBETULAN MUTLAK: Memasukkan semula sintaks indeks array [0] untuk mengelakkan ralat kompilasi skrip
       const numA = parseInt(
         (a.place || "").match(/\d+/)?.[0] || 999
       );
