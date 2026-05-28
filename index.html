@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>Tropical Dinner 2026 - Live Lucky Draw</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,49 +19,37 @@
 }
 
 body{
-
-   width:100%;
-   //margin:auto;
-
-
-   margin:0;
-  // padding:30;
-   //width:100%;
-   min-height:100vh;
-
+  min-height:100vh;
   color:white;
-  overflow:scroll;
+  overflow-x:hidden;
 
   background:
   linear-gradient(rgba(0,0,20,0.82), rgba(0,0,20,0.82)),
   url('https://i.ibb.co/5x6qDRfX/BG.png');
-    background-position:center;
-    background-repeat:no-repeat;
-    background-size:100% 250%; 
-    background-attachment:fixed;
- }
+
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
+}
 
 .overlay{
   position:fixed;
   inset:0;
-  background:
-  radial-gradient(circle at top left, rgba(0,170,255,0.25), transparent 25%),
-  radial-gradient(circle at bottom right, rgba(0,120,255,0.25), transparent 25%);
   pointer-events:none;
+
+  background:
+  radial-gradient(circle at top left, rgba(0,170,255,0.18), transparent 25%),
+  radial-gradient(circle at bottom right, rgba(0,120,255,0.18), transparent 25%);
 }
 
 .container{
-   width:100%;
-   max-width:1200px;
-   margin:auto;
-   padding:5px;
-   box-sizing:border-box;
-
-
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+  width:100%;
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
+  position:relative;
+  z-index:2;
 }
 
 .header{
@@ -71,26 +60,27 @@ body{
 .sub-title{
   font-size:20px;
   letter-spacing:6px;
-  color:#ff3b3b;
+  color:#ff4a4a;
   font-weight:600;
   text-shadow:0 0 20px rgba(255,0,0,0.5);
-
 }
 
 .title{
-  font-size:60px;
+  font-size:58px;
   font-weight:700;
-  color:white;
   margin-top:10px;
   text-shadow:0 0 25px rgba(0,170,255,0.5);
 }
 
 .live-box{
   margin-top:15px;
+
   display:inline-flex;
   align-items:center;
   gap:10px;
-  padding:10px 20px;
+
+  padding:10px 22px;
+
   border-radius:999px;
 
   background:rgba(0,150,255,0.15);
@@ -108,33 +98,27 @@ body{
 }
 
 @keyframes pulse{
-  0%{transform:scale(1);opacity:1;}
-  50%{transform:scale(1.5);opacity:0.5;}
-  100%{transform:scale(1);opacity:1;}
-}
-
-.main-content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  //overflow:hidden;
+  0%{transform:scale(1);}
+  50%{transform:scale(1.5); opacity:0.5;}
+  100%{transform:scale(1);}
 }
 
 .table-wrapper{
-  flex:1;
-  font-size:60px;
-  text-transform: uppercase;
-  background:rgba(255,255,255,0.06);
+  width:100%;
+
+  background:rgba(255,255,255,0.05);
+
   border:1px solid rgba(255,255,255,0.08);
 
-  border-radius:25px;
+  border-radius:24px;
+
   overflow:hidden;
 
   backdrop-filter:blur(10px);
 
   box-shadow:
-  0 0 30px rgba(0,150,255,0.15),
-  inset 0 0 20px rgba(255,255,255,0.03);
+  0 0 30px rgba(0,150,255,0.12),
+  inset 0 0 20px rgba(255,255,255,0.02);
 }
 
 table{
@@ -147,31 +131,34 @@ thead{
 }
 
 thead th{
-  padding:20px;
-  text-align:left;
-  font-size:16px;
+  padding:18px 14px;
+  text-align:center;
+  font-size:15px;
   font-weight:600;
   color:white;
 }
 
 tbody tr{
-  border-bottom:1px solid rgba(255,255,255,0.08);
+  border-bottom:1px solid rgba(255,255,255,0.06);
   transition:0.3s;
 }
 
 tbody tr:hover{
-  background:rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.04);
 }
 
 tbody td{
-  padding:18px 20px;
-  font-size:15px;
+  padding:16px 12px;
+  font-size:14px;
+  text-align:center;
   color:#ecf7ff;
 }
 
 .place-badge{
   width:42px;
   height:42px;
+
+  margin:auto;
 
   display:flex;
   align-items:center;
@@ -187,57 +174,10 @@ tbody td{
 }
 
 .footer{
-  margin-top:1px;
-  margin-bottom:30px;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-wrap:wrap;
-
-  color:#c7eaff;
-}
-
-.page-number{
-  font-size:14px;
-  font-weight:600;
-}
-
-.notice{
-  margin-bottom:50px;
-  font-size:18px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-@media(max-width:768px){
-
-  .title{
-    font-size:34px;
-  }
-
-  thead th{
-    font-size:12px;
-    padding:12px;
-  }
-
-  tbody td{
-    font-size:11px;
-    padding:12px;
-  }
-
-  .place-badge{
-    width:32px;
-    height:32px;
-    font-size:12px;
-  }
-
+  margin-top:20px;
 }
 
 .pagination{
-  margin-top:20px;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -245,38 +185,7 @@ tbody td{
   flex-wrap:wrap;
 }
 
-.pagination button{
-
-  min-width:45px;
-  height:45px;
-  padding:5px;
-
-  border:none;
-  border-radius:12px;
-
-  background:rgba(255,255,255,0.08);
-  color:white;
-
-  cursor:pointer;
-
-  font-weight:300;
-  font-size:12px;
-
-  transition:0.7s;
-
-  backdrop-filter:blur(8px);
-
-  border:1px solid rgba(255,255,255,0.08);
-
-}
-
-.control-buttons{
-  margin-top:15px;
-  display:flex;
-  justify-content:center;
-  gap:10px;
-}
-
+.pagination button,
 .control-buttons button{
 
   min-width:90px;
@@ -300,11 +209,8 @@ tbody td{
   border:1px solid rgba(255,255,255,0.08);
 }
 
+.pagination button:hover,
 .control-buttons button:hover{
-  background:#009dff;
-}
-
-.pagination button:hover{
   background:#009dff;
   transform:translateY(-2px);
 }
@@ -314,198 +220,76 @@ tbody td{
   box-shadow:0 0 15px rgba(0,180,255,0.5);
 }
 
-  /* ==========================================================================
-   1. GAYA ASAS SISTEM (UNTUK MONITOR UTAMA / SKRIN 1)
-   ========================================================================== */
-body {
-  background-color: #0c1020;
-  color: #ffffff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 20px;
+.pagination button:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
 }
 
-/* Gaya Butang Pencetus Skrin Projektor */
-#projectorBtn {
-  background-color: #00bfff;
-  color: #ffffff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-bottom: 15px;
-  transition: background 0.2s ease;
+.control-buttons{
+  margin-top:15px;
+
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-#projectorBtn:hover {
-  background-color: #009acd;
+.notice{
+  margin-top:25px;
+  margin-bottom:20px;
+
+  text-align:center;
+
+  font-size:16px;
+  color:#cfeeff;
 }
 
-/* Kontena Pagination Asal */
-#pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  padding: 15px;
-}
+/* =========================
+   MOBILE
+========================= */
 
-/* Gaya Butang Pagination Asal */
-#pagination button {
-  background-color: #151a30;
-  color: #a0a5b5;
-  border: 1px solid #202740;
-  padding: 10px 18px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+@media(max-width:768px){
 
-#pagination button:hover:not(:disabled) {
-  background-color: #1c2340;
-  color: #ffffff;
-}
+  .container{
+    padding:10px;
+  }
 
-#pagination button.active {
-  background-color: #00bfff;
-  color: #ffffff;
-  border: 1px solid #00bfff;
-  font-weight: bold;
-  box-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
-}
+  .sub-title{
+    font-size:12px;
+    letter-spacing:3px;
+  }
 
-#pagination button:disabled {
-  background-color: #090d1a;
-  color: #3e4459;
-  border: 1px solid #12172a;
-  cursor: not-allowed;
-}
+  .title{
+    font-size:28px;
+  }
 
+  thead th{
+    font-size:10px;
+    padding:10px 6px;
+  }
 
-/* ==========================================================================
-   2. GAYA KHAS PROJEKTOR (UNTUK SKRIN KEDUA - FIT & AUTO RESCALE)
-   ========================================================================== */
-/* Kelas ini akan disuntik secara automatik oleh JavaScript pada Skrin Kedua */
-html.projector-view, 
-body.projector-view {
-  width: 1536px !important;
-  height: 768px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important; /* Buang terus scroll bar browser */
-  background-color: #0c1020 !important;
-  position: relative !important;
-}
+  tbody td{
+    font-size:10px;
+    padding:10px 5px;
+  }
 
-body.projector-view {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  padding: 40px !important;
-  box-sizing: border-box !important;
-  transform-origin: top left !important;
-}
+  .place-badge{
+    width:28px;
+    height:28px;
+    font-size:10px;
+  }
 
-/* Sembunyikan bahagian input, butang admin dan kolum aksi pada projektor */
-/* ==========================================================================
-   GAYA KHAS PROJEKTOR (FIT SAIZ & SEMBUNYI BUTANG ADMIN)
-   ========================================================================== */
-html.projector-view, 
-body.projector-view {
-  width: 1536px !important;
-  height: 768px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important; /* Buang bar tatal (scroll bar) */
-  background-color: #0c1020 !important;
-  position: relative !important;
-}
+  .pagination button,
+  .control-buttons button{
+    min-width:70px;
+    height:38px;
+    font-size:11px;
+  }
 
-body.projector-view {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  padding: 40px !important;
-  box-sizing: border-box !important;
-  transform-origin: top left !important;
-}
+  .notice{
+    font-size:12px;
+  }
 
-/* Menyembunyikan butang kawalan, input dan kolum aksi (Edit/Delete) */
-body.projector-view #projectorBtn, 
-body.projector-view .lucky-input-container, 
-body.projector-view .admin-controls,
-body.projector-view #playBtn,   
-body.projector-view #pauseBtn,
-body.projector-view table th:last-child, 
-body.projector-view table td:last-child { 
-  display: none !important; 
-}
-
-/* Selaraskan jadual pemenang agar kelihatan besar dan jelas di projektor */
-/* ==========================================================================
-   CSS PROJEKTOR (TAMPAL DI DALAM TAG <style> FAIL UTAMA ANDA)
-   ========================================================================== */
-body.projector-view {
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important; /* Hapuskan terus scroll bar browser */
-  background-color: #0c1020 !important;
-  width: 100vw;
-  height: 100vh;
-}
-
-/* Kontena Induk di Projektor - Mengunci Saiz dan Paksa Scale-to-Fit */
-body.projector-view .projector-container {
-  width: 1536px !important;
-  height: 768px !important;
-  max-width: 1536px !important;
-  max-height: 768px !important;
-  box-sizing: border-box !important;
-  padding: 40px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  transform-origin: top left !important;
-}
-
-/* Sembunyikan ruangan input, panel butang admin, dan kolum aksi (Edit/Delete) */
-body.projector-view #projectorBtn, 
-body.projector-view .lucky-input-container, 
-body.projector-view .admin-controls,
-body.projector-view #playBtn,   
-body.projector-view #pauseBtn,
-body.projector-view table th:last-child, 
-body.projector-view table td:last-child { 
-  display: none !important; 
-}
-
-/* Laraskan struktur Jadual di skrin besar Projektor */
-body.projector-view table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  font-size: 26px !important; /* Besarkan font tulisan jadual */
-}
-
-body.projector-view th, 
-body.projector-view td {
-  padding: 16px 12px !important;
-  text-align: center !important;
-}
-
-/* Kedudukan Pagination rapi di bawah tengah skrin projektor */
-body.projector-view #pagination {
-  margin-top: auto !important;
-  padding-top: 20px !important;
-  display: flex !important;
-  justify-content: center !important;
-}
-
-body.projector-view #pagination button {
-  font-size: 22px !important;
-  padding: 12px 26px !important;
 }
 
 </style>
@@ -518,340 +302,346 @@ body.projector-view #pagination button {
 <div class="container">
 
   <div class="header">
-    <div class="sub-title">TROPICAL DINNER 2026</div>
-    <div class="title">LIVE LUCKY DRAW WINNERS</div>
+
+    <div class="sub-title">
+      TROPICAL DINNER 2026
+    </div>
+
+    <div class="title">
+      LIVE LUCKY DRAW WINNERS
+    </div>
+
     <div class="live-box">
       <div class="dot"></div>
       LIVE UPDATING
     </div>
+
   </div>
 
-  <div class="main-content">
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>PLACE</th>
-            <th>LUCKY NO.</th>
-            <th>WINNER</th>
-            <th>COMPANY</th>
-            <th>PRIZE</th>
-          </tr>
-        </thead>
-        <tbody id="winnerTable"></tbody>
-      </table>
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>PLACE</th>
+          <th>LUCKY NO.</th>
+          <th>WINNER</th>
+          <th>COMPANY</th>
+          <th>PRIZE</th>
+        </tr>
+      </thead>
+
+      <tbody id="winnerTable"></tbody>
+
+    </table>
+
+  </div>
+
+  <div class="footer">
+
+    <div class="pagination" id="pagination"></div>
+
+    <div class="control-buttons">
+      <button onclick="playSlide()">▶ Play</button>
+      <button onclick="pauseSlide()">⏸ Pause</button>
+      <button onclick="openProjectorMode()">🖥️ Projector</button>
     </div>
 
-    <div class="footer">
-      <div class="page-number" id="pageNumber">
-        <div class="pagination-wrapper">
-          <div class="pagination" id="pagination"></div>
-          <div class="control-buttons">
-            <button onclick="playSlide()">▶ Play</button>
-            <button onclick="pauseSlide()">⏸ Pause</button>
-            <button id="projectorBtn" onclick="openProjectorMode()">🖥️ Buka Skrin Projektor</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="notice">
-    **Kindly collect your lucky draw prize at the registration counter before leaving the event.
+    Kindly collect your lucky draw prize at the registration counter before leaving the event.
   </div>
+
 </div>
 
 <script>
+
 const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
+
+const ROWS_PER_PAGE = 10;
 
 let allData = [];
 let currentPage = 1;
-let lastDataString = ""; // Menyimpan cache data untuk elak render berulang
-let autoSlide;
-const ROWS_PER_PAGE = 10;
+let autoSlide = null;
+let lastDataHash = "";
 
-/* 1. MUAT TURUN DATA (Lebih Pintar & Tiada Buffering Grafik) */
+/* =========================
+   LOAD DATA
+========================= */
+
 async function loadData(){
+
   try{
+
     const response = await fetch(API_URL);
-    const rawData = await response.json();
 
-    // Tapis baris kosong & Susun data ikut turutan 'Place' (1st, 2nd, 3rd...)
-    const filteredData = rawData
-      .filter(item => (item.luckyNo ?? "").toString().trim() !== "")
-      .sort((a, b) => {
-        const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999, 10);
-        const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999, 10);
-        return numA - numB;
-      });
-
-    // Tukar data kepada String untuk semak jika ada perubahan sebenar di Google Sheets
-    const currentDataString = JSON.stringify(filteredData);
-    
-    // Jika data sama dengan sebelum ini, jangan render semula (Elak skrin berkelip/lag)
-    if (currentDataString === lastDataString) return;
-    
-    // Jika ada data baharu, kemas kini cache dan paparan
-    allData = filteredData;
-    lastDataString = currentDataString;
-
-    // Laraskan halaman jika data berkurangan
-    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-    if (currentPage > totalPages && totalPages > 0) {
-      currentPage = totalPages;
+    if(!response.ok){
+      throw new Error("API Error");
     }
 
-    renderPage(currentPage);
+    const rawData = await response.json();
+
+    const filteredData = rawData
+    .filter(item => {
+      return (item.luckyNo || "").toString().trim() !== "";
+    })
+    .sort((a,b) => {
+
+      const numA = parseInt(
+        (a.place || "").match(/\d+/)?.[0] || 999
+      );
+
+      const numB = parseInt(
+        (b.place || "").match(/\d+/)?.[0] || 999
+      );
+
+      return numA - numB;
+
+    });
+
+    const newHash = JSON.stringify(filteredData);
+
+    /* Elak rerender kalau data sama */
+    if(newHash === lastDataHash){
+      return;
+    }
+
+    lastDataHash = newHash;
+
+    allData = filteredData;
+
+    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+    if(currentPage > totalPages){
+      currentPage = totalPages || 1;
+    }
+
+    renderPage();
     renderPagination();
 
-  } catch(error){
+  }
+  catch(error){
     console.error("Fetch Error:", error);
   }
+
 }
 
-/* 2. PAPARKAN HALAMAN (Sangat Laju Menggunakan `.map`) */
-function renderPage(page){
+/* =========================
+   RENDER TABLE
+========================= */
+
+function renderPage(){
+
   const tbody = document.getElementById("winnerTable");
-  if (!tbody) return;
 
-  const start = (page - 1) * ROWS_PER_PAGE;
-  const end = start + ROWS_PER_PAGE;
-  const pageData = allData.slice(start, end);
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
 
-  // Guna join() untuk kemas kini DOM sekali gus sahaja
+  const pageData = allData.slice(
+    start,
+    start + ROWS_PER_PAGE
+  );
+
   tbody.innerHTML = pageData.map(item => `
+  
     <tr>
+
       <td>
         <div class="place-badge">
           ${item.place || ""}
         </div>
       </td>
+
       <td>${item.luckyNo || ""}</td>
+
       <td>${item.winner || ""}</td>
+
       <td>${item.company || ""}</td>
+
       <td>${item.prize || ""}</td>
+
     </tr>
+
   `).join("");
+
 }
 
+/* =========================
+   PAGINATION
+========================= */
 
-/* 3. PAPARKAN PAGINATION BUTTON */
 function renderPagination(){
-  const paginationContainer = document.getElementById("pagination");
-  if (!paginationContainer) return;
+
+  const pagination = document.getElementById("pagination");
 
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-  if (totalPages <= 1) {
-    paginationContainer.innerHTML = "";
+
+  if(totalPages <= 1){
+    pagination.innerHTML = "";
     return;
   }
 
-  // Tambah butang Previous (Sekarang berfungsi sebagai First Page)
-  // Butang akan disekat (disabled) jika pengguna sudah berada di halaman 1
-  let html = `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>First Page</button>`;
+  let html = "";
 
-  let startPage = currentPage - 1;
-  let endPage = currentPage + 1;
+  html += `
+    <button
+      onclick="firstPage()"
+      ${currentPage === 1 ? "disabled" : ""}
+    >
+      First
+    </button>
+  `;
 
-  if(startPage < 1){
-    startPage = 1;
-    endPage = Math.min(3, totalPages);
-  }
+  let startPage = Math.max(currentPage - 1, 1);
 
-  if(endPage > totalPages){
-    endPage = totalPages;
-    startPage = Math.max(1, totalPages - 2);
+  let endPage = Math.min(startPage + 2, totalPages);
+
+  if(endPage - startPage < 2){
+    startPage = Math.max(endPage - 2, 1);
   }
 
   for(let i = startPage; i <= endPage; i++){
+
     html += `
-      <button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
+      <button
+        class="${i === currentPage ? "active" : ""}"
+        onclick="goToPage(${i})"
+      >
         ${i}
       </button>
     `;
+
   }
 
-  // Tambah butang Next (Sekarang berfungsi sebagai Last Page)
-  // Butang akan disekat (disabled) jika pengguna sudah berada di halaman terakhir
-  html += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Last Page</button>`;
-  paginationContainer.innerHTML = html;
+  html += `
+    <button
+      onclick="lastPage()"
+      ${currentPage === totalPages ? "disabled" : ""}
+    >
+      Last
+    </button>
+  `;
+
+  pagination.innerHTML = html;
+
 }
 
 function goToPage(page){
+
   currentPage = page;
-  renderPage(currentPage);
+
+  renderPage();
   renderPagination();
+
 }
 
-// TUKAR: Logik butang Next melompat terus ke Halaman Terakhir
-function nextPage(){
-  if (allData.length === 0) return;
+function firstPage(){
+
+  currentPage = 1;
+
+  renderPage();
+  renderPagination();
+
+}
+
+function lastPage(){
+
+  currentPage = Math.ceil(allData.length / ROWS_PER_PAGE);
+
+  renderPage();
+  renderPagination();
+
+}
+
+/* =========================
+   AUTO SLIDE
+========================= */
+
+function nextAutoPage(){
+
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
-  currentPage = totalPages; // Set terus ke halaman maksimum
-
-  renderPage(currentPage);
-  renderPagination();
-}
-
-// TUKAR: Logik butang Previous melompat terus ke Halaman Pertama
-function prevPage(){
-  if (allData.length === 0) return;
-
-  currentPage = 1; // Set terus ke halaman 1
-
-  renderPage(currentPage);
-  renderPagination();
-}
-
-
-/* 4. KAWALAN AUTOMATIK SLIDE */
-function pauseSlide(){
-  clearInterval(autoSlide);
-}
-
-function playSlide(){
-  clearInterval(autoSlide);
-  autoSlide = setInterval(nextPage, 10000);
-}
-
-// Mulakan sistem
-loadData().then(() => {
-  // Hanya mulakan auto-slide selepas data pertama berjaya dimuat turun
-  playSlide();
-});
-
-// Semak data baharu setiap 3 saat di latar belakang tanpa mengganggu grafik
-setInterval(loadData, 3000);
-
-  /* FUNCTION UTK FIX DAN LOCK PAPARAN DI SKRIN 2 (TIADA SCROLL) */
-async function openProjectorMode() {
-  if (!('getScreenDetails' in window)) {
-    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge.");
+  if(totalPages <= 1){
     return;
   }
 
-  try {
-    const screenDetails = await window.getScreenDetails();
-    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+  currentPage++;
 
-    if (!secondaryScreen) {
-      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel disambung dan set mod 'Extend'.");
-      return;
-    }
-
-    // Koordinat skrin kedua
-    const windowFeatures = `
-      left=${secondaryScreen.availLeft},
-      top=${secondaryScreen.availTop},
-      width=${secondaryScreen.availWidth},
-      height=${secondaryScreen.availHeight},
-      menubar=no,toolbar=no,location=no,status=no
-    `.replace(/\s+/g, '');
-
-    const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
-
-    if (projectorWindow) {
-      projectorWindow.addEventListener('load', () => {
-        const docElem = projectorWindow.document.documentElement;
-        
-        // 1. MASUK MOD FULLSCREEN
-        if (docElem.requestFullscreen) {
-          docElem.requestFullscreen({ screen: secondaryScreen }).catch(err => {
-            console.error("Gagal fullscreen automatik:", err);
-          });
-        }
-
-        // 2. SUNTIK GAYA CSS KHAS (FIXED JALUR - NO SCROLL)
-        const style = projectorWindow.document.createElement('style');
-        style.innerHTML = `
-          /* Paksa body isi ruang 1536x768 dengan tepat dan buang scrollbar */
-          html, body {
-            width: 1536px !important;
-            height: 768px !important;
-            max-width: 1536px !important;
-            max-height: 768px !important;
-            overflow: hidden !important; /* Kunci terus dari keluar scrollbar */
-            margin: 0 !important;
-            padding: 20px !important;
-/* STRATEGI BARU: HANTAR HTML JADUAL KE SKRIN PROJEKTOR */
-function openProjectorMode() {
-  // Ambil data resolusi skrin semasa (untuk mengira kedudukan skrin kedua)
-  const screenWidth = window.screen.width;
-  
-  // Membuka tetingkap kosong tepat di koordinat Skrin Kedua (Projektor)
-  // Menghilangkan segala search bar dan bingkai browser sedia ada
-  const windowFeatures = `
-    left=${screenWidth},
-    top=0,
-    width=1536,
-    height=768,
-    menubar=no,toolbar=no,location=no,status=no
-  `.replace(/\s+/g, '');
-
-  const projectorWindow = window.open("", "_blank", windowFeatures);
-
-  if (projectorWindow) {
-    // Ambil kod CSS sedia ada daripada skrin utama
-    const originalStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-      .map(style => style.outerHTML)
-      .join('\n');
-
-    // Ambil struktur HTML jadual dan pagination dari skrin utama
-    // (Pastikan ID kontena jadual/pagination anda selari dengan kod di bawah)
-    const tableHTML = document.querySelector("table") ? document.querySelector("table").outerHTML : "";
-    const paginationHTML = document.getElementById("pagination") ? document.getElementById("pagination").outerHTML : "";
-
-    // Suntik kandungan lengkap terus ke dalam dokumen skrin projektor
-    projectorWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Live Lucky Draw - Projector Screen</title>
-        ${originalStyles}
-      </head>
-      <body class="projector-view">
-        <!-- Kotak Kecemasan untuk Aktifkan Skrin Penuh (Meniru F11) -->
-        <div id="fsAlert" onclick="this.style.display='none'; document.documentElement.requestFullscreen();" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12,16,32,0.95); color:#00bfff; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:99999; cursor:pointer; font-family:sans-serif; text-align:center; padding:20px; box-sizing:border-box;">
-          <span style="font-size:80px; margin-bottom:20px;">🖥️</span>
-          <h2 style="margin:0 0 10px 0; font-size:32px;">Klik Di Sini Untuk Mod Projektor</h2>
-          <p style="margin:0; font-size:18px; color:#a0a5b5;">Sistem akan automatik masuk Full Screen (Kesan F11)</p>
-        </div>
-
-        <!-- Kandungan Utama Jadual & Pagination -->
-        <div class="projector-container">
-          ${tableHTML}
-          ${paginationHTML}
-        </div>
-
-        <script>
-          // Logik Responsive Auto-Rescale (Kunci Nisbah 1536x768)
-          function doScale() {
-            const container = document.querySelector('.projector-container');
-            if(container) {
-              const widthScale = window.innerWidth / 1536;
-              const heightScale = window.innerHeight / 768;
-              container.style.transform = "scale(" + widthScale + "," + heightScale + ")";
-            }
-          }
-          window.addEventListener('resize', doScale);
-          window.addEventListener('load', doScale);
-          setTimeout(doScale, 100);
-        <\/script>
-      </body>
-      </html>
-    `);
-
-    projectorWindow.document.close();
-  } else {
-    alert("Pop-up disekat! Sila lihat bahagian atas bar carian browser anda dan klik 'Sentiasa benarkan pop-up (Always allow pop-ups)' untuk sistem ini.");
+  if(currentPage > totalPages){
+    currentPage = 1;
   }
+
+  renderPage();
+  renderPagination();
+
 }
 
+function playSlide(){
 
+  pauseSlide();
+
+  autoSlide = setInterval(() => {
+    nextAutoPage();
+  }, 10000);
+
+}
+
+function pauseSlide(){
+
+  if(autoSlide){
+    clearInterval(autoSlide);
+  }
+
+}
+
+/* =========================
+   PROJECTOR MODE
+========================= */
+
+function openProjectorMode(){
+
+  const projectorWindow = window.open(
+    "",
+    "_blank",
+    "width=1536,height=768"
+  );
+
+  if(!projectorWindow){
+    alert("Please allow pop-up for projector mode.");
+    return;
+  }
+
+  const htmlContent = document.documentElement.outerHTML;
+
+  projectorWindow.document.open();
+  projectorWindow.document.write(htmlContent);
+  projectorWindow.document.close();
+
+  projectorWindow.onload = () => {
+
+    projectorWindow.document.body.style.zoom = "100%";
+
+    if(projectorWindow.document.documentElement.requestFullscreen){
+      projectorWindow.document.documentElement.requestFullscreen();
+    }
+
+  };
+
+}
+
+/* =========================
+   START
+========================= */
+
+loadData();
+
+playSlide();
+
+/* Refresh data background */
+setInterval(loadData, 3000);
 
 </script>
 
 </body>
-
 </html>
