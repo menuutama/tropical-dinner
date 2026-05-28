@@ -12,7 +12,7 @@ body{
 
   background:
   linear-gradient(rgba(0,0,20,0.82), rgba(0,0,20,0.82)),
-  url('https://i.ibb.co/5x6qDRfX/BG.png');
+  url('https://ibb.co');
 
   background-position:center;
   background-repeat:no-repeat;
@@ -59,7 +59,6 @@ body{
   text-shadow:0 0 25px rgba(0,170,255,0.5);
 }
 
-/* live-box berfungsi sebagai penanda penempatan .mobile-search-wrapper */
 .live-box{
   margin-top:15px;
 
@@ -102,17 +101,11 @@ body{
 
 .table-wrapper{
   width:100%;
-
   background:rgba(255,255,255,0.05);
-
   border:1px solid rgba(255,255,255,0.08);
-
   border-radius:24px;
-
   overflow:hidden;
-
   backdrop-filter:blur(10px);
-
   box-shadow:
   0 0 30px rgba(0,150,255,0.12),
   inset 0 0 20px rgba(255,255,255,0.02);
@@ -284,24 +277,24 @@ tbody td{
     gap:8px;
   }
 
-  /* DIKEMAS KINI: Mengatasi masalah overlap & menetapkan skrol menegak penuh */
+  /* DIKEMAS KINI: Selesaikan isu overlap phone & benarkan skrol menegak */
   .table-wrapper{
     overflow-x:hidden;
     overflow-y:auto;
-    max-height: calc(100vh - 280px); /* Memastikan table tidak menolak skrin ke bawah */
+    max-height: calc(100vh - 280px);
     -webkit-overflow-scrolling: touch;
     border-radius: 16px;
   }
 
   table{
-    min-width:100%; /* Disesuaikan supaya kolum fleksibel mengikut saiz peranti */
+    min-width:700px;
   }
 
   thead th{
     font-size:11px;
     padding:12px 8px;
     white-space:nowrap;
-    position: sticky; /* Tajuk table kekal di atas apabila diskrol */
+    position: sticky;
     top: 0;
     z-index: 5;
   }
@@ -315,7 +308,7 @@ tbody td{
     word-break:break-word;
     overflow-wrap:break-word;
 
-    vertical-align:middle; /* Lebih kemas untuk teks pendek phone */
+    vertical-align:middle;
   }
 
   .place-badge{
@@ -381,7 +374,7 @@ tbody td{
     font-size:14px;
   }
 
-  /* DIKEMAS KINI: Menghalang overlap komponen pada saiz skrin tablet */
+  /* DIKEMAS KINI: Selesaikan isu overlap tablet & benarkan skrol menegak */
   .table-wrapper{
     border-radius:20px;
     overflow-x: hidden;
@@ -391,7 +384,7 @@ tbody td{
   }
 
   table{
-    min-width:100%;
+    min-width:950px;
   }
 
   thead th{
@@ -436,7 +429,7 @@ tbody td{
 
 
 /* =========================================================
-   HIDE PROJECTOR BUTTON
+   HIDE PROJECTOR BUTTON FOR MOBILE
 ========================================================= */
 
 @media(max-width:1024px){
@@ -448,10 +441,9 @@ tbody td{
 }
 
 /* =========================
-   SEARCH BAR (MOBILE + TABLET)
+   SEARCH BAR STYLE
 ========================= */
 
-/* SEARCH BOX STYLE */
 .search-box{
   display:flex;
   align-items:center;
@@ -463,7 +455,6 @@ tbody td{
   backdrop-filter:blur(10px);
 }
 
-/* INPUT */
 #searchInput{
   flex:1;
   background:transparent;
@@ -474,20 +465,16 @@ tbody td{
   font-size:13px;
 }
 
-/* CLEAR BUTTON (X) */
 .clear-btn{
   width:34px;
   height:34px;
   border:none;
   border-radius:10px;
   cursor:pointer;
-
   background:rgba(255,0,0,0.15);
   color:#ff4a4a;
-
   font-size:16px;
   font-weight:bold;
-
   transition:0.2s;
 }
 
@@ -499,17 +486,17 @@ tbody td{
   display:none;
 }
 
-/* DIKEMAS KINI: Menyelaraskan padding 10px tepat untuk phone & tablet */
+/* DIKEMAS KINI: Tetapan padding 10px untuk ruang carian phone/tablet */
 @media(max-width:1024px){
 
   .mobile-search-wrapper{
     display:flex;
     gap:8px;
     width:100%;
-    margin:0 auto; /* Memastikan kedudukan center */
-    padding:10px;  /* Maklum balas: ketetapan padding 10px sekeliling search bar */
+    margin:0 auto;
+    padding:10px; /* Jarak padding 10px sekeliling search bar */
     box-sizing:border-box;
-    max-width: 600px; /* Mengekalkan saiz ideal carian di skrin tablet */
+    max-width: 600px;
   }
 
   #searchInput{
@@ -530,4 +517,86 @@ tbody td{
     font-weight:600;
   }
 
+}
+
+/* ====================================================================
+   DIKEMAS KINI: MOD SLAID FULLSCREEN (LAPTOP, TV & PROJEKTOR SAHAJA)
+==================================================================== */
+@media(min-width: 1025px) {
+  
+  body.fullscreen-active {
+    padding: 0 !important;
+    overflow: hidden !important; /* Paksa tiada sebarang skrol */
+    height: 100vh !important;
+    width: 100vw !important;
+  }
+
+  /* Sembunyikan semua elemen butang, tajuk, carian, pagination, dan notis */
+  body.fullscreen-active .header,
+  body.fullscreen-active .mobile-search-wrapper,
+  body.fullscreen-active .footer,
+  body.fullscreen-active .notice {
+    display: none !important;
+  }
+
+  /* Container penuh 1 skrin tepat */
+  body.fullscreen-active .container {
+    max-width: 100% !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 30px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden !important;
+  }
+
+  /* Jadual membesar secara fleksibel tanpa melimpah (Fit Screen) */
+  body.fullscreen-active .table-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: hidden !important; /* Tiada skrol dalam jadual */
+    display: flex;
+    flex-direction: column;
+  }
+
+  body.fullscreen-active table {
+    width: 100% !important;
+    height: 100% !important;
+    table-layout: fixed; /* Agihan kolum kekunci kekal sekata */
+  }
+
+  body.fullscreen-active tbody {
+    display: table-row-group;
+  }
+
+  /* Pembahagian saiz baris automatik (10 baris data + 1 header = muat 1 skrin) */
+  body.fullscreen-active tr {
+    height: calc(100% / 11);
+  }
+
+  /* Besarkan saiz teks teks untuk paparan skrin besar dewan */
+  body.fullscreen-active thead th {
+    font-size: 24px !important;
+    padding: 0 !important;
+    vertical-align: middle;
+  }
+
+  body.fullscreen-active tbody td {
+    font-size: 22px !important;
+    padding: 0 !important;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+
+  body.fullscreen-active .place-badge {
+    width: 55px !important;
+    height: 55px !important;
+    font-size: 20px !important;
+  }
 }
