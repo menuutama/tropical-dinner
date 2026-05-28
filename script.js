@@ -381,4 +381,4 @@ loadData();
 
 playSlide();
 
-setInterval(loadData, 2000);
+setInterval(loadData, 3000);
