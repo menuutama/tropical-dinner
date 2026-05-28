@@ -532,71 +532,78 @@ tbody td{
   }
 
   /* Sembunyikan semua elemen butang, tajuk, carian, pagination, dan notis */
-  body.fullscreen-active .header,
-  body.fullscreen-active .mobile-search-wrapper,
-  body.fullscreen-active .footer,
-  body.fullscreen-active .notice {
-    display: none !important;
-  }
+ /* ====================================================================
+   TAMBAHAN MOD SKRIN PENUH (TAJUK ATAS & NOTA KAKI BAWAH)
+==================================================================== */
 
-  /* Container penuh 1 skrin tepat */
-  body.fullscreen-active .container {
-    max-width: 100% !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    padding: 30px !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden !important;
-  }
+/* Sembunyikan elemen ini pada mod paparan biasa */
+#fullscreenHeader, 
+#fullscreenFooter {
+  display: none;
+}
 
-  /* Jadual membesar secara fleksibel tanpa melimpah (Fit Screen) */
-  body.fullscreen-active .table-wrapper {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0px !important;
-    box-shadow: none !important;
-    border: none !important;
-    overflow: hidden !important; /* Tiada skrol dalam jadual */
-    display: flex;
-    flex-direction: column;
-  }
+/* --- Gaya yang hanya aktif apabila mod skrin penuh dibuka --- */
 
-  body.fullscreen-active table {
-    width: 100% !important;
-    height: 100% !important;
-    table-layout: fixed; /* Agihan kolum kekunci kekal sekata */
-  }
+/* 1. Jarak keselamatan di bawah jadual */
+body.fullscreen-active {
+  padding-bottom: 80px; 
+  box-sizing: border-box;
+}
 
-  body.fullscreen-active tbody {
-    display: table-row-group;
-  }
+/* 2. Banner Tajuk Atas (Sama seperti gambar 1) */
+body.fullscreen-active #fullscreenHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: linear-gradient(to right, #0e1e38, #1a2a4a, #0e1e38); /* Latar belakang biru gelap */
+  padding: 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  font-family: 'Arial', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-  /* Pembahagian saiz baris automatik (10 baris data + 1 header = muat 1 skrin) */
-  body.fullscreen-active tr {
-    height: calc(100% / 11);
-  }
+/* Tulisan Kecil (TROPICAL DINNER 2026) */
+.fs-sub-title {
+  color: #ff4d4d; /* Warna merah/oren */
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 5px;
+}
 
-  /* Besarkan saiz teks teks untuk paparan skrin besar dewan */
-  body.fullscreen-active thead th {
-    font-size: 24px !important;
-    padding: 0 !important;
-    vertical-align: middle;
-  }
+/* Tulisan Besar (LIVE LUCKY DRAW WINNERS) */
+.fs-main-title {
+  color: #ffffff; /* Warna putih bersinar */
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
 
-  body.fullscreen-active tbody td {
-    font-size: 22px !important;
-    padding: 0 !important;
-    font-weight: 500;
-    vertical-align: middle;
-  }
+/* 3. Banner Nota Kaki Bawah (Sama seperti gambar 2) */
+body.fullscreen-active #fullscreenFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #1a1e29; /* Latar belakang gelap lembut */
+  padding: 15px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 9999; /* Sentiasa di lapisan paling atas */
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5);
+}
 
-  body.fullscreen-active .place-badge {
-    width: 55px !important;
-    height: 55px !important;
-    font-size: 20px !important;
-  }
+/* Gaya Tulisan Nota Kaki */
+body.fullscreen-active #fullscreenFooter p {
+  color: #cccccc; /* Warna teks putih lembut/kelabu cerah */
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-align: center;
 }
