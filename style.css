@@ -59,6 +59,7 @@ body{
   text-shadow:0 0 25px rgba(0,170,255,0.5);
 }
 
+/* live-box berfungsi sebagai penanda penempatan .mobile-search-wrapper */
 .live-box{
   margin-top:15px;
 
@@ -283,19 +284,26 @@ tbody td{
     gap:8px;
   }
 
-.table-wrapper{
-  overflow-x:hidden;
-  overflow-y:auto;
-}
+  /* DIKEMAS KINI: Mengatasi masalah overlap & menetapkan skrol menegak penuh */
+  .table-wrapper{
+    overflow-x:hidden;
+    overflow-y:auto;
+    max-height: calc(100vh - 280px); /* Memastikan table tidak menolak skrin ke bawah */
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+  }
 
   table{
-    min-width:700px;
+    min-width:100%; /* Disesuaikan supaya kolum fleksibel mengikut saiz peranti */
   }
 
   thead th{
     font-size:11px;
     padding:12px 8px;
     white-space:nowrap;
+    position: sticky; /* Tajuk table kekal di atas apabila diskrol */
+    top: 0;
+    z-index: 5;
   }
 
   tbody td{
@@ -307,7 +315,7 @@ tbody td{
     word-break:break-word;
     overflow-wrap:break-word;
 
-    vertical-align:top;
+    vertical-align:middle; /* Lebih kemas untuk teks pendek phone */
   }
 
   .place-badge{
@@ -373,19 +381,26 @@ tbody td{
     font-size:14px;
   }
 
+  /* DIKEMAS KINI: Menghalang overlap komponen pada saiz skrin tablet */
   .table-wrapper{
     border-radius:20px;
-  overflow:auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 340px);
+    -webkit-overflow-scrolling: touch;
   }
 
   table{
-    min-width:950px;
+    min-width:100%;
   }
 
   thead th{
     font-size:13px;
     padding:15px 10px;
     white-space:nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 5;
   }
 
   tbody td{
@@ -396,6 +411,7 @@ tbody td{
     white-space:normal;
     word-break:break-word;
     overflow-wrap:break-word;
+    vertical-align: middle;
   }
 
   .place-badge{
@@ -435,7 +451,7 @@ tbody td{
    SEARCH BAR (MOBILE + TABLET)
 ========================= */
 
-  /* SEARCH BOX STYLE */
+/* SEARCH BOX STYLE */
 .search-box{
   display:flex;
   align-items:center;
@@ -478,19 +494,22 @@ tbody td{
 .clear-btn:hover{
   background:rgba(255,0,0,0.3);
 }
+
 .mobile-search-wrapper{
   display:none;
 }
 
+/* DIKEMAS KINI: Menyelaraskan padding 10px tepat untuk phone & tablet */
 @media(max-width:1024px){
 
   .mobile-search-wrapper{
     display:flex;
     gap:8px;
     width:100%;
-    margin:10px 0;
-    padding:0 5px;
+    margin:0 auto; /* Memastikan kedudukan center */
+    padding:10px;  /* Maklum balas: ketetapan padding 10px sekeliling search bar */
     box-sizing:border-box;
+    max-width: 600px; /* Mengekalkan saiz ideal carian di skrin tablet */
   }
 
   #searchInput{
@@ -500,6 +519,7 @@ tbody td{
     border-radius:10px;
     font-size:13px;
     outline:none;
+    color: white;
   }
 
   #searchBtn{
