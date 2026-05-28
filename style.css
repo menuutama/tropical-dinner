@@ -276,3 +276,13 @@ tbody td{
   }
 
 }
+
+/* HIDE PROJECTOR BUTTON ON MOBILE & TABLET */
+
+@media(max-width:1024px){
+
+  #projectorBtn{
+    display:none !important;
+  }
+
+}
