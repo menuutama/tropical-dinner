@@ -338,3 +338,4 @@ playSlide();
 
 /* Refresh data background */
 setInterval(loadData, 3000);
+
