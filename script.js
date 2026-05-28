@@ -386,18 +386,50 @@ function pauseSlide(){
 }
 
 /* =========================
-   FULLSCREEN
+   FULLSCREEN MULTI-SCREEN
 ========================= */
 
-function openProjectorMode(){
-  if(!document.fullscreenElement){
+async function openProjectorMode() {
+  // Semak jika pelayar menyokong pengurusan skrin
+  if ('getScreenDetails' in window) {
+    try {
+      const screenDetails = await window.getScreenDetails();
+      
+      // Cari skrin kedua (bukan skrin utama)
+      const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+
+      if (secondaryScreen) {
+        // Jika tetingkap sekarang berada di skrin utama, buka tetingkap baru di skrin kedua
+        if (window.screen.left !== secondaryScreen.left) {
+          // Buka tetingkap baru tepat pada koordinat skrin kedua
+          const projectorWindow = window.open(
+            window.location.href, 
+            '_blank', 
+            `left=${secondaryScreen.availLeft},top=${secondaryScreen.availTop},width=${secondaryScreen.availWidth},height=${secondaryScreen.availHeight}`
+          );
+
+          // Tunggu tetingkap baru siap dipaparkan, kemudian buat fullscreen
+          projectorWindow.addEventListener('DOMContentLoaded', () => {
+            projectorWindow.document.documentElement.requestFullscreen().catch(err => {
+              console.error("Gagal fullscreen di skrin kedua:", err);
+            });
+          });
+          return; // Tamat fungsi di sini kerana tugasan beralih ke tetingkap baru
+        }
+      }
+    } catch (err) {
+      console.warn("Kebenaran akses skrin ditolak atau ralat berlaku:", err);
+    }
+  }
+
+  // Kod asal sebagai sandaran (Fallback) jika tiada skrin kedua atau tiada kebenaran
+  if (!document.fullscreenElement) {
     document.documentElement
       .requestFullscreen()
       .catch(err => {
         console.error(err);
       });
-  }
-  else{
+  } else {
     document.exitFullscreen();
   }
 }
@@ -405,14 +437,14 @@ function openProjectorMode(){
 document.addEventListener(
   "fullscreenchange",
   () => {
-    if(document.fullscreenElement){
+    if (document.fullscreenElement) {
       document.body.classList.add("fullscreen-active");
-    }
-    else{
+    } else {
       document.body.classList.remove("fullscreen-active");
     }
   }
 );
+
 
 /* =========================
    START
