@@ -64,7 +64,7 @@ function performSearch() {
     renderPage();
     renderPagination();
     return;
-  }*/
+  }
 
   const filtered = allData.filter(item => {
 
