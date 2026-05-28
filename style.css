@@ -2,8 +2,9 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-font-family:'Outfit','Segoe UI',Arial,sans-serif;
-  
+  font-family:'Outfit','Segoe UI',Arial,sans-serif;
+}
+
 body{
   min-height:100vh;
   color:white;
@@ -374,8 +375,7 @@ tbody td{
 
   .table-wrapper{
     border-radius:20px;
-  overflow-x:hidden;
-  overflow-y:auto;
+  overflow:auto;
   }
 
   table{
