@@ -30,11 +30,11 @@ async function loadData(){
     .sort((a,b) => {
 
       const numA = parseInt(
-        (a.place || "").match(/\d+/)?. || 999
+        (a.place || "").match(/\d+/)?.[0] || 999
       );
 
       const numB = parseInt(
-        (b.place || "").match(/\d+/)?. || 999
+        (b.place || "").match(/\d+/)?.[0] || 999
       );
 
       return numA - numB;
@@ -236,97 +236,41 @@ function pauseSlide(){
 }
 
 /* =========================
-   AUTO-PUSH SKRIN KEDUA + FLOATING BUTTON
+   AUTO-PUSH FULLSCREEN TO SECOND SCREEN
 ========================= */
 
 async function openProjectorMode() {
+  // 1. Semak sokongan browser (Sesuai untuk Chrome & Edge terkini)
   if (!("getScreenDetails" in window)) {
-    alert("Browser tidak menyokong fungsi ini. Sila gunakan Chrome atau Edge versi terkini.");
+    alert("Browser tidak menyokong auto-push skrin kedua. Gunakan Chrome atau Edge versi terkini.");
     return;
   }
 
   try {
+    // 2. Minta kebenaran akses skrin dan dapatkan maklumat semua monitor
     const screenDetails = await window.getScreenDetails();
+    
+    // 3. Cari monitor yang BUKAN skrin utama (iaitu projector atau monitor kedua)
     const secondScreen = screenDetails.screens.find(screen => !screen.isPrimary);
 
     if (!secondScreen) {
-      alert("Skrin kedua / projektor tidak dikesan. Sila set paparan Windows ke mod 'Extend'.");
+      alert("Skrin kedua atau projector tidak dikesan. Sila pastikan kabel HDMI disambung dan set ke mod 'Extend'.");
       return;
     }
 
-    const options = { screen: secondScreen };
+    // 4. Tetapkan konfigurasi posisi untuk membuka element di skrin kedua
+    const options = {
+      screen: secondScreen
+    };
+
+    // 5. Tolak elemen halaman web semasa terus menjadi fullscreen di skrin kedua
     await document.documentElement.requestFullscreen(options);
 
-    // Cipta Floating Button jika belum wujud dalam kod HTML asal
-    createFloatingExitButton();
-
   } catch (error) {
-    console.error("Gagal fullscreen skrin kedua:", error);
-    alert("Sila benarkan akses kawalan skrin (Window Management) pada browser anda.");
+    console.error("Gagal melakukan auto-push fullscreen:", error);
+    alert("Sila benarkan akses 'Window Management / Skrin' apabila diminta oleh browser.");
   }
 }
-
-/* FUNGSI CIPTA & KAWAL FLOATING BUTTON */
-function createFloatingExitButton() {
-  // Elak butang dicipta berlapis-lapis jika sudah ada
-  if (document.getElementById("floatingExitBtn")) return;
-
-  // 1. Cipta elemen butang baru
-  const exitBtn = document.createElement("button");
-  exitBtn.id = "floatingExitBtn";
-  exitBtn.innerHTML = "❌ Keluar Skrin";
-  
-  // 2. Masukkan gaya CSS secara langsung (Terapung di kanan bawah skrin)
-  Object.assign(exitBtn.style, {
-    position: "fixed",
-    bottom: "30px",
-    right: "30px",
-    zIndex: "999999",
-    padding: "12px 24px",
-    backgroundColor: "rgba(220, 53, 69, 0.4)", // Merah separa lutsinar supaya tidak mengganggu data
-    color: "#fff",
-    border: "none",
-    borderRadius: "30px",
-    fontSize: "16px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
-    transition: "all 0.3s ease",
-    fontFamily: "sans-serif"
-  });
-
-  // Efek hover: Apabila mouse lalu di atas butang, ia akan menyala terang
-  exitBtn.onmouseover = () => {
-    exitBtn.style.backgroundColor = "rgba(220, 53, 69, 1)"; // Jadi merah terang
-    exitBtn.style.transform = "scale(1.05)"; // Membesar sedikit
-  };
-  
-  exitBtn.onmouseout = () => {
-    exitBtn.style.backgroundColor = "rgba(220, 53, 69, 0.4)";
-    exitBtn.style.transform = "scale(1)";
-  };
-
-  // 3. Logik fungsi apabila butang ditekan (Tutup Fullscreen)
-  exitBtn.onclick = async () => {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    }
-  };
-
-  // 4. Masukkan butang ke dalam halaman web
-  document.body.appendChild(exitBtn);
-}
-
-/* LOGIK PEMBERSIHAN BUTTON APABILA KELUAR FULLSCREEN */
-document.addEventListener("fullscreenchange", () => {
-  // Jika pengguna keluar dari mod fullscreen (sama ada tekan butang atau tekan butang 'ESC' di keyboard)
-  if (!document.fullscreenElement) {
-    const exitBtn = document.getElementById("floatingExitBtn");
-    if (exitBtn) {
-      exitBtn.remove(); // Padam terus butang daripada paparan skrin utama asal
-    }
-  }
-});
 
 /* =========================
    START
@@ -338,4 +282,3 @@ playSlide();
 
 /* Refresh data background */
 setInterval(loadData, 3000);
-
