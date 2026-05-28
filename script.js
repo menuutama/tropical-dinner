@@ -271,6 +271,54 @@ function openProjectorMode(){
 }
 
 /* =========================
+   CHECK SECOND SCREEN
+========================= */
+
+async function checkSecondScreen(){
+
+  const projectorBtn = document.getElementById("projectorBtn");
+
+  if(!projectorBtn){
+    return;
+  }
+
+  /* Mobile / Tablet */
+  if(window.innerWidth <= 1024){
+
+    projectorBtn.style.display = "none";
+    return;
+
+  }
+
+  /* Browser tak support */
+  if(!('getScreenDetails' in window)){
+
+    projectorBtn.style.display = "none";
+    return;
+
+  }
+
+  try{
+
+    const screenDetails = await window.getScreenDetails();
+
+    const hasSecondScreen = screenDetails.screens.some(
+      screen => !screen.isPrimary
+    );
+
+    projectorBtn.style.display =
+      hasSecondScreen ? "inline-flex" : "none";
+
+  }
+  catch(error){
+
+    projectorBtn.style.display = "none";
+
+  }
+
+}
+
+/* =========================
    START
 ========================= */
 
