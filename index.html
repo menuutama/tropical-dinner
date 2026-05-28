@@ -444,6 +444,17 @@ body.projector-view #pagination button {
   padding: 12px 24px !important;
 }
 
+  /* Sembunyikan bahagian input, butang admin dan kolum aksi pada projektor */
+body.projector-view #projectorBtn, 
+body.projector-view .lucky-input-container, 
+body.projector-view .admin-controls,
+body.projector-view #playBtn,   /* Jika ada butang Play/Pause bawah jadual */
+body.projector-view #pauseBtn, 
+body.projector-view table th:last-child, 
+body.projector-view table td:last-child { 
+  display: none !important; 
+}
+
 </style>
 </head>
 
@@ -728,6 +739,7 @@ async function openProjectorMode() {
             height: auto !important;
             max-height: 580px !important; /* Hadkan tinggi jadual */
 /* FUNCTION UTK FULLSCREEN PENUH & AUTO-RESCALE DI SKRIN 2 */
+/* FUNCTION UTK FULLSCREEN PENUH, SALIN DATA & AUTO-RESCALE DI SKRIN 2 */
 async function openProjectorMode() {
   if (!('getScreenDetails' in window)) {
     alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge terkini.");
@@ -743,7 +755,6 @@ async function openProjectorMode() {
       return;
     }
 
-    // Mengira saiz posisi koordinat asal tingkap pop-up skrin kedua
     const windowFeatures = `
       left=${secondaryScreen.availLeft},
       top=${secondaryScreen.availTop},
@@ -759,25 +770,46 @@ async function openProjectorMode() {
         const docElem = projectorWindow.document.documentElement;
         const bodyElem = projectorWindow.document.body;
         
-        // 1. AKTIFKAN MOD FULLSCREEN SEBENAR (Menghilangkan search bar & frame browser)
+        // ----------------=======================================----------------
+        // SOLUSI DATA HILANG: Salin pemboleh ubah & fungsi dari skrin utama ke skrin 2
+        // ----------------=======================================----------------
+        projectorWindow.allData = [...allData]; // Salin data semasa
+        projectorWindow.ROWS_PER_PAGE = ROWS_PER_PAGE;
+        projectorWindow.currentPage = currentPage;
+
+        // Salin fungsi penting supaya skrin kedua boleh render jadual sendiri
+        if (typeof renderPage === 'function') projectorWindow.renderPage = renderPage;
+        if (typeof renderTable === 'function') projectorWindow.renderTable = renderTable;
+        if (typeof renderPagination === 'function') projectorWindow.renderPagination = renderPagination;
+
+        // Jalankan fungsi paparan jadual pertama kali di skrin kedua
+        if (typeof projectorWindow.renderPage === 'function') {
+          projectorWindow.renderPage(projectorWindow.currentPage);
+        } else if (typeof projectorWindow.renderTable === 'function') {
+          projectorWindow.renderTable();
+        }
+        if (typeof projectorWindow.renderPagination === 'function') {
+          projectorWindow.renderPagination();
+        }
+
+        // 1. AKTIFKAN FULLSCREEN PENUH (Sama kesan seperti menekan butang F11)
         if (docElem.requestFullscreen) {
           docElem.requestFullscreen({ screen: secondaryScreen }).catch(err => {
             console.error("Gagal melancarkan paparan fullscreen penuh:", err);
           });
         }
 
-        // 2. SUNTIK KELAS CSS UNTUK PROJEKTOR (Mengaktifkan gaya pengasingan CSS tadi)
+        // 2. SUNTIK KELAS CSS UNTUK PROJEKTOR
         docElem.classList.add('projector-view');
         bodyElem.classList.add('projector-view');
 
-        // 3. LOGIK RESPONSIVE MATRIKS (Melakukan operasi scale-to-fit mengikut resolusi skrin)
+        // 3. LOGIK RESPONSIVE AUTO-RESCALE (1536x768)
         const applyScale = () => {
           const widthScale = projectorWindow.innerWidth / 1536;
           const heightScale = projectorWindow.innerHeight / 768;
           bodyElem.style.transform = `scale(${widthScale}, ${heightScale})`;
         };
 
-        // Jalankan skala kali pertama dan set tetapan responsive apabila tetingkap berubah saiz
         applyScale();
         projectorWindow.addEventListener('resize', applyScale);
       });
@@ -787,7 +819,7 @@ async function openProjectorMode() {
     console.error("Ralat akses pengurusan skrin:", err);
     alert("Sila benarkan izin (Permission) akses maklumat skrin apabila diminta oleh browser.");
   }
-  }
+}
 
 </script>
 
