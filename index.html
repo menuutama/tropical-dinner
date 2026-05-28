@@ -530,58 +530,108 @@ loadData().then(() => {
 // Semak data baharu setiap 3 saat di latar belakang tanpa mengganggu grafik
 setInterval(loadData, 3000);
 
-  /* FUNCTION UTK FULLSCREEN DI SKRIN PROJEKTOR NO 2 */
+  /* FUNCTION UTK FIX DAN LOCK PAPARAN DI SKRIN 2 (TIADA SCROLL) */
 async function openProjectorMode() {
-  // 1. Semak jika browser menyokong pengurusan skrin
-  if ('getScreenDetails' in window || 'getScreens' in window) {
-    try {
-      // Minta izin dan dapatkan maklumat semua skrin yang bersambung
-      const screenDetails = await (window.getScreenDetails ? window.getScreenDetails() : window.getScreens());
-      
-      // Cari skrin kedua (bukan skrin utama / primary)
-      const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+  if (!('getScreenDetails' in window)) {
+    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge.");
+    return;
+  }
 
-      if (secondaryScreen) {
-        // Tentukan saiz dan posisi skrin kedua
-        const options = {
-          left: secondaryScreen.left,
-          top: secondaryScreen.top,
-          width: secondaryScreen.width,
-          height: secondaryScreen.height,
-          menubar: 'no',
-          toolbar: 'no',
-          location: 'no',
-          status: 'no'
-        };
+  try {
+    const screenDetails = await window.getScreenDetails();
+    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
 
-        // Tukar objek options menjadi string untuk window.open
-        const windowFeatures = Object.keys(options)
-          .map(key => `${key}=${options[key]}`)
-          .join(',');
+    if (!secondaryScreen) {
+      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel disambung dan set mod 'Extend'.");
+      return;
+    }
 
-        // Buka tetingkap sistem ini di skrin kedua
-        const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
+    // Koordinat skrin kedua
+    const windowFeatures = `
+      left=${secondaryScreen.availLeft},
+      top=${secondaryScreen.availTop},
+      width=${secondaryScreen.availWidth},
+      height=${secondaryScreen.availHeight},
+      menubar=no,toolbar=no,location=no,status=no
+    `.replace(/\s+/g, '');
 
-        // Tunggu tetingkap dibuka, kemudian paksa masuk mod Fullscreen
-        if (projectorWindow) {
-          projectorWindow.addEventListener('load', () => {
-            if (projectorWindow.document.documentElement.requestFullscreen) {
-              projectorWindow.document.documentElement.requestFullscreen();
-            }
+    const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
+
+    if (projectorWindow) {
+      projectorWindow.addEventListener('load', () => {
+        const docElem = projectorWindow.document.documentElement;
+        
+        // 1. MASUK MOD FULLSCREEN
+        if (docElem.requestFullscreen) {
+          docElem.requestFullscreen({ screen: secondaryScreen }).catch(err => {
+            console.error("Gagal fullscreen automatik:", err);
           });
         }
-      } else {
-        // Jika tiada skrin kedua dikesan, buat fullscreen di skrin sedia ada sahaja
-        alert("Skrin kedua (projektor) tidak dikesan. Membuka fullscreen di skrin ini.");
-        triggerLocalFullscreen();
-      }
-    } catch (err) {
-      console.error("Izin akses skrin ditolak atau ralat:", err);
-      triggerLocalFullscreen();
+
+        // 2. SUNTIK GAYA CSS KHAS (FIXED JALUR - NO SCROLL)
+        const style = projectorWindow.document.createElement('style');
+        style.innerHTML = `
+          /* Paksa body isi ruang 1536x768 dengan tepat dan buang scrollbar */
+          html, body {
+            width: 1536px !important;
+            height: 768px !important;
+            max-width: 1536px !important;
+            max-height: 768px !important;
+            overflow: hidden !important; /* Kunci terus dari keluar scrollbar */
+            margin: 0 !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important; /* Susun ruang atas bawah sekata */
+            background-color: #0c1020 !important; /* Latar belakang gelap sistem */
+          }
+
+          /* Padam elemen input atau butang admin yang tak perlu di projektor */
+          #projectorBtn, .lucky-input-container, h1 { 
+            display: none !important; 
+          }
+
+          /* Besarkan jadual untuk isi ruang skrin */
+          table {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 580px !important; /* Hadkan tinggi jadual */
+            border-collapse: collapse !important;
+            font-size: 22px !important; /* Besarkan font supaya senang nampak di projektor */
+          }
+
+          th, td {
+            padding: 12px 8px !important;
+            text-align: center !important;
+          }
+
+          /* Sembunyikan kolum butang aksi (Edit/Delete) di projektor */
+          table th:last-child, 
+          table td:last-child {
+            display: none !important;
+          }
+
+          /* Letakkan butang halaman (pagination) rapat di bahagian paling bawah */
+          #pagination {
+            margin-top: auto !important;
+            padding: 10px !important;
+            display: flex !important;
+            justify-content: center !important;
+          }
+
+          .pagination-btn {
+            font-size: 18px !important; /* Besarkan butang halaman di skrin projektor */
+            padding: 10px 20px !important;
+          }
+        `;
+        projectorWindow.document.head.appendChild(style);
+      });
     }
-  } else {
-    // Jika browser lama & tiada Window Management API
-    triggerLocalFullscreen();
+
+  } catch (err) {
+    console.error("Ralat akses skrin:", err);
+    alert("Sila benarkan izin akses skrin.");
   }
 }
 
