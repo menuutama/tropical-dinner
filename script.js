@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderPage();
     renderPagination();
     return;
-  }
+  }*/
 
   const filtered = allData.filter(item => {
 
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   `).join("");
 
   document.getElementById("pagination").innerHTML = "";
-} */
+} 
 
 /* =========================
    SAFE HTML
