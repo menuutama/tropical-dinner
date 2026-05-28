@@ -11,22 +11,34 @@ let lastDataHash = "";
    SEARCH HTML INJECT
 ========================= */
 
+// Padding 10px ditambah terus pada style inline wrapper untuk memastikan ketetapan jarak
 const searchHTML = `
-<div class="mobile-search-wrapper">
-  <div class="search-box">
+<div class="mobile-search-wrapper" style="padding: 10px; width: 100%; box-sizing: border-box;">
+  <div class="search-box" style="position: relative; width: 100%;">
     <input 
       type="text"
       id="searchInput"
       placeholder="Search Lucky No / Winner / Company"
+      style="width: 100%; box-sizing: border-box;"
     />
-    <button class="clear-btn" id="clearBtn">✕</button>
+    <button class="clear-btn" id="clearBtn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">✕</button>
   </div>
 </div>
 `;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.body.insertAdjacentHTML("afterbegin", searchHTML);
+  // Mencari elemen live update. Sila pastikan elemen "LIVE UPDATING" anda mempunyai class atau ID ini.
+  // Jika menggunakan element center/div, anda boleh tambah class="live-update-badge" pada HTML tersebut.
+  const liveUpdateEl = document.querySelector(".live-update-badge") || document.querySelector(".live-updating-badge");
+
+  if (liveUpdateEl) {
+    // Membawa search bar turun ke bawah elemen live update
+    liveUpdateEl.insertAdjacentHTML("afterend", searchHTML);
+  } else {
+    // Jika tidak dijumpai, ia akan kekal di atas sebagai pelindung ralat
+    document.body.insertAdjacentHTML("afterbegin", searchHTML);
+  }
 
   const input = document.getElementById("searchInput");
   const clearBtn = document.getElementById("clearBtn");
@@ -53,7 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
    SEARCH FUNCTION
 ========================= */
 
-/*function performSearch() {
+// Komen telah dibuka dan dibetulkan supaya fungsi carian kembali aktif
+function performSearch() {
 
   const input = document.getElementById("searchInput");
   if (!input) return;
@@ -108,7 +121,7 @@ function escapeHTML(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/'/g, "&#39;"); // Dibaiki entiti karakter escape untuk keselamatan tanda '
 }
 
 /* =========================
@@ -138,8 +151,14 @@ async function loadData() {
 
     currentPage = Math.min(currentPage, Math.ceil(allData.length / ROWS_PER_PAGE) || 1);
 
-    renderPage();
-    renderPagination();
+    // Memastikan jika user sedang menaip carian, data tidak terpadam secara mengejut apabila live update berlaku
+    const input = document.getElementById("searchInput");
+    if (input && input.value.trim() !== "") {
+      performSearch();
+    } else {
+      renderPage();
+      renderPagination();
+    }
 
   } catch (err) {
     console.error("FETCH ERROR:", err);
@@ -192,6 +211,11 @@ function renderPagination() {
 
   let startPage = Math.max(currentPage - 1, 1);
   let endPage = Math.min(startPage + 2, totalPages);
+
+  // Menyelaraskan butang navigasi sekiranya berada di halaman-halaman akhir
+  if (endPage - startPage < 2 && startPage > 1) {
+    startPage = Math.max(endPage - 2, 1);
+  }
 
   for (let i = startPage; i <= endPage; i++) {
     html += `<button class="${i === currentPage ? "active" : ""}" onclick="goToPage(${i})">${i}</button>`;
@@ -246,6 +270,9 @@ document.addEventListener("fullscreenchange", () => {
 /* =========================
    START
 ========================= */
+
+// Mengaktifkan auto-refresh data setiap 5 saat untuk menyokong ciri "LIVE UPDATING"
+setInterval(loadData, 5000);
 
 loadData();
 
