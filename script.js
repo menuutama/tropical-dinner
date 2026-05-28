@@ -1,6 +1,4 @@
-const API_URL =
-"https://google.com";
-
+const API_URL = "https://google.com";
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
@@ -114,7 +112,7 @@ function escapeHTML(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/'/g, "'");
 }
 
 /* =========================
@@ -269,6 +267,36 @@ function openProjectorMode() {
 function handleFullscreenChange() {
   const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
   document.body.classList.toggle("fullscreen-active", isFullscreen);
+
+  let fsHeader = document.getElementById("fullscreenHeader");
+  let fsFooter = document.getElementById("fullscreenFooter");
+  
+  if (isFullscreen) {
+    // 1. Suntikan Banner Tajuk Atas secara automatik
+    if (!fsHeader) {
+      fsHeader = document.createElement("div");
+      fsHeader.id = "fullscreenHeader";
+      fsHeader.innerHTML = `
+        <div class="fs-sub-title">TROPICAL DINNER 2026</div>
+        <div class="fs-main-title">LIVE LUCKY DRAW WINNERS</div>
+      `;
+      document.body.insertBefore(fsHeader, document.body.firstChild);
+    }
+
+    // 2. Suntikan Banner Nota Kaki Bawah secara automatik
+    if (!fsFooter) {
+      fsFooter = document.createElement("div");
+      fsFooter.id = "fullscreenFooter";
+      fsFooter.innerHTML = `
+        <p>Kindly collect your lucky draw prize at the registration counter before leaving the event.</p>
+      `;
+      document.body.appendChild(fsFooter);
+    }
+  } else {
+    // Padam elemen apabila mod skrin penuh ditutup
+    if (fsHeader) fsHeader.remove();
+    if (fsFooter) fsFooter.remove();
+  }
 }
 
 document.addEventListener("fullscreenchange", handleFullscreenChange);
