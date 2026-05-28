@@ -445,10 +445,48 @@ body.projector-view table td:last-child {
 }
 
 /* Selaraskan jadual pemenang agar kelihatan besar dan jelas di projektor */
+/* ==========================================================================
+   CSS PROJEKTOR (TAMPAL DI DALAM TAG <style> FAIL UTAMA ANDA)
+   ========================================================================== */
+body.projector-view {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* Hapuskan terus scroll bar browser */
+  background-color: #0c1020 !important;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Kontena Induk di Projektor - Mengunci Saiz dan Paksa Scale-to-Fit */
+body.projector-view .projector-container {
+  width: 1536px !important;
+  height: 768px !important;
+  max-width: 1536px !important;
+  max-height: 768px !important;
+  box-sizing: border-box !important;
+  padding: 40px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transform-origin: top left !important;
+}
+
+/* Sembunyikan ruangan input, panel butang admin, dan kolum aksi (Edit/Delete) */
+body.projector-view #projectorBtn, 
+body.projector-view .lucky-input-container, 
+body.projector-view .admin-controls,
+body.projector-view #playBtn,   
+body.projector-view #pauseBtn,
+body.projector-view table th:last-child, 
+body.projector-view table td:last-child { 
+  display: none !important; 
+}
+
+/* Laraskan struktur Jadual di skrin besar Projektor */
 body.projector-view table {
   width: 100% !important;
   border-collapse: collapse !important;
-  font-size: 26px !important; 
+  font-size: 26px !important; /* Besarkan font tulisan jadual */
 }
 
 body.projector-view th, 
@@ -457,7 +495,7 @@ body.projector-view td {
   text-align: center !important;
 }
 
-/* Butang pagination diletakkan kemas di bahagian bawah tengah skrin */
+/* Kedudukan Pagination rapi di bawah tengah skrin projektor */
 body.projector-view #pagination {
   margin-top: auto !important;
   padding-top: 20px !important;
@@ -469,7 +507,6 @@ body.projector-view #pagination button {
   font-size: 22px !important;
   padding: 12px 26px !important;
 }
-
 
 </style>
 </head>
@@ -737,103 +774,80 @@ async function openProjectorMode() {
             overflow: hidden !important; /* Kunci terus dari keluar scrollbar */
             margin: 0 !important;
             padding: 20px !important;
-            box-sizing: border-box !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: space-between !important; /* Susun ruang atas bawah sekata */
-            background-color: #0c1020 !important; /* Latar belakang gelap sistem */
+/* STRATEGI BARU: HANTAR HTML JADUAL KE SKRIN PROJEKTOR */
+function openProjectorMode() {
+  // Ambil data resolusi skrin semasa (untuk mengira kedudukan skrin kedua)
+  const screenWidth = window.screen.width;
+  
+  // Membuka tetingkap kosong tepat di koordinat Skrin Kedua (Projektor)
+  // Menghilangkan segala search bar dan bingkai browser sedia ada
+  const windowFeatures = `
+    left=${screenWidth},
+    top=0,
+    width=1536,
+    height=768,
+    menubar=no,toolbar=no,location=no,status=no
+  `.replace(/\s+/g, '');
+
+  const projectorWindow = window.open("", "_blank", windowFeatures);
+
+  if (projectorWindow) {
+    // Ambil kod CSS sedia ada daripada skrin utama
+    const originalStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map(style => style.outerHTML)
+      .join('\n');
+
+    // Ambil struktur HTML jadual dan pagination dari skrin utama
+    // (Pastikan ID kontena jadual/pagination anda selari dengan kod di bawah)
+    const tableHTML = document.querySelector("table") ? document.querySelector("table").outerHTML : "";
+    const paginationHTML = document.getElementById("pagination") ? document.getElementById("pagination").outerHTML : "";
+
+    // Suntik kandungan lengkap terus ke dalam dokumen skrin projektor
+    projectorWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Live Lucky Draw - Projector Screen</title>
+        ${originalStyles}
+      </head>
+      <body class="projector-view">
+        <!-- Kotak Kecemasan untuk Aktifkan Skrin Penuh (Meniru F11) -->
+        <div id="fsAlert" onclick="this.style.display='none'; document.documentElement.requestFullscreen();" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12,16,32,0.95); color:#00bfff; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:99999; cursor:pointer; font-family:sans-serif; text-align:center; padding:20px; box-sizing:border-box;">
+          <span style="font-size:80px; margin-bottom:20px;">🖥️</span>
+          <h2 style="margin:0 0 10px 0; font-size:32px;">Klik Di Sini Untuk Mod Projektor</h2>
+          <p style="margin:0; font-size:18px; color:#a0a5b5;">Sistem akan automatik masuk Full Screen (Kesan F11)</p>
+        </div>
+
+        <!-- Kandungan Utama Jadual & Pagination -->
+        <div class="projector-container">
+          ${tableHTML}
+          ${paginationHTML}
+        </div>
+
+        <script>
+          // Logik Responsive Auto-Rescale (Kunci Nisbah 1536x768)
+          function doScale() {
+            const container = document.querySelector('.projector-container');
+            if(container) {
+              const widthScale = window.innerWidth / 1536;
+              const heightScale = window.innerHeight / 768;
+              container.style.transform = "scale(" + widthScale + "," + heightScale + ")";
+            }
           }
+          window.addEventListener('resize', doScale);
+          window.addEventListener('load', doScale);
+          setTimeout(doScale, 100);
+        <\/script>
+      </body>
+      </html>
+    `);
 
-          /* Padam elemen input atau butang admin yang tak perlu di projektor */
-          #projectorBtn, .lucky-input-container, h1 { 
-            display: none !important; 
-          }
-
-          /* Besarkan jadual untuk isi ruang skrin */
-          table {
-            width: 100% !important;
-            height: auto !important;
-            max-height: 580px !important; /* Hadkan tinggi jadual */
-/* FUNCTION UTK FULLSCREEN PENUH & AUTO-RESCALE DI SKRIN 2 */
-/* FUNCTION UTK FULLSCREEN PENUH, SALIN DATA & AUTO-RESCALE DI SKRIN 2 */
-async function openProjectorMode() {
-  if (!('getScreenDetails' in window)) {
-    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge terkini.");
-    return;
-  }
-
-  try {
-    const screenDetails = await window.getScreenDetails();
-    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
-
-    if (!secondaryScreen) {
-      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel disambung dan tetapan Windows diletakkan pada mod 'Extend'.");
-/* FUNCTION UTK FULLSCREEN TANPA HILANG DATA & KESAN AUTO F11 */
-async function openProjectorMode() {
-  // 1. Semak sokongan Window Management API pada browser
-  if (!('getScreenDetails' in window)) {
-    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge terkini.");
-    return;
-  }
-
-  try {
-    const screenDetails = await window.getScreenDetails();
-    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
-
-    if (!secondaryScreen) {
-      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel HDMI disambung dengan kemas dan tetapan paparan Windows diset pada mod 'Extend'.");
-      return;
-    }
-
-    // 2. Gunakan dokumen utama yang sudah sedia ada datanya
-    const docElem = document.documentElement;
-
-    // 3. SELESAI FUNGSI: Paksa masuk mod Fullscreen SEBENAR pada Skrin Kedua (Kesan 100% sama seperti F11)
-    if (docElem.requestFullscreen) {
-      docElem.requestFullscreen({ screen: secondaryScreen })
-        .then(() => {
-          console.log("Berjaya masuk mod skrin penuh pada projektor.");
-          
-          // 4. Masukkan kelas CSS pada skrin projektor untuk mengaktifkan scale-to-fit
-          document.documentElement.classList.add('projector-view');
-          document.body.classList.add('projector-view');
-
-          // Jalankan fungsi pengiraan skala automatik mengikut saiz 1536x768
-          applyProjectorScale();
-        })
-        .catch(err => {
-          console.error("Gagal melancarkan paparan skrin penuh:", err);
-          alert("Gagal melancarkan skrin penuh. Sila pastikan anda memberikan kebenaran paparan skrin apabila diminta.");
-        });
-    }
-
-  } catch (err) {
-    console.error("Ralat akses pengurusan skrin:", err);
-    alert("Sila benarkan izin (Permission) akses maklumat skrin apabila diminta oleh pelayar web anda.");
+    projectorWindow.document.close();
+  } else {
+    alert("Pop-up disekat! Sila lihat bahagian atas bar carian browser anda dan klik 'Sentiasa benarkan pop-up (Always allow pop-ups)' untuk sistem ini.");
   }
 }
 
-/* Fungsi Sokongan untuk Mengira Skala Paparan Responsif (1536x768) */
-function applyProjectorScale() {
-  if (document.body.classList.contains('projector-view')) {
-    const widthScale = window.innerWidth / 1536;
-    const heightScale = window.innerHeight / 768;
-    document.body.style.transform = `scale(${widthScale}, ${heightScale})`;
-  }
-}
-
-// Sentiasa laraskan semula jika saiz tetingkap berubah
-window.addEventListener('resize', applyProjectorScale);
-
-/* CARA KELUAR DARI MOD PROJEKTOR (Tekan butang ESC pada keyboard) */
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) {
-    // Jika pengguna keluar dari fullscreen, buang gaya kelas projektor supaya skrin laptop kembali asal
-    document.documentElement.classList.remove('projector-view');
-    document.body.classList.remove('projector-view');
-    document.body.style.transform = "none";
-  }
-});
 
 
 </script>
