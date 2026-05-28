@@ -122,6 +122,148 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
+/* =========================
+   SEARCH BAR (MOBILE & TABLET ONLY)
+========================= */
+
+const searchHTML = `
+  <div class="mobile-search-wrapper">
+    
+    <input 
+      type="text"
+      id="searchInput"
+      placeholder="Search Lucky No / Winner / Company"
+    />
+
+    <button id="searchBtn">
+      Search
+    </button>
+
+  </div>
+`;
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  const target =
+    document.querySelector(".table-wrapper");
+
+  if(target){
+
+    target.insertAdjacentHTML(
+      "beforebegin",
+      searchHTML
+    );
+
+  }
+
+  const input =
+    document.getElementById("searchInput");
+
+  const btn =
+    document.getElementById("searchBtn");
+
+  if(input && btn){
+
+    btn.addEventListener(
+      "click",
+      performSearch
+    );
+
+    input.addEventListener(
+      "keypress",
+      (e) => {
+
+        if(e.key === "Enter"){
+          performSearch();
+        }
+
+      }
+    );
+
+  }
+
+});
+
+function performSearch(){
+
+  const keyword =
+    document
+      .getElementById("searchInput")
+      .value
+      .trim()
+      .toLowerCase();
+
+  if(keyword === ""){
+
+    loadData();
+    return;
+
+  }
+
+  const filtered =
+    allData.filter(item => {
+
+      const luckyNo =
+        (item.luckyNo || "")
+          .toString()
+          .toLowerCase();
+
+      const winner =
+        (item.winner || "")
+          .toString()
+          .toLowerCase();
+
+      const company =
+        (item.company || "")
+          .toString()
+          .toLowerCase();
+
+      return (
+        luckyNo.includes(keyword) ||
+        winner.includes(keyword) ||
+        company.includes(keyword)
+      );
+
+    });
+
+  const tbody =
+    document.getElementById("winnerTable");
+
+  tbody.innerHTML = filtered.map(item => `
+
+    <tr>
+
+      <td>
+        <div class="place-badge">
+          ${escapeHTML(item.place)}
+        </div>
+      </td>
+
+      <td>
+        ${escapeHTML(item.luckyNo)}
+      </td>
+
+      <td>
+        ${escapeHTML(item.winner)}
+      </td>
+
+      <td>
+        ${escapeHTML(item.company)}
+      </td>
+
+      <td>
+        ${escapeHTML(item.prize)}
+      </td>
+
+    </tr>
+
+  `).join("");
+
+  document.getElementById(
+    "pagination"
+  ).innerHTML = "";
+
+}
 
 /* =========================
    SAFE TEXT
