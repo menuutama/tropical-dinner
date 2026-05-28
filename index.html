@@ -410,28 +410,54 @@ body.projector-view {
 }
 
 /* Sembunyikan bahagian input, butang admin dan kolum aksi pada projektor */
+/* ==========================================================================
+   GAYA KHAS PROJEKTOR (FIT SAIZ & SEMBUNYI BUTANG ADMIN)
+   ========================================================================== */
+html.projector-view, 
+body.projector-view {
+  width: 1536px !important;
+  height: 768px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* Buang bar tatal (scroll bar) */
+  background-color: #0c1020 !important;
+  position: relative !important;
+}
+
+body.projector-view {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 40px !important;
+  box-sizing: border-box !important;
+  transform-origin: top left !important;
+}
+
+/* Menyembunyikan butang kawalan, input dan kolum aksi (Edit/Delete) */
 body.projector-view #projectorBtn, 
 body.projector-view .lucky-input-container, 
 body.projector-view .admin-controls,
+body.projector-view #playBtn,   
+body.projector-view #pauseBtn,
 body.projector-view table th:last-child, 
 body.projector-view table td:last-child { 
   display: none !important; 
 }
 
-/* Rescale saiz jadual untuk skrin besar projektor */
+/* Selaraskan jadual pemenang agar kelihatan besar dan jelas di projektor */
 body.projector-view table {
   width: 100% !important;
   border-collapse: collapse !important;
-  font-size: 24px !important; 
+  font-size: 26px !important; 
 }
 
 body.projector-view th, 
 body.projector-view td {
-  padding: 15px 10px !important;
+  padding: 16px 12px !important;
   text-align: center !important;
 }
 
-/* Selaraskan kedudukan butang halaman rapat ke bawah skrin projektor */
+/* Butang pagination diletakkan kemas di bahagian bawah tengah skrin */
 body.projector-view #pagination {
   margin-top: auto !important;
   padding-top: 20px !important;
@@ -440,20 +466,10 @@ body.projector-view #pagination {
 }
 
 body.projector-view #pagination button {
-  font-size: 20px !important;
-  padding: 12px 24px !important;
+  font-size: 22px !important;
+  padding: 12px 26px !important;
 }
 
-  /* Sembunyikan bahagian input, butang admin dan kolum aksi pada projektor */
-body.projector-view #projectorBtn, 
-body.projector-view .lucky-input-container, 
-body.projector-view .admin-controls,
-body.projector-view #playBtn,   /* Jika ada butang Play/Pause bawah jadual */
-body.projector-view #pauseBtn, 
-body.projector-view table th:last-child, 
-body.projector-view table td:last-child { 
-  display: none !important; 
-}
 
 </style>
 </head>
