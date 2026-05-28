@@ -9,7 +9,6 @@ let lastDataFingerprint = "";
 
 /* =========================
    DYNAMIC CSS FOR SLIDE MODE
-   (Dioptimumkan untuk mengelakkan column terpotong di TV)
 ========================= */
 const style = document.createElement('style');
 style.innerHTML = `
@@ -33,20 +32,17 @@ style.innerHTML = `
     display: none !important;
   }
 
-  /* Besarkan tulisan sub-title (TROPICAL DINNER 2026) */
   body.fullscreen-active .sub-title {
-    font-size: 32px !important; /* Diperbesarkan agar seimbang */
+    font-size: 32px !important; 
     letter-spacing: 4px !important;
     margin-bottom: 5px !important;
   }
 
-  /* Tulisan tajuk utama dikekalkan saiz asal */
   body.fullscreen-active .title {
     font-size: 58px !important; 
     margin-top: 5px !important;
   }
 
-  /* Kecilkan lebar tabel keseluruhan (88vw) supaya tidak terpotong di tepi TV */
   body.fullscreen-active .table-wrapper,
   body.fullscreen-active table {
     width: 88vw !important; 
@@ -55,24 +51,23 @@ style.innerHTML = `
     max-height: 72vh !important;
     margin: 0 auto !important;
     border-collapse: collapse !important;
-    table-layout: fixed !important; /* Mengunci saiz column */
+    table-layout: fixed !important; 
   }
 
-  /* Agihan jarak column yang rapat dan sekata */
-  body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 12% !important; } /* Place */
-  body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 15% !important; } /* Lucky No */
-  body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 38% !important; } /* Winner */
-  body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } /* Company */
-  body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 20% !important; } /* Prize */
+  body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 12% !important; } 
+  body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 15% !important; } 
+  body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 38% !important; } 
+  body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } 
+  body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 20% !important; } 
 
   body.fullscreen-active th,
   body.fullscreen-active td {
-    padding: 8px 6px !important; /* Jarak padding dirapatkan */
+    padding: 8px 6px !important; 
     font-size: 1.9vh !important;  
     line-height: 1.2 !important;
-    white-space: nowrap !important; /* Elak teks turun ke bawah */
+    white-space: nowrap !important; 
     overflow: hidden !important;
-    text-overflow: ellipsis !important; /* Letak ... jika teks syarikat/nama terlampau panjang */
+    text-overflow: ellipsis !important; 
   }
 
   body.fullscreen-active .place-badge {
@@ -107,6 +102,7 @@ async function loadData(){
 
     const filteredData = rawData.filter(item => item && item.luckyNo && item.luckyNo.toString().trim() !== "");
 
+    // Membina sistem cap jari data (fingerprint) baharu yang betul
     let newFingerprint = "len:" + filteredData.length;
     if (filteredData.length > 0) {
       newFingerprint += "_" + filteredData[0].luckyNo + "_" + filteredData[filteredData.length - 1].luckyNo;
@@ -118,9 +114,10 @@ async function loadData(){
 
     lastDataFingerprint = newFingerprint;
 
+    // PEMBETULAN DI SINI: Pembetulan pada bahagian sintaks ?. (Optional Chaining)
     filteredData.sort((a, b) => {
-      const numA = parseInt((a.place || "").match(/\d+/)?[0] || 999);
-      const numB = parseInt((b.place || "").match(/\d+/)?[0] || 999);
+      const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999);
+      const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999);
       return numA - numB;
     });
 
@@ -301,7 +298,7 @@ function pauseSlide(){
 }
 
 /* =========================
-   FULLSCREEN SKRIN UTAMA (SKRIN 1)
+   FULLSCREEN MODE
 ========================= */
 
 function openProjectorMode() {
