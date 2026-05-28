@@ -313,6 +313,137 @@ tbody td{
   background:linear-gradient(135deg,#008cff,#00d4ff);
   box-shadow:0 0 15px rgba(0,180,255,0.5);
 }
+
+  /* ==========================================================================
+   1. GAYA ASAS SISTEM (UNTUK MONITOR UTAMA / SKRIN 1)
+   ========================================================================== */
+body {
+  background-color: #0c1020;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Gaya Butang Pencetus Skrin Projektor */
+#projectorBtn {
+  background-color: #00bfff;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 15px;
+  transition: background 0.2s ease;
+}
+
+#projectorBtn:hover {
+  background-color: #009acd;
+}
+
+/* Kontena Pagination Asal */
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+}
+
+/* Gaya Butang Pagination Asal */
+#pagination button {
+  background-color: #151a30;
+  color: #a0a5b5;
+  border: 1px solid #202740;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#pagination button:hover:not(:disabled) {
+  background-color: #1c2340;
+  color: #ffffff;
+}
+
+#pagination button.active {
+  background-color: #00bfff;
+  color: #ffffff;
+  border: 1px solid #00bfff;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
+}
+
+#pagination button:disabled {
+  background-color: #090d1a;
+  color: #3e4459;
+  border: 1px solid #12172a;
+  cursor: not-allowed;
+}
+
+
+/* ==========================================================================
+   2. GAYA KHAS PROJEKTOR (UNTUK SKRIN KEDUA - FIT & AUTO RESCALE)
+   ========================================================================== */
+/* Kelas ini akan disuntik secara automatik oleh JavaScript pada Skrin Kedua */
+html.projector-view, 
+body.projector-view {
+  width: 1536px !important;
+  height: 768px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* Buang terus scroll bar browser */
+  background-color: #0c1020 !important;
+  position: relative !important;
+}
+
+body.projector-view {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 40px !important;
+  box-sizing: border-box !important;
+  transform-origin: top left !important;
+}
+
+/* Sembunyikan bahagian input, butang admin dan kolum aksi pada projektor */
+body.projector-view #projectorBtn, 
+body.projector-view .lucky-input-container, 
+body.projector-view .admin-controls,
+body.projector-view table th:last-child, 
+body.projector-view table td:last-child { 
+  display: none !important; 
+}
+
+/* Rescale saiz jadual untuk skrin besar projektor */
+body.projector-view table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 24px !important; 
+}
+
+body.projector-view th, 
+body.projector-view td {
+  padding: 15px 10px !important;
+  text-align: center !important;
+}
+
+/* Selaraskan kedudukan butang halaman rapat ke bawah skrin projektor */
+body.projector-view #pagination {
+  margin-top: auto !important;
+  padding-top: 20px !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+body.projector-view #pagination button {
+  font-size: 20px !important;
+  padding: 12px 24px !important;
+}
+
 </style>
 </head>
 
@@ -354,8 +485,7 @@ tbody td{
           <div class="control-buttons">
             <button onclick="playSlide()">▶ Play</button>
             <button onclick="pauseSlide()">⏸ Pause</button>
-            <button id="projectorBtn" onclick="openProjectorMode()" style="background-color: #00bfff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px;">
-              🖥️ Buka Skrin Projektor</button>
+            <button id="projectorBtn" onclick="openProjectorMode()">🖥️ Buka Skrin Projektor</button>
           </div>
         </div>
       </div>
@@ -597,55 +727,67 @@ async function openProjectorMode() {
             width: 100% !important;
             height: auto !important;
             max-height: 580px !important; /* Hadkan tinggi jadual */
-            border-collapse: collapse !important;
-            font-size: 22px !important; /* Besarkan font supaya senang nampak di projektor */
-          }
+/* FUNCTION UTK FULLSCREEN PENUH & AUTO-RESCALE DI SKRIN 2 */
+async function openProjectorMode() {
+  if (!('getScreenDetails' in window)) {
+    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge terkini.");
+    return;
+  }
 
-          th, td {
-            padding: 12px 8px !important;
-            text-align: center !important;
-          }
+  try {
+    const screenDetails = await window.getScreenDetails();
+    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
 
-          /* Sembunyikan kolum butang aksi (Edit/Delete) di projektor */
-          table th:last-child, 
-          table td:last-child {
-            display: none !important;
-          }
+    if (!secondaryScreen) {
+      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel disambung dan tetapan Windows diletakkan pada mod 'Extend'.");
+      return;
+    }
 
-          /* Letakkan butang halaman (pagination) rapat di bahagian paling bawah */
-          #pagination {
-            margin-top: auto !important;
-            padding: 10px !important;
-            display: flex !important;
-            justify-content: center !important;
-          }
+    // Mengira saiz posisi koordinat asal tingkap pop-up skrin kedua
+    const windowFeatures = `
+      left=${secondaryScreen.availLeft},
+      top=${secondaryScreen.availTop},
+      width=${secondaryScreen.availWidth},
+      height=${secondaryScreen.availHeight},
+      menubar=no,toolbar=no,location=no,status=no
+    `.replace(/\s+/g, '');
 
-          .pagination-btn {
-            font-size: 18px !important; /* Besarkan butang halaman di skrin projektor */
-            padding: 10px 20px !important;
-          }
-        `;
-        projectorWindow.document.head.appendChild(style);
+    const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
+
+    if (projectorWindow) {
+      projectorWindow.addEventListener('load', () => {
+        const docElem = projectorWindow.document.documentElement;
+        const bodyElem = projectorWindow.document.body;
+        
+        // 1. AKTIFKAN MOD FULLSCREEN SEBENAR (Menghilangkan search bar & frame browser)
+        if (docElem.requestFullscreen) {
+          docElem.requestFullscreen({ screen: secondaryScreen }).catch(err => {
+            console.error("Gagal melancarkan paparan fullscreen penuh:", err);
+          });
+        }
+
+        // 2. SUNTIK KELAS CSS UNTUK PROJEKTOR (Mengaktifkan gaya pengasingan CSS tadi)
+        docElem.classList.add('projector-view');
+        bodyElem.classList.add('projector-view');
+
+        // 3. LOGIK RESPONSIVE MATRIKS (Melakukan operasi scale-to-fit mengikut resolusi skrin)
+        const applyScale = () => {
+          const widthScale = projectorWindow.innerWidth / 1536;
+          const heightScale = projectorWindow.innerHeight / 768;
+          bodyElem.style.transform = `scale(${widthScale}, ${heightScale})`;
+        };
+
+        // Jalankan skala kali pertama dan set tetapan responsive apabila tetingkap berubah saiz
+        applyScale();
+        projectorWindow.addEventListener('resize', applyScale);
       });
     }
 
   } catch (err) {
-    console.error("Ralat akses skrin:", err);
-    alert("Sila benarkan izin akses skrin.");
+    console.error("Ralat akses pengurusan skrin:", err);
+    alert("Sila benarkan izin (Permission) akses maklumat skrin apabila diminta oleh browser.");
   }
-}
-
-// Fungsi sokongan jika gagal kesan skrin kedua (Fullscreen biasa)
-function triggerLocalFullscreen() {
-  const elem = document.documentElement;
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
   }
-}
 
 </script>
 
