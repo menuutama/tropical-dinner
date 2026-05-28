@@ -236,37 +236,177 @@ function pauseSlide(){
 }
 
 /* =========================
-   PROJECTOR MODE
+   PROJECTOR FULLSCREEN MODE
 ========================= */
 
-function openProjectorMode(){
+async function openProjectorMode(){
 
-  const projectorWindow = window.open(
-    "",
-    "_blank",
-    "width=1536,height=768"
-  );
+  /* Browser support check */
+  if(!("getScreenDetails" in window)){
 
-  if(!projectorWindow){
-    alert("Please allow pop-up for projector mode.");
+    alert(
+      "Browser tak support automatic projector fullscreen.\n\n" +
+      "Sila guna Google Chrome / Microsoft Edge terbaru."
+    );
+
     return;
+
   }
 
-  const htmlContent = document.documentElement.outerHTML;
+  try{
 
-  projectorWindow.document.open();
-  projectorWindow.document.write(htmlContent);
-  projectorWindow.document.close();
+    /* Detect screens */
+    const screenDetails = await window.getScreenDetails();
 
-  projectorWindow.onload = () => {
+    /* Cari second screen */
+    const secondScreen = screenDetails.screens.find(
+      screen => !screen.isPrimary
+    );
 
-    projectorWindow.document.body.style.zoom = "100%";
+    if(!secondScreen){
 
-    if(projectorWindow.document.documentElement.requestFullscreen){
-      projectorWindow.document.documentElement.requestFullscreen();
+      alert("Second screen / projector tak dikesan.");
+      return;
+
     }
 
-  };
+    /* Window position dekat second screen */
+    const features = `
+      left=${secondScreen.availLeft},
+      top=${secondScreen.availTop},
+      width=${secondScreen.availWidth},
+      height=${secondScreen.availHeight},
+      menubar=no,
+      toolbar=no,
+      location=no,
+      status=no,
+      resizable=yes
+    `.replace(/\s+/g, "");
+
+    /* Open new window */
+    const projectorWindow = window.open(
+      "",
+      "_blank",
+      features
+    );
+
+    if(!projectorWindow){
+
+      alert(
+        "Popup blocked.\n\n" +
+        "Please allow popup untuk website ni."
+      );
+
+      return;
+
+    }
+
+    /* Copy current HTML */
+    projectorWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        ${document.head.innerHTML}
+
+        <style>
+
+          html,
+          body{
+            width:100%;
+            height:100%;
+            overflow:hidden !important;
+            margin:0 !important;
+            padding:0 !important;
+            background:#000814 !important;
+          }
+
+          #projectorBtn,
+          .control-buttons{
+            display:none !important;
+          }
+
+          .container{
+            max-width:100% !important;
+            padding:25px !important;
+          }
+
+          .title{
+            font-size:70px !important;
+          }
+
+          .sub-title{
+            font-size:28px !important;
+          }
+
+          table{
+            width:100% !important;
+          }
+
+          thead th{
+            font-size:24px !important;
+            padding:20px !important;
+          }
+
+          tbody td{
+            font-size:22px !important;
+            padding:18px !important;
+          }
+
+          .place-badge{
+            width:60px !important;
+            height:60px !important;
+            font-size:20px !important;
+          }
+
+          .notice{
+            font-size:24px !important;
+          }
+
+        </style>
+
+      </head>
+
+      <body>
+
+        ${document.body.innerHTML}
+
+      </body>
+      </html>
+    `);
+
+    projectorWindow.document.close();
+
+    /* Tunggu window fully loaded */
+    projectorWindow.onload = async () => {
+
+      try{
+
+        /* TRUE FULLSCREEN */
+        if(projectorWindow.document.documentElement.requestFullscreen){
+
+          await projectorWindow.document.documentElement.requestFullscreen({
+            screen: secondScreen
+          });
+
+        }
+
+      }
+      catch(err){
+
+        console.log("Fullscreen blocked:", err);
+
+      }
+
+    };
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert("Failed buka projector mode.");
+
+  }
 
 }
 
