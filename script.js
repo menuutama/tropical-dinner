@@ -126,7 +126,7 @@ document.head.appendChild(style);
    SEARCH BAR (MOBILE & TABLET ONLY)
 ========================= */
 
-const searchHTML = `
+const searchHTML = document.body.insertAdjacentHTML("afterbegin", searchHTML); `
   <div class="mobile-search-wrapper">
 
     <div class="search-box">
@@ -159,8 +159,6 @@ if(input){
       performSearch();
     }
   });
-
-}
 
 // CLEAR BUTTON
 if(clearBtn && input){
