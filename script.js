@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
+const API_URL = "https://google.com";
 
 const ROWS_PER_PAGE = 10;
 
@@ -12,7 +12,7 @@ let lastDataHash = "";
 ========================= */
 const style = document.createElement('style');
 style.innerHTML = `
-  /* HANYA AKTIF DI LAYAR BESAR (TV / MONITOR / DESKTOP) */
+  /* HANYA AKTIF PADA LAYAR BESAR (TV / MONITOR / DESKTOP) */
   @media (min-width: 1025px) {
     body.fullscreen-active {
       margin: 0 !important;
@@ -56,7 +56,7 @@ style.innerHTML = `
       margin-top: 5px !important;
     }
 
-    /* Memperbaiki posisi pembungkus tabel agar benar-benar berada di tengah (Center) TV */
+    /* Membetulkan kedudukan jadual agar seimbang di tengah (Center) TV */
     body.fullscreen-active .table-wrapper {
       width: 86vw !important; 
       max-width: 86vw !important;
@@ -72,7 +72,7 @@ style.innerHTML = `
       table-layout: fixed !important; 
     }
 
-    /* Pembagian kolom yang adil agar sisi kanan tidak tumpah/terpotong */
+    /* Merapatkan jarak (gap) kolum agar seimbang dan tidak terpotong di kanan */
     body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 10% !important; } 
     body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 12% !important; } 
     body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 35% !important; } 
@@ -103,21 +103,21 @@ style.innerHTML = `
     }
   }
 
-  /* UTK HANDPHONE & TABLET: Paksa teks melipat ke bawah (Wrapping) agar tidak terlalu kecil */
+  /* UNTUK TELEFON BIMBIT & TABLET (Teks melipat ke bawah / Wrapping) */
   @media (max-width: 1024px) {
     table {
-      table-layout: auto !important; /* Kembalikan ke mode otomatis agar tidak kaku */
+      table-layout: auto !important; 
     }
     tbody td, thead th {
-      white-space: normal !important;  /* Izinkan teks melipat ke bawah */
-      word-wrap: break-word !important; /* Potong kata jika terlalu panjang */
+      white-space: normal !important;  
+      word-wrap: break-word !important; 
       overflow: visible !important;
       text-overflow: clip !important;
-      font-size: 12px !important; /* Ukuran standar yang nyaman dibaca di HP */
+      font-size: 12px !important; 
       padding: 8px 5px !important;
     }
     body.fullscreen-active {
-      overflow: auto !important; /* Izinkan scroll di HP jika data memanjang bawah */
+      overflow: auto !important; 
     }
   }
 `;
@@ -145,12 +145,13 @@ async function loadData(){
     })
     .sort((a,b) => {
 
+      // PEMBETULAN DI SINI: Memperbaiki sintaksis match yang menyebabkan ralat sistem
       const numA = parseInt(
-        (a.place || "").match(/\d+/)?[0] || 999
+        (a.place || "").match(/\d+/)?.[0] || 999
       );
 
       const numB = parseInt(
-        (b.place || "").match(/\d+/)?[0] || 999
+        (b.place || "").match(/\d+/)?.[0] || 999
       );
 
       return numA - numB;
@@ -191,6 +192,8 @@ function renderPage(){
 
   const tbody = document.getElementById("winnerTable");
 
+  if(!tbody) return;
+
   const start = (currentPage - 1) * ROWS_PER_PAGE;
 
   const pageData = allData.slice(
@@ -229,6 +232,8 @@ function renderPage(){
 function renderPagination(){
 
   const pagination = document.getElementById("pagination");
+
+  if(!pagination) return;
 
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
