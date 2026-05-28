@@ -354,6 +354,8 @@ tbody td{
           <div class="control-buttons">
             <button onclick="playSlide()">▶ Play</button>
             <button onclick="pauseSlide()">⏸ Pause</button>
+            <button id="projectorBtn" onclick="openProjectorMode()" style="background-color: #00bfff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 15px;">
+              🖥️ Buka Skrin Projektor</button>
           </div>
         </div>
       </div>
@@ -527,6 +529,74 @@ loadData().then(() => {
 
 // Semak data baharu setiap 3 saat di latar belakang tanpa mengganggu grafik
 setInterval(loadData, 3000);
+
+  /* FUNCTION UTK FULLSCREEN DI SKRIN PROJEKTOR NO 2 */
+async function openProjectorMode() {
+  // 1. Semak jika browser menyokong pengurusan skrin
+  if ('getScreenDetails' in window || 'getScreens' in window) {
+    try {
+      // Minta izin dan dapatkan maklumat semua skrin yang bersambung
+      const screenDetails = await (window.getScreenDetails ? window.getScreenDetails() : window.getScreens());
+      
+      // Cari skrin kedua (bukan skrin utama / primary)
+      const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+
+      if (secondaryScreen) {
+        // Tentukan saiz dan posisi skrin kedua
+        const options = {
+          left: secondaryScreen.left,
+          top: secondaryScreen.top,
+          width: secondaryScreen.width,
+          height: secondaryScreen.height,
+          menubar: 'no',
+          toolbar: 'no',
+          location: 'no',
+          status: 'no'
+        };
+
+        // Tukar objek options menjadi string untuk window.open
+        const windowFeatures = Object.keys(options)
+          .map(key => `${key}=${options[key]}`)
+          .join(',');
+
+        // Buka tetingkap sistem ini di skrin kedua
+        const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
+
+        // Tunggu tetingkap dibuka, kemudian paksa masuk mod Fullscreen
+        if (projectorWindow) {
+          projectorWindow.addEventListener('load', () => {
+            if (projectorWindow.document.documentElement.requestFullscreen) {
+              projectorWindow.document.documentElement.requestFullscreen();
+            }
+          });
+        }
+      } else {
+        // Jika tiada skrin kedua dikesan, buat fullscreen di skrin sedia ada sahaja
+        alert("Skrin kedua (projektor) tidak dikesan. Membuka fullscreen di skrin ini.");
+        triggerLocalFullscreen();
+      }
+    } catch (err) {
+      console.error("Izin akses skrin ditolak atau ralat:", err);
+      triggerLocalFullscreen();
+    }
+  } else {
+    // Jika browser lama & tiada Window Management API
+    triggerLocalFullscreen();
+  }
+}
+
+// Fungsi sokongan jika gagal kesan skrin kedua (Fullscreen biasa)
+function triggerLocalFullscreen() {
+  const elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
 </script>
 
 </body>
