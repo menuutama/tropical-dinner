@@ -282,10 +282,10 @@ tbody td{
     gap:8px;
   }
 
-  .table-wrapper{
-    border-radius:18px;
-    overflow:auto;
-  }
+.table-wrapper{
+  overflow-x:hidden;
+  overflow-y:auto;
+}
 
   table{
     min-width:700px;
@@ -374,7 +374,8 @@ tbody td{
 
   .table-wrapper{
     border-radius:20px;
-    overflow:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
   }
 
   table{
