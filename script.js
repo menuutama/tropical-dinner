@@ -128,20 +128,9 @@ document.head.appendChild(style);
 
 const searchHTML = `
   <div class="mobile-search-wrapper">
-    
-    <input 
-      type="text"
-      id="searchInput"
-      placeholder="Search Lucky No / Winner / Company"
-    />
-
-    <button id="searchBtn">
-      Search
-    </button>
-
+    <input type="text" id="searchInput" placeholder="Search Lucky No / Winner / Company">
   </div>
 `;
-
 window.addEventListener("DOMContentLoaded", () => {
 
   const target =
