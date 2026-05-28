@@ -1,5 +1,6 @@
-// KEMASKINI: URL API baharu anda telah dimasukkan dengan selamat di sini
-const API_URL = "https://script.google.com/macros/s/AKfycbymH8u2HPYuTayguREV8qBlyO1a8zZJzy15QQgScxUpbmL5Y5zA4QwD8BsjSiHg86Di/exec";
+```js
+const API_URL =
+"https://script.google.com/macros/s/AKfycbymH8u2HPYuTayguREV8qBlyO1a8zZJzy15QQgScxUpbmL5Y5zA4QwD8BsjSiHg86Di/exec";
 
 const ROWS_PER_PAGE = 10;
 
@@ -9,120 +10,22 @@ let autoSlide = null;
 let lastDataHash = "";
 
 /* =========================
-   DYNAMIC CSS FOR SLIDE MODE
+   SAFE TEXT
 ========================= */
-const style = document.createElement('style');
-style.innerHTML = `
-  /* HANYA AKTIF PADA LAYAR BESAR (TV / MONITOR / DESKTOP) */
-  @media (min-width: 1025px) {
-    body.fullscreen-active {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      overflow: hidden !important; 
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: center !important; 
-      align-items: center !important;     
-      box-sizing: border-box !important;
-    }
 
-    body.fullscreen-active .container {
-      width: 100vw !important;
-      max-width: 100vw !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
+function escapeHTML(text){
 
-    body.fullscreen-active button,
-    body.fullscreen-active #pagination,
-    body.fullscreen-active .control-buttons,
-    body.fullscreen-active #projectorBtn {
-      display: none !important;
-    }
+  if(text == null) return "";
 
-    body.fullscreen-active .sub-title {
-      font-size: 32px !important; 
-      letter-spacing: 4px !important;
-      margin-bottom: 5px !important;
-    }
+  return text
+    .toString()
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
-    body.fullscreen-active .title {
-      font-size: 58px !important; 
-      margin-top: 5px !important;
-    }
-
-    /* Membetulkan kedudukan jadual agar seimbang di tengah (Center) TV */
-    body.fullscreen-active .table-wrapper {
-      width: 86vw !important; 
-      max-width: 86vw !important;
-      margin: 20px auto 0 auto !important;
-      border-radius: 16px !important;
-      float: none !important;
-      clear: both !important;
-    }
-
-    body.fullscreen-active table {
-      width: 100% !important;
-      border-collapse: collapse !important;
-      table-layout: fixed !important; 
-    }
-
-    /* Merapatkan jarak (gap) kolum agar seimbang dan tidak terpotong di kanan */
-    body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 10% !important; } 
-    body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 12% !important; } 
-    body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 35% !important; } 
-    body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } 
-    body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 28% !important; } 
-
-    body.fullscreen-active th,
-    body.fullscreen-active td {
-      padding: 10px 6px !important; 
-      font-size: 1.9vh !important;  
-      line-height: 1.2 !important;
-      white-space: nowrap !important; 
-      overflow: hidden !important;
-      text-overflow: ellipsis !important; 
-      text-transform: uppercase !important; 
-    }
-
-    body.fullscreen-active .place-badge {
-      width: 3.8vh !important;
-      height: 3.8vh !important;
-      font-size: 1.6vh !important;
-      line-height: 3.8vh !important;
-    }
-
-    body.fullscreen-active .notice {
-      margin-top: 15px !important;
-      font-size: 1.6vh !important;
-    }
-  }
-
-  /* UNTUK TELEFON BIMBIT & TABLET (Teks melipat ke bawah / Wrapping) */
-  @media (max-width: 1024px) {
-    table {
-      table-layout: auto !important; 
-    }
-    tbody td, thead th {
-      white-space: normal !important;  
-      word-wrap: break-word !important; 
-      overflow: visible !important;
-      text-overflow: clip !important;
-      font-size: 12px !important; 
-      padding: 8px 5px !important;
-    }
-    body.fullscreen-active {
-      overflow: auto !important; 
-    }
-  }
-`;
-document.head.appendChild(style);
+}
 
 /* =========================
    LOAD DATA
@@ -135,31 +38,37 @@ async function loadData(){
     const response = await fetch(API_URL);
 
     if(!response.ok){
-      throw new Error("API Error");
+      throw new Error("API ERROR");
     }
 
     const rawData = await response.json();
 
     const filteredData = rawData
-    .filter(item => {
-      return (item.luckyNo || "").toString().trim() !== "";
-    })
-    .sort((a,b) => {
+      .filter(item => {
+        return (item.luckyNo || "")
+          .toString()
+          .trim() !== "";
+      })
+      .sort((a,b) => {
 
-      // PEMBETULAN MUTLAK: Memasukkan semula sintaks indeks array [0] untuk mengelakkan ralat kompilasi skrip
-      const numA = parseInt(
-        (a.place || "").match(/\d+/)?.[0] || 999
-      );
+        const matchA =
+          (a.place || "").match(/\d+/);
 
-      const numB = parseInt(
-        (b.place || "").match(/\d+/)?.[0] || 999
-      );
+        const matchB =
+          (b.place || "").match(/\d+/);
 
-      return numA - numB;
+        const numA =
+          parseInt(matchA ? matchA[0] : 999);
 
-    });
+        const numB =
+          parseInt(matchB ? matchB[0] : 999);
 
-    const newHash = JSON.stringify(filteredData);
+        return numA - numB;
+
+      });
+
+    const newHash =
+      JSON.stringify(filteredData);
 
     if(newHash === lastDataHash){
       return;
@@ -169,7 +78,8 @@ async function loadData(){
 
     allData = filteredData;
 
-    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+    const totalPages =
+      Math.ceil(allData.length / ROWS_PER_PAGE);
 
     if(currentPage > totalPages){
       currentPage = totalPages || 1;
@@ -180,7 +90,12 @@ async function loadData(){
 
   }
   catch(error){
-    console.error("Fetch Error:", error);
+
+    console.error(
+      "FETCH ERROR:",
+      error
+    );
+
   }
 
 }
@@ -191,34 +106,45 @@ async function loadData(){
 
 function renderPage(){
 
-  const tbody = document.getElementById("winnerTable");
+  const tbody =
+    document.getElementById("winnerTable");
 
   if(!tbody) return;
 
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const start =
+    (currentPage - 1) * ROWS_PER_PAGE;
 
-  const pageData = allData.slice(
-    start,
-    start + ROWS_PER_PAGE
-  );
+  const pageData =
+    allData.slice(
+      start,
+      start + ROWS_PER_PAGE
+    );
 
   tbody.innerHTML = pageData.map(item => `
-  
+
     <tr>
 
       <td>
         <div class="place-badge">
-          ${item.place || ""}
+          ${escapeHTML(item.place)}
         </div>
       </td>
 
-      <td>${item.luckyNo || ""}</td>
+      <td>
+        ${escapeHTML(item.luckyNo)}
+      </td>
 
-      <td>${item.winner || ""}</td>
+      <td>
+        ${escapeHTML(item.winner)}
+      </td>
 
-      <td>${item.company || ""}</td>
+      <td>
+        ${escapeHTML(item.company)}
+      </td>
 
-      <td>${item.prize || ""}</td>
+      <td>
+        ${escapeHTML(item.prize)}
+      </td>
 
     </tr>
 
@@ -232,15 +158,19 @@ function renderPage(){
 
 function renderPagination(){
 
-  const pagination = document.getElementById("pagination");
+  const pagination =
+    document.getElementById("pagination");
 
   if(!pagination) return;
 
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+  const totalPages =
+    Math.ceil(allData.length / ROWS_PER_PAGE);
 
   if(totalPages <= 1){
+
     pagination.innerHTML = "";
     return;
+
   }
 
   let html = "";
@@ -254,12 +184,17 @@ function renderPagination(){
     </button>
   `;
 
-  let startPage = Math.max(currentPage - 1, 1);
+  let startPage =
+    Math.max(currentPage - 1, 1);
 
-  let endPage = Math.min(startPage + 2, totalPages);
+  let endPage =
+    Math.min(startPage + 2, totalPages);
 
   if(endPage - startPage < 2){
-    startPage = Math.max(endPage - 2, 1);
+
+    startPage =
+      Math.max(endPage - 2, 1);
+
   }
 
   for(let i = startPage; i <= endPage; i++){
@@ -308,7 +243,8 @@ function firstPage(){
 
 function lastPage(){
 
-  currentPage = Math.ceil(allData.length / ROWS_PER_PAGE);
+  currentPage =
+    Math.ceil(allData.length / ROWS_PER_PAGE);
 
   renderPage();
   renderPagination();
@@ -321,7 +257,8 @@ function lastPage(){
 
 function nextAutoPage(){
 
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+  const totalPages =
+    Math.ceil(allData.length / ROWS_PER_PAGE);
 
   if(totalPages <= 1){
     return;
@@ -343,7 +280,9 @@ function playSlide(){
   pauseSlide();
 
   autoSlide = setInterval(() => {
+
     nextAutoPage();
+
   }, 10000);
 
 }
@@ -351,33 +290,61 @@ function playSlide(){
 function pauseSlide(){
 
   if(autoSlide){
+
     clearInterval(autoSlide);
+
+    autoSlide = null;
+
   }
 
 }
 
 /* =========================
-   FULLSCREEN MODE
+   FULLSCREEN
 ========================= */
 
-function openProjectorMode() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
-      .catch((err) => {
-        alert(`Gagal aktifkan Fullscreen: ${err.message}`);
+function openProjectorMode(){
+
+  if(!document.fullscreenElement){
+
+    document.documentElement
+      .requestFullscreen()
+      .catch(err => {
+
+        console.error(err);
+
       });
-  } else {
-    document.exitFullscreen();
+
   }
+  else{
+
+    document.exitFullscreen();
+
+  }
+
 }
 
-document.addEventListener("fullscreenchange", () => {
-  if (document.fullscreenElement) {
-    document.body.classList.add("fullscreen-active");
-  } else {
-    document.body.classList.remove("fullscreen-active");
+document.addEventListener(
+  "fullscreenchange",
+  () => {
+
+    if(document.fullscreenElement){
+
+      document.body.classList.add(
+        "fullscreen-active"
+      );
+
+    }
+    else{
+
+      document.body.classList.remove(
+        "fullscreen-active"
+      );
+
+    }
+
   }
-});
+);
 
 /* =========================
    START
@@ -387,4 +354,6 @@ loadData();
 
 playSlide();
 
-setInterval(loadData, 3000);
+/* CHECK UPDATE SETIAP 10 SAAT */
+setInterval(loadData, 10000);
+```
