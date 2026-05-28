@@ -11,7 +11,7 @@ let lastDataHash = "";
    SEARCH HTML INJECT
 ========================= */
 
-const searchHTML = `
+/*const searchHTML = `
 <div class="mobile-search-wrapper">
   <div class="search-box">
     <input 
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-});
+});*/
 
 /* =========================
    SEARCH FUNCTION
