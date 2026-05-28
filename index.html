@@ -752,74 +752,73 @@ async function openProjectorMode() {
 
     if (!secondaryScreen) {
       alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel disambung dan tetapan Windows diletakkan pada mod 'Extend'.");
+/* FUNCTION UTK FULLSCREEN TANPA HILANG DATA & KESAN AUTO F11 */
+async function openProjectorMode() {
+  // 1. Semak sokongan Window Management API pada browser
+  if (!('getScreenDetails' in window)) {
+    alert("Browser anda tidak menyokong pengesanan skrin kedua secara automatik. Sila gunakan Google Chrome atau Microsoft Edge terkini.");
+    return;
+  }
+
+  try {
+    const screenDetails = await window.getScreenDetails();
+    const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+
+    if (!secondaryScreen) {
+      alert("Skrin kedua (projektor) tidak dikesan! Pastikan kabel HDMI disambung dengan kemas dan tetapan paparan Windows diset pada mod 'Extend'.");
       return;
     }
 
-    const windowFeatures = `
-      left=${secondaryScreen.availLeft},
-      top=${secondaryScreen.availTop},
-      width=${secondaryScreen.availWidth},
-      height=${secondaryScreen.availHeight},
-      menubar=no,toolbar=no,location=no,status=no
-    `.replace(/\s+/g, '');
+    // 2. Gunakan dokumen utama yang sudah sedia ada datanya
+    const docElem = document.documentElement;
 
-    const projectorWindow = window.open(window.location.href, '_blank', windowFeatures);
+    // 3. SELESAI FUNGSI: Paksa masuk mod Fullscreen SEBENAR pada Skrin Kedua (Kesan 100% sama seperti F11)
+    if (docElem.requestFullscreen) {
+      docElem.requestFullscreen({ screen: secondaryScreen })
+        .then(() => {
+          console.log("Berjaya masuk mod skrin penuh pada projektor.");
+          
+          // 4. Masukkan kelas CSS pada skrin projektor untuk mengaktifkan scale-to-fit
+          document.documentElement.classList.add('projector-view');
+          document.body.classList.add('projector-view');
 
-    if (projectorWindow) {
-      projectorWindow.addEventListener('load', () => {
-        const docElem = projectorWindow.document.documentElement;
-        const bodyElem = projectorWindow.document.body;
-        
-        // ----------------=======================================----------------
-        // SOLUSI DATA HILANG: Salin pemboleh ubah & fungsi dari skrin utama ke skrin 2
-        // ----------------=======================================----------------
-        projectorWindow.allData = [...allData]; // Salin data semasa
-        projectorWindow.ROWS_PER_PAGE = ROWS_PER_PAGE;
-        projectorWindow.currentPage = currentPage;
-
-        // Salin fungsi penting supaya skrin kedua boleh render jadual sendiri
-        if (typeof renderPage === 'function') projectorWindow.renderPage = renderPage;
-        if (typeof renderTable === 'function') projectorWindow.renderTable = renderTable;
-        if (typeof renderPagination === 'function') projectorWindow.renderPagination = renderPagination;
-
-        // Jalankan fungsi paparan jadual pertama kali di skrin kedua
-        if (typeof projectorWindow.renderPage === 'function') {
-          projectorWindow.renderPage(projectorWindow.currentPage);
-        } else if (typeof projectorWindow.renderTable === 'function') {
-          projectorWindow.renderTable();
-        }
-        if (typeof projectorWindow.renderPagination === 'function') {
-          projectorWindow.renderPagination();
-        }
-
-        // 1. AKTIFKAN FULLSCREEN PENUH (Sama kesan seperti menekan butang F11)
-        if (docElem.requestFullscreen) {
-          docElem.requestFullscreen({ screen: secondaryScreen }).catch(err => {
-            console.error("Gagal melancarkan paparan fullscreen penuh:", err);
-          });
-        }
-
-        // 2. SUNTIK KELAS CSS UNTUK PROJEKTOR
-        docElem.classList.add('projector-view');
-        bodyElem.classList.add('projector-view');
-
-        // 3. LOGIK RESPONSIVE AUTO-RESCALE (1536x768)
-        const applyScale = () => {
-          const widthScale = projectorWindow.innerWidth / 1536;
-          const heightScale = projectorWindow.innerHeight / 768;
-          bodyElem.style.transform = `scale(${widthScale}, ${heightScale})`;
-        };
-
-        applyScale();
-        projectorWindow.addEventListener('resize', applyScale);
-      });
+          // Jalankan fungsi pengiraan skala automatik mengikut saiz 1536x768
+          applyProjectorScale();
+        })
+        .catch(err => {
+          console.error("Gagal melancarkan paparan skrin penuh:", err);
+          alert("Gagal melancarkan skrin penuh. Sila pastikan anda memberikan kebenaran paparan skrin apabila diminta.");
+        });
     }
 
   } catch (err) {
     console.error("Ralat akses pengurusan skrin:", err);
-    alert("Sila benarkan izin (Permission) akses maklumat skrin apabila diminta oleh browser.");
+    alert("Sila benarkan izin (Permission) akses maklumat skrin apabila diminta oleh pelayar web anda.");
   }
 }
+
+/* Fungsi Sokongan untuk Mengira Skala Paparan Responsif (1536x768) */
+function applyProjectorScale() {
+  if (document.body.classList.contains('projector-view')) {
+    const widthScale = window.innerWidth / 1536;
+    const heightScale = window.innerHeight / 768;
+    document.body.style.transform = `scale(${widthScale}, ${heightScale})`;
+  }
+}
+
+// Sentiasa laraskan semula jika saiz tetingkap berubah
+window.addEventListener('resize', applyProjectorScale);
+
+/* CARA KELUAR DARI MOD PROJEKTOR (Tekan butang ESC pada keyboard) */
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    // Jika pengguna keluar dari fullscreen, buang gaya kelas projektor supaya skrin laptop kembali asal
+    document.documentElement.classList.remove('projector-view');
+    document.body.classList.remove('projector-view');
+    document.body.style.transform = "none";
+  }
+});
+
 
 </script>
 
