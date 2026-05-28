@@ -385,65 +385,38 @@ function pauseSlide(){
   }
 }
 
-/* =========================
-   FULLSCREEN MULTI-SCREEN
-========================= */
-
 async function openProjectorMode() {
-  // Semak jika pelayar menyokong pengurusan skrin
   if ('getScreenDetails' in window) {
     try {
       const screenDetails = await window.getScreenDetails();
-      
-      // Cari skrin kedua (bukan skrin utama)
-      const secondaryScreen = screenDetails.screens.find(screen => !screen.isPrimary);
+      // Cari skrin yang BUKAN skrin semasa tetingkap ini berada
+      const secondaryScreen = screenDetails.screens.find(screen => screen !== screenDetails.currentScreen);
 
       if (secondaryScreen) {
-        // Jika tetingkap sekarang berada di skrin utama, buka tetingkap baru di skrin kedua
-        if (window.screen.left !== secondaryScreen.left) {
-          // Buka tetingkap baru tepat pada koordinat skrin kedua
-          const projectorWindow = window.open(
-            window.location.href, 
-            '_blank', 
-            `left=${secondaryScreen.availLeft},top=${secondaryScreen.availTop},width=${secondaryScreen.availWidth},height=${secondaryScreen.availHeight}`
-          );
+        // Buka URL yang sama di skrin sebelah dengan parameter khusus (?projector=true)
+        const url = new URL(window.location.href);
+        url.searchParams.set('projector', 'true');
 
-          // Tunggu tetingkap baru siap dipaparkan, kemudian buat fullscreen
-          projectorWindow.addEventListener('DOMContentLoaded', () => {
-            projectorWindow.document.documentElement.requestFullscreen().catch(err => {
-              console.error("Gagal fullscreen di skrin kedua:", err);
-            });
-          });
-          return; // Tamat fungsi di sini kerana tugasan beralih ke tetingkap baru
-        }
+        const features = `left=${secondaryScreen.availLeft},top=${secondaryScreen.availTop},width=800,height=600`;
+        window.open(url.toString(), '_blank', features);
+        return;
       }
     } catch (err) {
-      console.warn("Kebenaran akses skrin ditolak atau ralat berlaku:", err);
+      console.warn("Akses skrin ditolak, guna fallback fullscreen biasa:", err);
     }
   }
 
-  // Kod asal sebagai sandaran (Fallback) jika tiada skrin kedua atau tiada kebenaran
+  // Fallback: Jika tiada skrin kedua, fullscreen di skrin semasa
+  toggleLocalFullscreen();
+}
+
+function toggleLocalFullscreen() {
   if (!document.fullscreenElement) {
-    document.documentElement
-      .requestFullscreen()
-      .catch(err => {
-        console.error(err);
-      });
+    document.documentElement.requestFullscreen().catch(err => console.error(err));
   } else {
     document.exitFullscreen();
   }
 }
-
-document.addEventListener(
-  "fullscreenchange",
-  () => {
-    if (document.fullscreenElement) {
-      document.body.classList.add("fullscreen-active");
-    } else {
-      document.body.classList.remove("fullscreen-active");
-    }
-  }
-);
 
 
 /* =========================
@@ -451,6 +424,35 @@ document.addEventListener(
 ========================= */
 loadData();
 playSlide();
+
+// Pengesan automatik untuk tetingkap yang baru dipindahkan ke skrin sebelah
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  if (urlParams.get('projector') === 'true') {
+    // Bersihkan URL supaya parameter hilang jika user refresh
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('projector');
+    window.history.replaceState({}, document.title, cleanUrl.toString());
+
+    // Beri masa 500ms untuk pelayar selesai render kedudukan sebelum fullscreen
+    setTimeout(() => {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error("Gagal fullscreen automatik di skrin sebelah:", err);
+      });
+    }, 500);
+  }
+});
+
+// Kekalkan event listener asal anda untuk menguruskan kelas CSS
+document.addEventListener("fullscreenchange", () => {
+  if (document.fullscreenElement) {
+    document.body.classList.add("fullscreen-active");
+  } else {
+    document.body.classList.remove("fullscreen-active");
+  }
+});
+
 
 /* CHECK UPDATE SETIAP 10 SAAT */
 setInterval(loadData, 10000);
