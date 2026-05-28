@@ -5,13 +5,15 @@ const ROWS_PER_PAGE = 10;
 let allData = [];
 let currentPage = 1;
 let autoSlide = null;
-let lastDataFingerprint = "";
+let lastDataHash = "";
 
 /* =========================
    DYNAMIC CSS FOR SLIDE MODE
+   (Membuat tabel Center & Jarak Antar Kolom Rapat)
 ========================= */
 const style = document.createElement('style');
 style.innerHTML = `
+  /* Membuat seluruh halaman berada di tengah layar secara vertikal & horizontal */
   body.fullscreen-active {
     margin: 0 !important;
     padding: 0 !important;
@@ -20,11 +22,12 @@ style.innerHTML = `
     overflow: hidden !important; 
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
+    justify-content: center !important; /* Center vertikal */
+    align-items: center !important;     /* Center horizontal */
     box-sizing: border-box !important;
   }
 
+  /* Menyembunyikan tombol navigasi saat fullscreen */
   body.fullscreen-active button,
   body.fullscreen-active #pagination,
   body.fullscreen-active .control-buttons,
@@ -32,6 +35,7 @@ style.innerHTML = `
     display: none !important;
   }
 
+  /* Memperbesar sub-title sesuai permintaan agar seimbang */
   body.fullscreen-active .sub-title {
     font-size: 32px !important; 
     letter-spacing: 4px !important;
@@ -43,26 +47,31 @@ style.innerHTML = `
     margin-top: 5px !important;
   }
 
-  body.fullscreen-active .table-wrapper,
-  body.fullscreen-active table {
-    width: 88vw !important; 
-    max-width: 88vw !important;
-    height: auto !important;
-    max-height: 72vh !important;
-    margin: 0 auto !important;
-    border-collapse: collapse !important;
-    table-layout: fixed !important; 
+  /* Mengatur lebar pembungkus tabel agar pas di tengah TV dan tidak tumpah ke kanan */
+  body.fullscreen-active .table-wrapper {
+    width: 86vw !important; 
+    max-width: 86vw !important;
+    margin: 20px auto 0 auto !important;
+    border-radius: 16px !important;
   }
 
-  body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 12% !important; } 
-  body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 15% !important; } 
-  body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 38% !important; } 
-  body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } 
-  body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 20% !important; } 
+  body.fullscreen-active table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important; /* Mengunci lebar kolom */
+  }
 
+  /* MERAPATKAN GAP <--> (Mengatur persentase lebar kolom agar lebih rapat ke kiri) */
+  body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 10% !important; } /* Place */
+  body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 12% !important; } /* Lucky No */
+  body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 35% !important; } /* Winner */
+  body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } /* Company */
+  body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 28% !important; } /* Prize (Diberi ruang lebih luas agar teks muat) */
+
+  /* Mengecilkan padding bagian dalam sel agar jarak antar teks lebih rapat */
   body.fullscreen-active th,
   body.fullscreen-active td {
-    padding: 8px 6px !important; 
+    padding: 10px 4px !important; /* Padding kanan-kiri dipersempit */
     font-size: 1.9vh !important;  
     line-height: 1.2 !important;
     white-space: nowrap !important; 
@@ -85,7 +94,7 @@ style.innerHTML = `
 document.head.appendChild(style);
 
 /* =========================
-   LOAD DATA
+   LOAD DATA (KEMBALI KE VERSI ASLI ANDA)
 ========================= */
 
 async function loadData(){
@@ -100,26 +109,32 @@ async function loadData(){
 
     const rawData = await response.json();
 
-    const filteredData = rawData.filter(item => item && item.luckyNo && item.luckyNo.toString().trim() !== "");
+    const filteredData = rawData
+    .filter(item => {
+      return (item.luckyNo || "").toString().trim() !== "";
+    })
+    .sort((a,b) => {
 
-    // Membina sistem cap jari data (fingerprint) baharu yang betul
-    let newFingerprint = "len:" + filteredData.length;
-    if (filteredData.length > 0) {
-      newFingerprint += "_" + filteredData[0].luckyNo + "_" + filteredData[filteredData.length - 1].luckyNo;
-    }
+      const numA = parseInt(
+        (a.place || "").match(/\d+/)?.[0] || 999
+      );
 
-    if(newFingerprint === lastDataFingerprint){
+      const numB = parseInt(
+        (b.place || "").match(/\d+/)?.[0] || 999
+      );
+
+      return numA - numB;
+
+    });
+
+    const newHash = JSON.stringify(filteredData);
+
+    /* Elak rerender kalau data sama */
+    if(newHash === lastDataHash){
       return;
     }
 
-    lastDataFingerprint = newFingerprint;
-
-    // PEMBETULAN DI SINI: Pembetulan pada bahagian sintaks ?. (Optional Chaining)
-    filteredData.sort((a, b) => {
-      const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999);
-      const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999);
-      return numA - numB;
-    });
+    lastDataHash = newHash;
 
     allData = filteredData;
 
@@ -143,31 +158,38 @@ async function loadData(){
    RENDER TABLE
 ========================= */
 
-function tbodyMapper(item) {
-  return `
+function renderPage(){
+
+  const tbody = document.getElementById("winnerTable");
+
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+
+  const pageData = allData.slice(
+    start,
+    start + ROWS_PER_PAGE
+  );
+
+  tbody.innerHTML = pageData.map(item => `
+  
     <tr>
+
       <td>
         <div class="place-badge">
           ${item.place || ""}
         </div>
       </td>
+
       <td>${item.luckyNo || ""}</td>
+
       <td>${item.winner || ""}</td>
+
       <td>${item.company || ""}</td>
+
       <td>${item.prize || ""}</td>
+
     </tr>
-  `;
-}
 
-function renderPage(){
-
-  const tbody = document.getElementById("winnerTable");
-  if (!tbody) return;
-
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const pageData = allData.slice(start, start + ROWS_PER_PAGE);
-
-  tbody.innerHTML = pageData.map(tbodyMapper).join("");
+  `).join("");
 
 }
 
@@ -178,7 +200,6 @@ function renderPage(){
 function renderPagination(){
 
   const pagination = document.getElementById("pagination");
-  if (!pagination) return;
 
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
@@ -199,6 +220,7 @@ function renderPagination(){
   `;
 
   let startPage = Math.max(currentPage - 1, 1);
+
   let endPage = Math.min(startPage + 2, totalPages);
 
   if(endPage - startPage < 2){
@@ -206,6 +228,7 @@ function renderPagination(){
   }
 
   for(let i = startPage; i <= endPage; i++){
+
     html += `
       <button
         class="${i === currentPage ? "active" : ""}"
@@ -214,6 +237,7 @@ function renderPagination(){
         ${i}
       </button>
     `;
+
   }
 
   html += `
@@ -328,4 +352,5 @@ loadData();
 
 playSlide();
 
-setInterval(loadData, 3000);
+/* Refresh data background */
+setInterval(loadData, 2000);
