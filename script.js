@@ -357,66 +357,33 @@ function lastPage(){
 }
 
 /* =========================
-   AUTO SLIDE
+   FULLSCREEN
 ========================= */
 
-function nextAutoPage(){
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-  if(totalPages <= 1) return;
-
-  currentPage++;
-  if(currentPage > totalPages) currentPage = 1;
-
-  renderPage();
-  renderPagination();
-}
-
-function playSlide(){
-  pauseSlide();
-  autoSlide = setInterval(() => {
-    nextAutoPage();
-  }, 10000);
-}
-
-function pauseSlide(){
-  if(autoSlide){
-    clearInterval(autoSlide);
-    autoSlide = null;
+function openProjectorMode(){
+  if(!document.fullscreenElement){
+    document.documentElement
+      .requestFullscreen()
+      .catch(err => {
+        console.error(err);
+      });
   }
-}
-
-async function openProjectorMode() {
-  if ('getScreenDetails' in window) {
-    try {
-      const screenDetails = await window.getScreenDetails();
-      // Cari skrin yang BUKAN skrin semasa tetingkap ini berada
-      const secondaryScreen = screenDetails.screens.find(screen => screen !== screenDetails.currentScreen);
-
-      if (secondaryScreen) {
-        // Buka URL yang sama di skrin sebelah dengan parameter khusus (?projector=true)
-        const url = new URL(window.location.href);
-        url.searchParams.set('projector', 'true');
-
-        const features = `left=${secondaryScreen.availLeft},top=${secondaryScreen.availTop},width=800,height=600`;
-        window.open(url.toString(), '_blank', features);
-        return;
-      }
-    } catch (err) {
-      console.warn("Akses skrin ditolak, guna fallback fullscreen biasa:", err);
-    }
-  }
-
-  // Fallback: Jika tiada skrin kedua, fullscreen di skrin semasa
-  toggleLocalFullscreen();
-}
-
-function toggleLocalFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => console.error(err));
-  } else {
+  else{
     document.exitFullscreen();
   }
 }
+
+document.addEventListener(
+  "fullscreenchange",
+  () => {
+    if(document.fullscreenElement){
+      document.body.classList.add("fullscreen-active");
+    }
+    else{
+      document.body.classList.remove("fullscreen-active");
+    }
+  }
+);
 
 
 /* =========================
@@ -424,35 +391,3 @@ function toggleLocalFullscreen() {
 ========================= */
 loadData();
 playSlide();
-
-// Pengesan automatik untuk tetingkap yang baru dipindahkan ke skrin sebelah
-window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  
-  if (urlParams.get('projector') === 'true') {
-    // Bersihkan URL supaya parameter hilang jika user refresh
-    const cleanUrl = new URL(window.location.href);
-    cleanUrl.searchParams.delete('projector');
-    window.history.replaceState({}, document.title, cleanUrl.toString());
-
-    // Beri masa 500ms untuk pelayar selesai render kedudukan sebelum fullscreen
-    setTimeout(() => {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.error("Gagal fullscreen automatik di skrin sebelah:", err);
-      });
-    }, 500);
-  }
-});
-
-// Kekalkan event listener asal anda untuk menguruskan kelas CSS
-document.addEventListener("fullscreenchange", () => {
-  if (document.fullscreenElement) {
-    document.body.classList.add("fullscreen-active");
-  } else {
-    document.body.classList.remove("fullscreen-active");
-  }
-});
-
-
-/* CHECK UPDATE SETIAP 10 SAAT */
-setInterval(loadData, 10000);
