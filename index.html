@@ -439,6 +439,7 @@ function renderPage(page){
 }
 
 /* 3. PAPARKAN PAGINATION BUTTON */
+/* 3. PAPARKAN PAGINATION BUTTON */
 function renderPagination(){
   const paginationContainer = document.getElementById("pagination");
   if (!paginationContainer) return;
@@ -449,7 +450,9 @@ function renderPagination(){
     return;
   }
 
-  let html = `<button onclick="prevPage()">Previous</button>`;
+  // Tambah butang Previous (Sekarang berfungsi sebagai First Page)
+  // Butang akan disekat (disabled) jika pengguna sudah berada di halaman 1
+  let html = `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
 
   let startPage = currentPage - 1;
   let endPage = currentPage + 1;
@@ -472,7 +475,9 @@ function renderPagination(){
     `;
   }
 
-  html += `<button onclick="nextPage()">Next</button>`;
+  // Tambah butang Next (Sekarang berfungsi sebagai Last Page)
+  // Butang akan disekat (disabled) jika pengguna sudah berada di halaman terakhir
+  html += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
   paginationContainer.innerHTML = html;
 }
 
@@ -482,31 +487,27 @@ function goToPage(page){
   renderPagination();
 }
 
+// TUKAR: Logik butang Next melompat terus ke Halaman Terakhir
 function nextPage(){
   if (allData.length === 0) return;
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
-  currentPage++;
-  if(currentPage > totalPages){
-    currentPage = 1;
-  }
+  currentPage = totalPages; // Set terus ke halaman maksimum
 
   renderPage(currentPage);
   renderPagination();
 }
 
+// TUKAR: Logik butang Previous melompat terus ke Halaman Pertama
 function prevPage(){
   if (allData.length === 0) return;
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
-  currentPage--;
-  if(currentPage < 1){
-    currentPage = totalPages;
-  }
+  currentPage = 1; // Set terus ke halaman 1
 
   renderPage(currentPage);
   renderPagination();
 }
+
 
 /* 4. KAWALAN AUTOMATIK SLIDE */
 function pauseSlide(){
