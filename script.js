@@ -5,10 +5,11 @@ const ROWS_PER_PAGE = 10;
 let allData = [];
 let currentPage = 1;
 let autoSlide = null;
-let lastDataFingerprint = ""; // Ditukar daripada simpan string JSON penuh kepada cap jari data ringkas
+let lastDataFingerprint = "";
 
 /* =========================
    DYNAMIC CSS FOR SLIDE MODE
+   (Dioptimumkan untuk mengelakkan column terpotong di TV)
 ========================= */
 const style = document.createElement('style');
 style.innerHTML = `
@@ -24,30 +25,66 @@ style.innerHTML = `
     align-items: center !important;
     box-sizing: border-box !important;
   }
+
   body.fullscreen-active button,
   body.fullscreen-active #pagination,
   body.fullscreen-active .control-buttons,
   body.fullscreen-active #projectorBtn {
     display: none !important;
   }
-  body.fullscreen-active table {
-    width: 95vw !important;
-    height: auto !important;
-    max-height: 85vh !important;
-    margin: auto !important;
-    border-collapse: collapse !important;
+
+  /* Besarkan tulisan sub-title (TROPICAL DINNER 2026) */
+  body.fullscreen-active .sub-title {
+    font-size: 32px !important; /* Diperbesarkan agar seimbang */
+    letter-spacing: 4px !important;
+    margin-bottom: 5px !important;
   }
+
+  /* Tulisan tajuk utama dikekalkan saiz asal */
+  body.fullscreen-active .title {
+    font-size: 58px !important; 
+    margin-top: 5px !important;
+  }
+
+  /* Kecilkan lebar tabel keseluruhan (88vw) supaya tidak terpotong di tepi TV */
+  body.fullscreen-active .table-wrapper,
+  body.fullscreen-active table {
+    width: 88vw !important; 
+    max-width: 88vw !important;
+    height: auto !important;
+    max-height: 72vh !important;
+    margin: 0 auto !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important; /* Mengunci saiz column */
+  }
+
+  /* Agihan jarak column yang rapat dan sekata */
+  body.fullscreen-active th:nth-child(1), body.fullscreen-active td:nth-child(1) { width: 12% !important; } /* Place */
+  body.fullscreen-active th:nth-child(2), body.fullscreen-active td:nth-child(2) { width: 15% !important; } /* Lucky No */
+  body.fullscreen-active th:nth-child(3), body.fullscreen-active td:nth-child(3) { width: 38% !important; } /* Winner */
+  body.fullscreen-active th:nth-child(4), body.fullscreen-active td:nth-child(4) { width: 15% !important; } /* Company */
+  body.fullscreen-active th:nth-child(5), body.fullscreen-active td:nth-child(5) { width: 20% !important; } /* Prize */
+
   body.fullscreen-active th,
   body.fullscreen-active td {
-    padding: 6px 12px !important; 
-    font-size: 2.2vh !important;  
+    padding: 8px 6px !important; /* Jarak padding dirapatkan */
+    font-size: 1.9vh !important;  
     line-height: 1.2 !important;
+    white-space: nowrap !important; /* Elak teks turun ke bawah */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; /* Letak ... jika teks syarikat/nama terlampau panjang */
   }
+
   body.fullscreen-active .place-badge {
-    width: 4vh !important;
-    height: 4vh !important;
-    font-size: 1.8vh !important;
-    line-height: 4vh !important;
+    width: 3.8vh !important;
+    height: 3.8vh !important;
+    font-size: 1.6vh !important;
+    line-height: 3.8vh !important;
+  }
+
+  body.fullscreen-active .notice {
+    margin-top: 15px !important;
+    font-size: 1.6vh !important;
   }
 `;
 document.head.appendChild(style);
@@ -68,28 +105,22 @@ async function loadData(){
 
     const rawData = await response.json();
 
-    // 1. FILTERING: Loop dipendekkan & diringkaskan terus
     const filteredData = rawData.filter(item => item && item.luckyNo && item.luckyNo.toString().trim() !== "");
 
-    // 2. FINGERPRINTING (PENGGANTI JSON.STRINGIFY):
-    // Kita bina kod ringkas berasaskan jumlah baris dan nilai item pertama/terakhir untuk kesan perubahan.
-    // Cara ini 99% lebih laju daripada menukar keseluruhan array menjadi string teks JSON yang panjang.
     let newFingerprint = "len:" + filteredData.length;
     if (filteredData.length > 0) {
       newFingerprint += "_" + filteredData[0].luckyNo + "_" + filteredData[filteredData.length - 1].luckyNo;
     }
 
-    /* Elak rerender kalau data dikesan sama */
     if(newFingerprint === lastDataFingerprint){
       return;
     }
 
     lastDataFingerprint = newFingerprint;
 
-    // 3. SORTING: Hanya dijalankan sekiranya data sah berubah sahaja
     filteredData.sort((a, b) => {
-      const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999);
-      const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999);
+      const numA = parseInt((a.place || "").match(/\d+/)?[0] || 999);
+      const numB = parseInt((b.place || "").match(/\d+/)?[0] || 999);
       return numA - numB;
     });
 
@@ -116,7 +147,6 @@ async function loadData(){
 ========================= */
 
 function tbodyMapper(item) {
-  // Dipisahkan ke fungsi luar supaya engine V8 browser boleh buat pra-kompilasi (lebih laju)
   return `
     <tr>
       <td>
@@ -140,7 +170,6 @@ function renderPage(){
   const start = (currentPage - 1) * ROWS_PER_PAGE;
   const pageData = allData.slice(start, start + ROWS_PER_PAGE);
 
-  // Menggunakan map dengan rujukan fungsi luar untuk elak cipta skrip fungsi berulang kali di memori
   tbody.innerHTML = pageData.map(tbodyMapper).join("");
 
 }
@@ -286,7 +315,6 @@ function openProjectorMode() {
   }
 }
 
-/* Memantau perubahan fullscreen untuk on/off kelas gaya */
 document.addEventListener("fullscreenchange", () => {
   if (document.fullscreenElement) {
     document.body.classList.add("fullscreen-active");
@@ -303,5 +331,4 @@ loadData();
 
 playSlide();
 
-/* Refresh data background */
 setInterval(loadData, 3000);
