@@ -429,3 +429,41 @@ tbody td{
   }
 
 }
+
+/* =========================
+   SEARCH BAR (MOBILE + TABLET)
+========================= */
+
+.mobile-search-wrapper{
+  display:none;
+}
+
+@media(max-width:1024px){
+
+  .mobile-search-wrapper{
+    display:flex;
+    gap:8px;
+    width:100%;
+    margin:10px 0;
+    padding:0 5px;
+    box-sizing:border-box;
+  }
+
+  #searchInput{
+    flex:1;
+    padding:10px 12px;
+    border:none;
+    border-radius:10px;
+    font-size:13px;
+    outline:none;
+  }
+
+  #searchBtn{
+    padding:10px 14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+  }
+
+}
