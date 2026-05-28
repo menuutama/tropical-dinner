@@ -248,3 +248,6 @@ document.addEventListener("fullscreenchange", () => {
 ========================= */
 
 loadData();
+
+// sementara
+function playSlide(){}
