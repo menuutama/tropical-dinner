@@ -128,20 +128,50 @@ document.head.appendChild(style);
 
 const searchHTML = `
   <div class="mobile-search-wrapper">
-    <input type="text" id="searchInput" placeholder="Search Lucky No / Winner / Company">
+
+    <div class="search-box">
+
+      <input 
+        type="text"
+        id="searchInput"
+        placeholder="Search Lucky No / Winner / Company"
+      />
+
+      <button class="clear-btn" id="clearBtn">✕</button>
+
+    </div>
+
   </div>
 `;
 window.addEventListener("DOMContentLoaded", () => {
 
-  const target =
-    document.querySelector(".table-wrapper");
+  const input = document.getElementById("searchInput");
+const clearBtn = document.getElementById("clearBtn");
 
-  if(target){
+if(input){
 
-    target.insertAdjacentHTML(
-      "beforebegin",
-      searchHTML
-    );
+  // LIVE SEARCH
+  input.addEventListener("input", performSearch);
+
+  // ENTER SUPPORT
+  input.addEventListener("keypress", (e) => {
+    if(e.key === "Enter"){
+      performSearch();
+    }
+  });
+
+}
+
+// CLEAR BUTTON
+if(clearBtn && input){
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    performSearch(); // reset table
+    input.focus();
+  });
+
+}
 
   }
 
