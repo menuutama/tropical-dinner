@@ -1,5 +1,5 @@
 const API_URL =
-"https://script.google.com/macros/s/AKfycbymH8u2HPYuTayguREV8qBlyO1a8zZJzy15QQgScxUpbmL5Y5zA4QwD8BsjSiHg86Di/exec";
+"https://google.com";
 
 const ROWS_PER_PAGE = 10;
 
@@ -11,32 +11,26 @@ let lastDataHash = "";
    SEARCH HTML INJECT
 ========================= */
 
-// Padding 10px ditambah terus pada style inline wrapper untuk memastikan ketetapan jarak
 const searchHTML = `
-<div class="mobile-search-wrapper" style="padding: 10px; width: 100%; box-sizing: border-box;">
-  <div class="search-box" style="position: relative; width: 100%;">
+<div class="mobile-search-wrapper">
+  <div class="search-box">
     <input 
       type="text"
       id="searchInput"
       placeholder="Search Lucky No / Winner / Company"
-      style="width: 100%; box-sizing: border-box;"
     />
-    <button class="clear-btn" id="clearBtn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer;">✕</button>
+    <button class="clear-btn" id="clearBtn">✕</button>
   </div>
 </div>
 `;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // Mencari elemen live update. Sila pastikan elemen "LIVE UPDATING" anda mempunyai class atau ID ini.
-  // Jika menggunakan element center/div, anda boleh tambah class="live-update-badge" pada HTML tersebut.
-  const liveUpdateEl = document.querySelector(".live-update-badge") || document.querySelector(".live-updating-badge");
+  const liveUpdateEl = document.querySelector(".live-update-badge");
 
   if (liveUpdateEl) {
-    // Membawa search bar turun ke bawah elemen live update
     liveUpdateEl.insertAdjacentHTML("afterend", searchHTML);
   } else {
-    // Jika tidak dijumpai, ia akan kekal di atas sebagai pelindung ralat
     document.body.insertAdjacentHTML("afterbegin", searchHTML);
   }
 
@@ -65,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
    SEARCH FUNCTION
 ========================= */
 
-// Komen telah dibuka dan dibetulkan supaya fungsi carian kembali aktif
 function performSearch() {
 
   const input = document.getElementById("searchInput");
@@ -121,7 +114,7 @@ function escapeHTML(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;"); // Dibaiki entiti karakter escape untuk keselamatan tanda '
+    .replace(/'/g, "&#39;");
 }
 
 /* =========================
@@ -151,7 +144,6 @@ async function loadData() {
 
     currentPage = Math.min(currentPage, Math.ceil(allData.length / ROWS_PER_PAGE) || 1);
 
-    // Memastikan jika user sedang menaip carian, data tidak terpadam secara mengejut apabila live update berlaku
     const input = document.getElementById("searchInput");
     if (input && input.value.trim() !== "") {
       performSearch();
@@ -212,7 +204,6 @@ function renderPagination() {
   let startPage = Math.max(currentPage - 1, 1);
   let endPage = Math.min(startPage + 2, totalPages);
 
-  // Menyelaraskan butang navigasi sekiranya berada di halaman-halaman akhir
   if (endPage - startPage < 2 && startPage > 1) {
     startPage = Math.max(endPage - 2, 1);
   }
@@ -248,33 +239,48 @@ function lastPage() {
   renderPagination();
 }
 
-/* =========================
-   FULLSCREEN MODE
-========================= */
+/* ====================================================================
+   FULLSCREEN MOD SLAID (SEKAT UNTUK LAPTOP, TV & PROJEKTOR)
+==================================================================== */
 
 function openProjectorMode() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(console.error);
+  if (window.innerWidth <= 1024) {
+    console.log("Fungsi Fullscreen Slideshow disekat untuk Phone/Tablet.");
+    return; 
+  }
+
+  const docEl = document.documentElement;
+
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(console.error);
+    } else if (docEl.webkitRequestFullscreen) { 
+      docEl.webkitRequestFullscreen();
+    }
   } else {
-    document.exitFullscreen();
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
   }
 }
 
-document.addEventListener("fullscreenchange", () => {
-  document.body.classList.toggle(
-    "fullscreen-active",
-    !!document.fullscreenElement
-  );
-});
+function handleFullscreenChange() {
+  const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  document.body.classList.toggle("fullscreen-active", isFullscreen);
+}
+
+document.addEventListener("fullscreenchange", handleFullscreenChange);
+document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 
 /* =========================
    START
 ========================= */
 
-// Mengaktifkan auto-refresh data setiap 5 saat untuk menyokong ciri "LIVE UPDATING"
 setInterval(loadData, 5000);
 
 loadData();
 
-// sementara
 function playSlide(){}
+function pauseSlide(){}
