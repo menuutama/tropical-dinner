@@ -438,7 +438,7 @@ function renderPage(page){
   `).join("");
 }
 
-/* 3. PAPARKAN PAGINATION BUTTON */
+
 /* 3. PAPARKAN PAGINATION BUTTON */
 function renderPagination(){
   const paginationContainer = document.getElementById("pagination");
@@ -452,7 +452,7 @@ function renderPagination(){
 
   // Tambah butang Previous (Sekarang berfungsi sebagai First Page)
   // Butang akan disekat (disabled) jika pengguna sudah berada di halaman 1
-  let html = `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
+  let html = `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>First Page</button>`;
 
   let startPage = currentPage - 1;
   let endPage = currentPage + 1;
@@ -477,7 +477,7 @@ function renderPagination(){
 
   // Tambah butang Next (Sekarang berfungsi sebagai Last Page)
   // Butang akan disekat (disabled) jika pengguna sudah berada di halaman terakhir
-  html += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
+  html += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Last Page</button>`;
   paginationContainer.innerHTML = html;
 }
 
