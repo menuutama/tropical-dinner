@@ -195,7 +195,7 @@ tbody td{
   border-radius:12px;
 
   background:rgba(255,255,255,0.08);
-  color:white;
+  color:white,transparent:70%;
 
   cursor:pointer;
 
