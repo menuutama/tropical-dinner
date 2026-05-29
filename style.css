@@ -164,7 +164,7 @@ tbody td{
   align-items:center;
   justify-content:center;
 
-  border-radius:50%;
+  border-radius:25%;
 
   background:linear-gradient(135deg,#008cff,#00d4ff);
 
@@ -287,7 +287,7 @@ tbody td{
 
   background:rgba(0, 243, 255, 0.1)
 
-  color:#017a80;
+  color:white;
 
   font-size:16px;
   font-weight:bold;
