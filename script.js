@@ -2,6 +2,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
+// Tambah ini di bahagian atas bersama global variables yang lain
+let slideInterval = null; 
 let currentPage = 1;
 let lastDataHash = "";
 
@@ -292,12 +294,20 @@ function handleFullscreenChange() {
       `;
       document.body.appendChild(fsFooter);
     }
+
+    // 3. MULA SLIDESHOW AUTOMATIK (Tukar page setiap 5 saat)
+    playSlide();
+
   } else {
     // Padam elemen apabila mod skrin penuh ditutup
     if (fsHeader) fsHeader.remove();
     if (fsFooter) fsFooter.remove();
+
+    // 4. HENTIKAN SLIDESHOW AUTOMATIK
+    pauseSlide();
   }
 }
+
 
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
@@ -310,5 +320,36 @@ setInterval(loadData, 5000);
 
 loadData();
 
-function playSlide(){}
-function pauseSlide(){}
+// Menggerakkan halaman jadual secara automatik
+function playSlide() {
+  // Padam interval lama jika ada untuk elakkan pertembungan timer
+  if (slideInterval) clearInterval(slideInterval); 
+
+  slideInterval = setInterval(() => {
+    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+    
+    if (totalPages <= 1) return; // Tiada guna tukar page jika data sikit
+
+    if (currentPage < totalPages) {
+      currentPage++;
+    } else {
+      currentPage = 1; // Kembali ke halaman pertama selepas halaman terakhir
+    }
+    
+    renderPage();
+    renderPagination();
+  }, 5000); // 5000ms = 5 saat untuk setiap halaman. Boleh ubah ikut kesesuaian.
+}
+
+// Menghentikan pergerakan halaman automatik
+function pauseSlide() {
+  if (slideInterval) {
+    clearInterval(slideInterval);
+    slideInterval = null;
+  }
+  // Kembali ke halaman 1 apabila mod projektor ditutup
+  currentPage = 1;
+  renderPage();
+  renderPagination();
+}
+
