@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tropical Dinner 2026 - Live Fullscreen</title>
+<link rel="preconnect" href="https://googleapis.com">
+<link href="https://googleapis.com" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="fullscreen-active"> <!-- Diaktifkan kelas css dari awal -->
+
+<div class="overlay"></div>
+
+<div class="container">
+  <!-- Jadual paparan data utama -->
+  <div class="table-wrapper" style="margin-top: 20px;">
+    <table>
+      <thead>
+        <tr>
+          <th>PLACE</th>
+          <th>LUCKY NO.</th>
+          <th>WINNER</th>
+          <th>COMPANY</th>
+          <th>PRIZE</th>
+        </tr>
+      </thead>
+      <tbody id="winnerTable">
+        <tr><td colspan="5" style="text-align:center;">Menunggu data dikirimkan dari skrin utama...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Butang Kontrol Pilihan Manual (Boleh dibuang jika mahu bersih sepenuhnya) -->
+  <div class="footer" style="margin-top: 30px; justify-content: center;">
+    <div class="control-buttons">
+      <button onclick="playSlide()">▶ Play</button>
+      <button onclick="pauseSlide()">⏸ Pause</button>
+      <button onclick="toggleBrowserFullscreen()" style="background: #e74c3c;">🎵 Skrin Penuh</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Hubungkan ke saluran komunikasi yang sama
+  const bc = new BroadcastChannel("lucky_draw_channel");
+  
+  let allData = [];
+  let currentPage = 1;
+  const ROWS_PER_PAGE = 10; 
+  let slideInterval = null;
+
+  /* ==========================================
+     MENERIMA HANTARAN (PUSH) DATA DARI INDEX
+     ========================================== */
+  bc.onmessage = function(event) {
+    if (event.data && event.data.type === "DATA_UPDATE") {
+      allData = event.data.data;
+      renderPage();
+    }
+  };
+
+  function renderPage() {
+    const tbody = document.getElementById("winnerTable");
+    if (!tbody || allData.length === 0) return;
+
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    const pageData = allData.slice(start, start + ROWS_PER_PAGE);
+
+    tbody.innerHTML = pageData.map(item => `
+      <tr>
+        <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
+        <td>${escapeHTML(item.luckyNo)}</td>
+        <td>${escapeHTML(item.winner)}</td>
+        <td>${escapeHTML(item.company)}</td>
+        <td>${escapeHTML(item.prize)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function escapeHTML(str) {
+    if (!str) return "";
+    return String(str).replace(/[&<>'"]/g, 
+      tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+  }
+
+  /* ==========================================
+     SUNTIKAN BANNER AUTOMATIK (DARI LOGIK LAMA)
+     ========================================== */
+  function injectBanners() {
+    if (!document.getElementById("fullscreenHeader")) {
+      const fsHeader = document.createElement("div");
+      fsHeader.id = "fullscreenHeader";
+      fsHeader.innerHTML = `
+        <div class="fs-sub-title">TROPICAL DINNER 2026</div>
+        <div class="fs-main-title">LIVE LUCKY DRAW WINNERS</div>
+      `;
+      document.body.insertBefore(fsHeader, document.body.firstChild);
+    }
+
+    if (!document.getElementById("fullscreenFooter")) {
+      const fsFooter = document.createElement("div");
+      fsFooter.id = "fullscreenFooter";
+      fsFooter.innerHTML = `
+        <p>Kindly collect your lucky draw prize at the registration counter before leaving the event.</p>
+      `;
+      document.body.appendChild(fsFooter);
+    }
+  }
+
+  /* ==========================================
+     KAWALAN SLIDESHOW AUTOMATIK
+     ========================================== */
+  function playSlide() {
+    if (slideInterval) clearInterval(slideInterval); 
+
+    slideInterval = setInterval(() => {
+      const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+      if (totalPages <= 1) return;
+
+      if (currentPage < totalPages) {
+        currentPage++;
+      } else {
+        currentPage = 1; 
+      }
+      renderPage();
+    }, 5000); // Bertukar setiap 5 saat
+  }
+
+  function pauseSlide() {
+    if (slideInterval) {
+      clearInterval(slideInterval);
+      slideInterval = null;
+    }
+    currentPage = 1;
+    renderPage();
+  }
+
+  /* ==========================================
+     FUNGSI SKRIN PENUH (FULLSCREEN API)
+     ========================================== */
+  function toggleBrowserFullscreen() {
+    const docEl = document.documentElement;
+    if (!document.fullscreenElement) {
+      docEl.requestFullscreen().catch(console.error);
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  // Permulaan Aturcara secara Automatik sewaktu dipanggil
+  window.addEventListener('DOMContentLoaded', () => {
+    injectBanners();
+    playSlide(); // Terus jalankan slaid pergerakan automatik
+  });
+</script>
+
+</body>
+</html>
