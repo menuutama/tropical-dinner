@@ -19,7 +19,7 @@ const searchHTML = `
       id="searchInput"
       placeholder="Search Lucky No / Winner / Company"
     />
-    <button class="clear-btn" id="clearBtn">✕</button>
+    <button class="clear-btn" id="clearBtn">x</button>
   </div>
 </div>
 `;
@@ -199,7 +199,7 @@ function renderPagination() {
 
   let html = "";
 
-  html += `<button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>First</button>`;
+  html += `<button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>First Page</button>`;
 
   let startPage = Math.max(currentPage - 1, 1);
   let endPage = Math.min(startPage + 2, totalPages);
@@ -212,7 +212,7 @@ function renderPagination() {
     html += `<button class="${i === currentPage ? "active" : ""}" onclick="goToPage(${i})">${i}</button>`;
   }
 
-  html += `<button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>Last</button>`;
+  html += `<button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>Last Page</button>`;
 
   pagination.innerHTML = html;
 }
@@ -338,7 +338,7 @@ function playSlide() {
     
     renderPage();
     renderPagination();
-  }, 5000); // 5000ms = 5 saat untuk setiap halaman. Boleh ubah ikut kesesuaian.
+  }, 7000); // 5000ms = 5 saat untuk setiap halaman. Boleh ubah ikut kesesuaian.
 }
 
 // Menghentikan pergerakan halaman automatik
