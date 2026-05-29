@@ -82,7 +82,7 @@ body{
   width:10px;
   height:10px;
   border-radius:50%;
-  background: #red; /* Latar belakang hijau neon */
+  background: red; /* Latar belakang hijau neon */
   color: #ff0055;      /* Warna teks merah neon */
   animation:pulse 1s infinite;
 }
@@ -383,7 +383,7 @@ tbody td{
 
   table th:nth-child(1),
   table td:nth-child(1){
-    width:15%;
+    width:20%;
   }
 
   table th:nth-child(2),
