@@ -9,6 +9,7 @@ body{
   min-height:100vh;
   color:white;
   overflow-x:hidden;
+  overflow-y:auto;
 
   background:
   linear-gradient(rgba(0,0,20,0.82), rgba(0,0,20,0.82)),
@@ -115,7 +116,6 @@ body{
 table{
   width:100%;
   border-collapse:collapse;
-  table-layout:fixed;
 }
 
 thead{
@@ -344,16 +344,10 @@ tbody td{
     display:none !important;
   }
 
-  .table-wrapper{
-    overflow-x:hidden;
-    overflow-y:auto;
-
-    max-height:calc(100vh - 280px);
-
-    -webkit-overflow-scrolling:touch;
-
-    border-radius:16px;
-  }
+.table-wrapper{
+  overflow:visible;
+  border-radius:16px;
+}
 
   table{
     width:100% !important;
@@ -462,7 +456,6 @@ tbody td{
   }
 
   .table-wrapper{
-    max-height:calc(100vh - 340px);
     border-radius:20px;
   }
 
