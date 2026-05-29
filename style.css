@@ -195,7 +195,7 @@ tbody td{
   border-radius:12px;
 
   background:rgba(255,255,255,0.08);
-  color:white; transparent:70%;
+  color:white;
 
   cursor:pointer;
 
@@ -361,6 +361,7 @@ tbody td{
   thead th{
     font-size:11px;
     padding:12px 8px;
+    border-radius:16px;
 
     position:sticky;
     top:0;
