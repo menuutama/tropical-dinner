@@ -43,6 +43,7 @@ body{
 .header{
   text-align:center;
   margin-bottom:20px;
+  margin-top:20px;
 }
 
 .sub-title{
@@ -116,7 +117,7 @@ body{
 table{
   width:100%;
   border-collapse:collapse;
-  border-radius:50%;
+  border-radius:60%;
 }
 
 thead{
