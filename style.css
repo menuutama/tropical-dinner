@@ -685,3 +685,45 @@ body.fullscreen-active td {
   padding: 15px;
   text-align: center;
 }
+/* ====================================================================
+   RESPONSIF JADUAL UNTUK PHONE & TABLET (Skrin 1024px dan ke bawah)
+==================================================================== */
+@media screen and (max-width: 1024px) {
+  
+  /* 1. Memastikan kontena jadual berada di tengah skrin */
+  .table-container, 
+  table {
+    margin: 0 auto !important; /* Center kan jadual */
+    width: 95% !important;     /* Beri sedikit ruang di kiri & kanan skrin */
+    max-width: 100%;
+  }
+
+  /* 2. Format 'Wrap' untuk teks di dalam sel */
+  table th, 
+  table td {
+    white-space: normal !important;  /* Paksa teks bersambung ke bawah jika panjang (Wrap) */
+    word-break: break-word !important; /* Pecahkan perkataan panjang supaya tidak melimpah keluar */
+    overflow-wrap: break-word !important;
+    text-align: center !important;   /* Semua kandungan teks berada di tengah sel */
+    padding: 10px 6px !important;    /* Saiz ruang dalam sel yang lebih mesra skrin kecil */
+    font-size: 0.9rem !important;    /* Kecilkan sedikit tulisan agar muat */
+  }
+
+  /* 3. Menghalang jadual daripada memaksa skrin menjadi skrol melintang yang buruk */
+  table {
+    table-layout: fixed !important; /* Paksa kolum mengikut saiz yang ditetapkan, bukan memanjang ke kanan */
+  }
+
+  /* Contoh tetapan anggaran lebar kolum (Suaikan mengikut keperluan anda) */
+  table th:nth-child(1), table td:nth-child(1) { width: 15%; } /* Place */
+  table th:nth-child(2), table td:nth-child(2) { width: 20%; } /* Lucky No */
+  table th:nth-child(3), table td:nth-child(3) { width: 25%; } /* Winner */
+  table th:nth-child(4), table td:nth-child(4) { width: 20%; } /* Company */
+  table th:nth-child(5), table td:nth-child(5) { width: 20%; } /* Prize */
+
+  /* 4. Memastikan badge tempat (place-badge) juga berada di tengah */
+  .place-badge {
+    margin: 0 auto !important;
+    display: inline-block;
+  }
+}
