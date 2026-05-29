@@ -266,7 +266,7 @@ tbody td{
   background:transparent;
   border:none;
   outline:none;
-  color:nion;
+  color:nion,10%;
   padding:10px 12px;
   font-size:13px;
 }
