@@ -82,7 +82,8 @@ body{
   width:10px;
   height:10px;
   border-radius:50%;
-  background:#00ff88;
+  background: #00ff88; /* Latar belakang hijau neon */
+  color: #ff0055;      /* Warna teks merah neon */
   animation:pulse 1s infinite;
 }
 
@@ -174,6 +175,7 @@ tbody td{
 
 .footer{
   margin-top:20px;
+  margin-bottom:90px;
 }
 
 .pagination{
@@ -209,7 +211,7 @@ tbody td{
 
 .pagination button:hover,
 .control-buttons button:hover{
-  background:#009dff;
+/*  background:#009dff;*/
   transform:translateY(-2px);
 }
 
