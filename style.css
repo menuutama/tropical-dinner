@@ -82,7 +82,7 @@ body{
   width:10px;
   height:10px;
   border-radius:50%;
-  background: #00ff88; /* Latar belakang hijau neon */
+  background: #red; /* Latar belakang hijau neon */
   color: #ff0055;      /* Warna teks merah neon */
   animation:pulse 1s infinite;
 }
