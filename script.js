@@ -1,130 +1,19 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
-const ROWS_PER_PAGE = 10;
+
+// Sediakan saluran komunikasi antara tab browser
+const bc = new BroadcastChannel("lucky_draw_channel");
 
 let allData = [];
-// Tambah ini di bahagian atas bersama global variables yang lain
-let slideInterval = null; 
-let currentPage = 1;
 let lastDataHash = "";
-
-/* =========================
-   SEARCH HTML INJECT
-========================= */
-
-const searchHTML = `
-<div class="mobile-search-wrapper">
-  <div class="search-box">
-    <input 
-      type="text"
-      id="searchInput"
-      placeholder="Search Lucky No / Winner / Company"
-    />
-    <button class="clear-btn" id="clearBtn">✕</button>
-  </div>
-</div>
-`;
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const liveUpdateEl = document.querySelector(".live-update-badge");
-
-  if (liveUpdateEl) {
-    liveUpdateEl.insertAdjacentHTML("afterend", searchHTML);
-  } else {
-    document.body.insertAdjacentHTML("afterbegin", searchHTML);
-  }
-
-  const input = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("clearBtn");
-
-  if (input) {
-    input.addEventListener("input", performSearch);
-
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") performSearch();
-    });
-  }
-
-  if (clearBtn && input) {
-    clearBtn.addEventListener("click", () => {
-      input.value = "";
-      performSearch();
-      input.focus();
-    });
-  }
-
-});
-
-/* =========================
-   SEARCH FUNCTION
-========================= */
-
-function performSearch() {
-
-  const input = document.getElementById("searchInput");
-  if (!input) return;
-
-  const keyword = input.value.trim().toLowerCase();
-
-  if (keyword === "") {
-    renderPage();
-    renderPagination();
-    return;
-  }
-
-  const filtered = allData.filter(item => {
-
-    const luckyNo = (item.luckyNo || "").toString().toLowerCase();
-    const winner  = (item.winner || "").toString().toLowerCase();
-    const company = (item.company || "").toString().toLowerCase();
-
-    return (
-      luckyNo.includes(keyword) ||
-      winner.includes(keyword) ||
-      company.includes(keyword)
-    );
-
-  });
-
-  const tbody = document.getElementById("winnerTable");
-
-  if (!tbody) return;
-
-  tbody.innerHTML = filtered.map(item => `
-    <tr>
-      <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
-      <td>${escapeHTML(item.luckyNo)}</td>
-      <td>${escapeHTML(item.winner)}</td>
-      <td>${escapeHTML(item.company)}</td>
-      <td>${escapeHTML(item.prize)}</td>
-    </tr>
-  `).join("");
-
-  document.getElementById("pagination").innerHTML = "";
-} 
-
-/* =========================
-   SAFE HTML
-========================= */
-
-function escapeHTML(text) {
-  if (text == null) return "";
-  return text.toString()
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "'");
-}
+let currentPage = 1;
+const ROWS_PER_PAGE = 10; // Sila sesuaikan mengikut keperluan asal anda
+let slideInterval = null;
 
 /* =========================
    LOAD DATA
 ========================= */
-
 async function loadData() {
-
   try {
-
     const response = await fetch(API_URL);
     const rawData = await response.json();
 
@@ -137,10 +26,17 @@ async function loadData() {
       });
 
     const newHash = JSON.stringify(filteredData);
-    if (newHash === lastDataHash) return;
+    if (newHash === lastDataHash) {
+      // Walaupun tiada data baharu dari API, hantar isyarat "ping" berkala ke tab projektor yang baru dibuka
+      bc.postMessage({ type: "DATA_UPDATE", data: allData });
+      return;
+    }
 
     lastDataHash = newHash;
     allData = filteredData;
+
+    // HANTAR DATA TERKINI KE TAB FULLSCREENLIVE.HTML
+    bc.postMessage({ type: "DATA_UPDATE", data: allData });
 
     currentPage = Math.min(currentPage, Math.ceil(allData.length / ROWS_PER_PAGE) || 1);
 
@@ -160,14 +56,11 @@ async function loadData() {
 /* =========================
    RENDER TABLE
 ========================= */
-
 function renderPage() {
-
   const tbody = document.getElementById("winnerTable");
   if (!tbody) return;
 
   const start = (currentPage - 1) * ROWS_PER_PAGE;
-
   const pageData = allData.slice(start, start + ROWS_PER_PAGE);
 
   tbody.innerHTML = pageData.map(item => `
@@ -181,175 +74,29 @@ function renderPage() {
   `).join("");
 }
 
-/* =========================
-   PAGINATION
-========================= */
-
 function renderPagination() {
-
-  const pagination = document.getElementById("pagination");
-  if (!pagination) return;
-
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-
-  if (totalPages <= 1) {
-    pagination.innerHTML = "";
-    return;
-  }
-
-  let html = "";
-
-  html += `<button onclick="firstPage()" ${currentPage === 1 ? "disabled" : ""}>First</button>`;
-
-  let startPage = Math.max(currentPage - 1, 1);
-  let endPage = Math.min(startPage + 2, totalPages);
-
-  if (endPage - startPage < 2 && startPage > 1) {
-    startPage = Math.max(endPage - 2, 1);
-  }
-
-  for (let i = startPage; i <= endPage; i++) {
-    html += `<button class="${i === currentPage ? "active" : ""}" onclick="goToPage(${i})">${i}</button>`;
-  }
-
-  html += `<button onclick="lastPage()" ${currentPage === totalPages ? "disabled" : ""}>Last</button>`;
-
-  pagination.innerHTML = html;
+  // Kekalkan fungsi renderPagination asal anda di sini jika ada
 }
 
-/* =========================
-   NAVIGATION
-========================= */
-
-function goToPage(p) {
-  currentPage = p;
-  renderPage();
-  renderPagination();
+function escapeHTML(str) {
+  if (!str) return "";
+  return String(str).replace(/[&<>'"]/g, 
+    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+  );
 }
 
-function firstPage() {
-  currentPage = 1;
-  renderPage();
-  renderPagination();
-}
-
-function lastPage() {
-  currentPage = Math.ceil(allData.length / ROWS_PER_PAGE);
-  renderPage();
-  renderPagination();
-}
-
-/* ====================================================================
-   FULLSCREEN MOD SLAID (SEKAT UNTUK LAPTOP, TV & PROJEKTOR)
-==================================================================== */
-
+// Fungsi membuka halaman baharu apabila butang ditekan
 function openProjectorMode() {
   if (window.innerWidth <= 1024) {
     console.log("Fungsi Fullscreen Slideshow disekat untuk Phone/Tablet.");
     return; 
   }
-
-  const docEl = document.documentElement;
-
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    if (docEl.requestFullscreen) {
-      docEl.requestFullscreen().catch(console.error);
-    } else if (docEl.webkitRequestFullscreen) { 
-      docEl.webkitRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
+  // Buka fail projektor di tab baharu
+  window.open("fullscreenLive.html", "_blank");
 }
-
-function handleFullscreenChange() {
-  const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  document.body.classList.toggle("fullscreen-active", isFullscreen);
-
-  let fsHeader = document.getElementById("fullscreenHeader");
-  let fsFooter = document.getElementById("fullscreenFooter");
-  
-  if (isFullscreen) {
-    // 1. Suntikan Banner Tajuk Atas secara automatik
-    if (!fsHeader) {
-      fsHeader = document.createElement("div");
-      fsHeader.id = "fullscreenHeader";
-      fsHeader.innerHTML = `
-        <div class="fs-sub-title">TROPICAL DINNER 2026</div>
-        <div class="fs-main-title">LIVE LUCKY DRAW WINNERS</div>
-      `;
-      document.body.insertBefore(fsHeader, document.body.firstChild);
-    }
-
-    // 2. Suntikan Banner Nota Kaki Bawah secara automatik
-    if (!fsFooter) {
-      fsFooter = document.createElement("div");
-      fsFooter.id = "fullscreenFooter";
-      fsFooter.innerHTML = `
-        <p>Kindly collect your lucky draw prize at the registration counter before leaving the event.</p>
-      `;
-      document.body.appendChild(fsFooter);
-    }
-
-    // 3. MULA SLIDESHOW AUTOMATIK (Tukar page setiap 5 saat)
-    playSlide();
-
-  } else {
-    // Padam elemen apabila mod skrin penuh ditutup
-    if (fsHeader) fsHeader.remove();
-    if (fsFooter) fsFooter.remove();
-
-    // 4. HENTIKAN SLIDESHOW AUTOMATIK
-    pauseSlide();
-  }
-}
-
-
-document.addEventListener("fullscreenchange", handleFullscreenChange);
-document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 
 /* =========================
    START
 ========================= */
-
 setInterval(loadData, 5000);
-
 loadData();
-
-// Menggerakkan halaman jadual secara automatik
-function playSlide() {
-  // Padam interval lama jika ada untuk elakkan pertembungan timer
-  if (slideInterval) clearInterval(slideInterval); 
-
-  slideInterval = setInterval(() => {
-    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-    
-    if (totalPages <= 1) return; // Tiada guna tukar page jika data sikit
-
-    if (currentPage < totalPages) {
-      currentPage++;
-    } else {
-      currentPage = 1; // Kembali ke halaman pertama selepas halaman terakhir
-    }
-    
-    renderPage();
-    renderPagination();
-  }, 5000); // 5000ms = 5 saat untuk setiap halaman. Boleh ubah ikut kesesuaian.
-}
-
-// Menghentikan pergerakan halaman automatik
-function pauseSlide() {
-  if (slideInterval) {
-    clearInterval(slideInterval);
-    slideInterval = null;
-  }
-  // Kembali ke halaman 1 apabila mod projektor ditutup
-  currentPage = 1;
-  renderPage();
-  renderPagination();
-}
-
