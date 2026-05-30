@@ -77,7 +77,7 @@ body::before{
 }
 
 .sub-title{
-  margin-top: 20px;
+  margin-top: 5px;
   font-size:clamp(20px,3vw,68px);
   letter-spacing:4px;
   font-weight:600;
@@ -417,6 +417,7 @@ body.fullscreen-active {
 
 body.fullscreen-active .control-buttons,
 body.fullscreen-active .pagination,
+body.fullscreen-active .live-box,
 body.fullscreen-active .mobile-search-wrapper{
   display: none !important;
 }
