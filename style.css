@@ -77,7 +77,7 @@ body::before{
 }
 
 .sub-title{
-  margin-top: 5px;
+  margin-top: 15px;
   font-size:clamp(20px,3vw,68px);
   letter-spacing:4px;
   font-weight:600;
@@ -91,7 +91,7 @@ body::before{
 }
 
 .title{
-  margin-top:10px;
+  margin-top:5px;
 
   font-size:clamp(28px,4vw,72px);
   font-weight:700;
@@ -263,7 +263,7 @@ thead th{
 }
 
 tbody td{
-  padding:18px;
+  /*padding:18px;*/
   text-align:center;
   word-wrap:break-word;
   overflow-wrap:break-word;
@@ -332,6 +332,7 @@ tbody tr:hover{
 ========================= */
 
 .footer{
+   margin:0;
   margin-bottom:20px;
   font-size:clamp(10px,1.3vw,26px);
 }
@@ -478,7 +479,7 @@ body.fullscreen-active .table-wrapper {
 }
 
 body.fullscreen-active table {
-  width: 100%;
+  width: 95%;
   height: 100%;
   table-layout: fixed; /* Paksa lebar kolum kekal sama */
   border-collapse: collapse;
