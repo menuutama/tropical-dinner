@@ -73,7 +73,7 @@ body{
   border-radius:999px;
 
   background:rgba(0,150,255,0.15);
-  border:1px solid rgba(0,180,255,0.3);
+  border:1px solid rgbayyy0,180,255,0.3);
 
   backdrop-filter:blur(10px);
 }
@@ -118,7 +118,7 @@ body{
 table{
   width:100%;
   border-collapse:collapse;
-  border-radius:60%;
+  border-radius:24%;
 }
 
 thead{
@@ -211,7 +211,7 @@ tbody td{
 
 .pagination button:hover,
 .control-buttons button:hover{
-/ background:#009dff;
+/* background:#009dff;*/
   transform:translateY(-2px);
 }
 
@@ -269,7 +269,7 @@ tbody td{
   background:transparent;
   border:none;
   outline:none;
-  color:white,10%;
+  color:white;
   padding:10px 12px;
   font-size:13px;
 }
@@ -287,7 +287,7 @@ tbody td{
 
   background:rgba(0, 243, 255, 0.1)
 
-  color:white;
+ /* color:white;*/
 
   font-size:16px;
   font-weight:bold;
