@@ -456,13 +456,14 @@ body.fullscreen-active .place-badge{
 }
 
 body.fullscreen-active .container{
-  width:98%;
+  width:90%;
   max-width:none;
   padding:10px;
 }
 
 body.fullscreen-active .table-wrapper{
-  margin-top:0;
+  margin-top:20;
+  margin-bottom:20;
 }
 /* =========================
    PHONE
@@ -499,7 +500,7 @@ body.fullscreen-active .table-wrapper{
   }
 
      table{
-    font-size:11px;
+    font-size:16px;
   }
 
   thead th{
@@ -557,7 +558,7 @@ body.fullscreen-active .table-wrapper{
 @media(min-width:1600px){
 
   .container{
-    width:95%;
+    width:90%;
   }
 
   table{
