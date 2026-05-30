@@ -78,7 +78,7 @@ body::before{
 
 .sub-title{
   margin-top: 50px;
-  font-size:clamp(24px,3vw,70px);
+  font-size:clamp(20px,3vw,68px);
   letter-spacing:4px;
   font-weight:600;
 
