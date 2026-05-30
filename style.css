@@ -78,7 +78,7 @@ body::before{
 
 .sub-title{
   margin-top: 50px;
-  font-size:clamp(18px,1.8vw,50px);
+  font-size:clamp(24px,3vw,70px);
   letter-spacing:4px;
   font-weight:600;
 
@@ -336,7 +336,7 @@ tbody tr:hover{
 }
 
 .pagination{
-  font-size:clamp(10px,1vw,18px);
+  font-size:clamp(10px,1.3vw,26px);
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
