@@ -3,8 +3,7 @@
 ========================= */
 
 *{
-  margin-top:20;
-  margin-bottom:20;
+  margin:0;
   padding:0;
   box-sizing:border-box;
 }
@@ -78,11 +77,11 @@ body::before{
 }
 
 .sub-title{
-    font-size: clamp(20px, 5vw, 70px);
+  font-size:clamp(16px,2vw,30px);
   letter-spacing:4px;
   font-weight:600;
 
- color:#ff3b3b;
+    color:#ff3b3b;
 
   text-shadow:
   0 0 10px #ff3b3b,
@@ -93,7 +92,7 @@ body::before{
 .title{
   margin-top:10px;
 
-  font-size:clamp(28px,5vw,80px);
+  font-size:clamp(28px,4vw,72px);
   font-weight:700;
 
   color:white;
@@ -163,7 +162,7 @@ body::before{
 .mobile-search-wrapper{
   display:none;
   justify-content:center;
-  margin-bottom:10px;
+  margin-bottom:20px;
 }
 
 .search-box{
@@ -240,9 +239,8 @@ body::before{
 
 table{
   width:100%;
-  font-size: clamp(11px, 1.2vw, 26px);
-  border-collapse:collapse;
   table-layout:fixed;
+  border-collapse:collapse;
 }
 
 thead{
@@ -257,15 +255,17 @@ thead{
 thead th{
   color:#081329;
   padding:18px;
-  font-size: clamp(18px, 1.2vw, 36px);
+  font-size:16px;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
 }
 
 tbody td{
   padding:18px;
   text-align:center;
-  font-size: clamp(11px, 1.2vw, 28px);
   word-wrap:break-word;
   overflow-wrap:break-word;
+
   border-bottom:
   1px solid rgba(255,255,255,.08);
 }
@@ -273,31 +273,33 @@ tbody td{
 th:nth-child(1),
 td:nth-child(1){
   width:15%;
-  font-size: clamp(11px, 1.2vw, 26px);
 }
 
 th:nth-child(2),
 td:nth-child(2){
   width:15%;
-   font-size: clamp(11px, 1.2vw, 26px);
 }
 
 th:nth-child(3),
 td:nth-child(3){
   width:30%;
-   font-size: clamp(11px, 1.2vw, 26px);
+  white-space:normal;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+
+  overflow:hidden;
 }
 
 th:nth-child(4),
 td:nth-child(4){
   width:20%;
-   font-size: clamp(11px, 1.2vw, 26px);
 }
 
 th:nth-child(5),
 td:nth-child(5){
   width:20%;
-   font-size: clamp(11px, 1.2vw, 26px);
 }
 
 tbody tr:nth-child(even){
@@ -313,7 +315,7 @@ tbody tr:hover{
 .place-badge{
 
   display:inline-block;
-  font-size: clamp(10px, 1vw, 24px);
+
   padding:8px 15px;
 
   border-radius:999px;
@@ -397,7 +399,7 @@ tbody tr:hover{
 
   color:#ffcb56;
 
-    font-size: clamp(14px, 2vw, 50px);
+  font-size:14px;
 }
 
 /* =========================
@@ -417,18 +419,17 @@ body.fullscreen-active .mobile-search-wrapper{
 
 #fullscreenHeader{
   text-align:center;
-  font-size: clamp(28px, 5vw, 72px);
   padding:20px;
 }
 
 .fs-sub-title{
   color:#ffcb56;
-  font-size: clamp(26px, 5vw, 70px);
+  font-size:26px;
   letter-spacing:4px;
 }
 
 .fs-main-title{
-  font-size: clamp(28px, 5vw, 72px);
+  font-size:54px;
   font-weight:700;
 
   text-shadow:
@@ -437,44 +438,87 @@ body.fullscreen-active .mobile-search-wrapper{
 
 #fullscreenFooter{
   text-align:center;
-  padding:24px;
-  font-size: clamp(18px, 5vw, 68px);
+  padding:15px;
   color:#ffcb56;
 }
 
-/* =========================
-   FULLSCREEN FONT SIZE
-========================= */
+body.fullscreen-active .container{
+  width:98%;
+  max-width:none;
+  padding:20px;
+}
 
 body.fullscreen-active table{
-  font-size:36px;
+  font-size:32px;
 }
 
 body.fullscreen-active thead th{
-  font-size:2.2vw;
+  font-size:34px;
   padding:25px 10px;
 }
 
 body.fullscreen-active tbody td{
-  font-size:2vw;
+  font-size:32px;
   padding:22px 10px;
 }
 
 body.fullscreen-active .place-badge{
-  font-size:1.5vw;
+  font-size:28px;
   padding:12px 22px;
 }
 
+body.fullscreen-active .title{
+  font-size:80px;
+}
+
+body.fullscreen-active .sub-title{
+  font-size:40px;
+}
+
+body.fullscreen-active .header{
+  display:none;
+}
+
+body.fullscreen-active .footer{
+  display:none;
+}
+
+body.fullscreen-active .notice{
+  display:none;
+}
+
 body.fullscreen-active .container{
-  width:90%;
+  width:98%;
   max-width:none;
   padding:10px;
 }
 
 body.fullscreen-active .table-wrapper{
-  margin-top:20;
-  margin-bottom:20;
+  margin-top:0;
 }
+/* =========================
+   FULLSCREEN FONT SIZE
+========================= */
+
+body.fullscreen-active table{
+  font-size:32px;
+}
+
+body.fullscreen-active thead th{
+  font-size:34px;
+  padding:25px 10px;
+}
+
+body.fullscreen-active tbody td{
+  font-size:32px;
+  padding:22px 10px;
+}
+
+body.fullscreen-active .place-badge{
+  font-size:28px;
+  padding:12px 22px;
+}
+
 /* =========================
    PHONE
 ========================= */
@@ -490,13 +534,23 @@ body.fullscreen-active .table-wrapper{
   }
 
   table{
-    font-size:12px;
+    font-size:11px;
   }
 
-  thead th,
+  thead th{
+    padding:8px 4px;
+  }
   tbody td{
-    font-size:12px;
-    padding:9px;
+    padding:10px 4px;
+  }
+
+     .table-wrapper{
+    overflow:hidden;
+  }
+
+  .place-badge{
+    padding:6px 10px;
+    font-size:11px;
   }
 }
 
@@ -510,39 +564,6 @@ body.fullscreen-active .table-wrapper{
     display:flex;
   }
 
-     table{
-    font-size:16px;
-  }
-
-  thead th{
-    padding:8px 4px;
-  }
-
-  tbody td{
-    font-size:15px;
-    padding:10px 4px;
-  }
-
-   td:nth-child(3){
-
-  white-space:normal;
-
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-
-  overflow:hidden;
-}
-
-     .table-wrapper{
-    overflow:hidden;
-  }
-
-  .place-badge{
-    padding:6px 10px;
-    font-size:11px;
-  }
-   
   .projector-trigger-btn{
     display:none;
   }
@@ -561,10 +582,6 @@ body.fullscreen-active .table-wrapper{
   .projector-trigger-btn{
     display:inline-block;
   }
-   
-     tbody td{
-    font-size:18px;
-  }
 }
 
 /* =========================
@@ -574,25 +591,23 @@ body.fullscreen-active .table-wrapper{
 @media(min-width:1600px){
 
   .container{
-    width:90%;
+    width:95%;
   }
 
   table{
-    font-size:2.5vw;
+    font-size:24px;
   }
 
   thead th{
     padding:25px;
-    font-size:2.2vw;
   }
 
   tbody td{
-    font-size:2vw;
     padding:25px;
   }
 
   .place-badge{
-    font-size:1.5vw;
+    font-size:22px;
   }
 
   .pagination button,
