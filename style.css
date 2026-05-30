@@ -405,133 +405,18 @@ tbody tr:hover{
 /* =========================
    FULLSCREEN MODE
 ========================= */
-body.fullscreen-active {
-  cursor: none;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden; /* Sekat terus fungsi skrol utama pada skrin */
-  box-sizing: border-box;
-}
-
-body.fullscreen-active .control-buttons,
-body.fullscreen-active .pagination,
-body.fullscreen-active .live-box,
-body.fullscreen-active .mobile-search-wrapper {
-  display: none !important;
-}
-
-/* PEMBETULAN: Ditambah titik (.) pada class dan ditukar 'active' kepada 'block' */
-body.fullscreen-active .header,
-body.fullscreen-active .footer,
-body.fullscreen-active .notice {
-   display: block !important;
-}
-
-/* Struktur Utama Flexbox */
-body.fullscreen-active .container {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  max-width: none;
-  padding: 2vh 2vw; /* Pading responsif ikut saiz skrin */
-  box-sizing: border-box;
-  justify-content: space-between;
-}
-
-/* Header Section */
-#fullscreenHeader {
-  text-align: center;
-  padding: 0;
-  margin: 0 0 1vh 0; /* Jarak bawah kecil */
-  flex-shrink: 0; /* Halang header daripada mengecil */
-}
-
-.fs-sub-title {
-  color: #ffcb56;
-  font-size: clamp(16px, 3vh, 36px); 
-  letter-spacing: 4px;
-}
-
-.fs-main-title {
-  font-size: clamp(24px, 5vh, 70px);
-  font-weight: 700;
-  text-shadow: 0 0 20px #00aaff;
-}
-
-body.fullscreen-active .title {
-  font-size: clamp(30px, 6vh, 90px);
-}
-
-body.fullscreen-active .sub-title {
-  font-size: clamp(18px, 3vh, 45px);
-}
-
-/* Table Wrapper & Table Section */
-body.fullscreen-active .table-wrapper {
-  margin-top: 0;
-  flex-grow: 1; /* Ambil baki ruang kosong di tengah skrin */
-  overflow: hidden; /* Pastikan kandungan jadual tidak melimpah keluar wrapper */
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Letakkan table di tengah secara melintang */
-}
-
-/* MENUKAR TABLE KEPADA STRUKTUR FLEXBOX */
-body.fullscreen-active table {
-  width: 95%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-collapse: collapse;
-}
-
-body.fullscreen-active thead {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0; /* Kekalkan kedudukan header jadual */
-}
-
-body.fullscreen-active tbody {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow-y: auto; /* Jika row > 10, bahagian dalam tbody sahaja boleh skrol rahsia */
-  scrollbar-width: none; /* Sorok scrollbar di Firefox */
-}
-
-body.fullscreen-active tbody::-webkit-scrollbar {
-  display: none; /* Sorok scrollbar di Chrome/Safari */
-}
-
-/* SET SETIAP ROW (TH & TR) */
-body.fullscreen-active thead tr,
-body.fullscreen-active tbody tr {
-  display: flex;
-  width: 100%;
-  
-  /* PEMBETULAN UTAMA: Kekalkan saiz row jika < 10 dan fit tepat jika cukup 10 */
-  height: 8.5vh; 
-  max-height: 8.5vh; 
-  
-  align-items: center; /* Tulisan sentiasa di tengah secara menegak (vertical center) */
-  box-sizing: border-box;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Garisan nipis antara baris */
-}
-
 /* SET SETIAP CELL KOLUM (TH & TD) */
 body.fullscreen-active thead th,
 body.fullscreen-active tbody td {
   font-size: clamp(14px, 2.2vh, 30px);
-  padding: 0 10px; /* Buang padding vh atas-bawah kerana tinggi dikawal oleh 8.5vh pada row */
+  padding: 0 15px; /* Jarak kiri kanan antara teks kolum */
   box-sizing: border-box;
-  white-space: nowrap; /* Elak teks nama pemenang terputus atau turun ke bawah */
+  white-space: nowrap; 
   overflow: hidden;
-  text-overflow: ellipsis; /* Letak tanda '...' jika teks terlalu panjang */
+  text-overflow: ellipsis;
   
-  flex: 1; /* Bahagikan lebar kolum secara sama rata secara default */
+  display: flex;
+  align-items: center;
 }
 
 body.fullscreen-active thead th {
@@ -539,19 +424,48 @@ body.fullscreen-active thead th {
   font-weight: bold;
 }
 
+/* PEMBETULAN UTAMA: Agihan Lebar Kolum Secara Spesifik */
+/* Kolum 1: PLACE (12%) */
+body.fullscreen-active thead th:nth-child(1),
+body.fullscreen-active tbody td:nth-child(1) {
+  flex: 0 0 12%;
+  justify-content: center; /* Lencana tempat duduk di tengah */
+}
+
+/* Kolum 2: LUCKY NO. (15%) */
+body.fullscreen-active thead th:nth-child(2),
+body.fullscreen-active tbody td:nth-child(2) {
+  flex: 0 0 15%;
+  justify-content: center; /* Nombor bertuah di tengah */
+}
+
+/* Kolum 3: WINNER (35%) - Diberi ruang paling besar supaya nama penuh keluar */
+body.fullscreen-active thead th:nth-child(3),
+body.fullscreen-active tbody td:nth-child(3) {
+  flex: 0 0 35%;
+  justify-content: flex-start; /* Nama rapat ke kiri */
+}
+
+/* Kolum 4: COMPANY (18%) */
+body.fullscreen-active thead th:nth-child(4),
+body.fullscreen-active tbody td:nth-child(4) {
+  flex: 0 0 18%;
+  justify-content: flex-start; /* Nama syarikat rapat ke kiri */
+}
+
+/* Kolum 5: PRIZE (20%) */
+body.fullscreen-active thead th:nth-child(5),
+body.fullscreen-active tbody td:nth-child(5) {
+  flex: 0 0 20%;
+  justify-content: flex-start; /* Nama hadiah rapat ke kiri */
+}
+
 body.fullscreen-active .place-badge {
   font-size: clamp(12px, 2vh, 26px);
   padding: 0.8vh 1.5vw;
+  margin: 0 auto; /* Memastikan lencana kekal di tengah */
 }
 
-/* Footer Section */
-#fullscreenFooter {
-  text-align: center;
-  padding: 1vh;
-  color: #ffcb56;
-  font-size: clamp(12px, 2vh, 28px);
-  flex-shrink: 0; /* Halang footer daripada mengecil */
-}
 /* =========================
    PHONE
 ========================= */
