@@ -417,7 +417,8 @@ body.fullscreen-active .mobile-search-wrapper{
 
 #fullscreenHeader{
   text-align:center;
-  padding:20px;
+  padding:0;
+   margin:0:
 }
 
 .fs-sub-title{
@@ -438,11 +439,11 @@ body.fullscreen-active .mobile-search-wrapper{
   text-align:center;
   padding:15px;
   color:#ffcb56;
-  font-size:clamp(14px,1.2vw,22px);
+  font-size:clamp(14px,1.2vw,32px);
 }
 
 body.fullscreen-active .container{
-  width:98%;
+  width:95%;
   max-width:none;
   padding:20px;
 }
@@ -490,7 +491,7 @@ body.fullscreen-active .body{
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100vh; /* Paksa tinggi mengikut saiz skrin */
+    height: 100%; /* Paksa tinggi mengikut saiz skrin */
     overflow: hidden; /* Menghilangkan fungsi skrol terus */
     box-sizing: border-box;
 }
