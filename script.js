@@ -273,7 +273,15 @@ function handleFullscreenChange() {
   let fsHeader = document.getElementById("fullscreenHeader");
   let fsFooter = document.getElementById("fullscreenFooter");
   
+  // Ambil elemen panel kawalan butang
+  const controlPanel = document.getElementById("mainControlPanel");
+  
   if (isFullscreen) {
+    // SEMBUNYIKAN BUTANG KAWALAN SEMASA FULLSCREEN
+    if (controlPanel) {
+      controlPanel.style.display = "none";
+    }
+
     // 1. Suntikan Banner Tajuk Atas secara automatik
     if (!fsHeader) {
       fsHeader = document.createElement("div");
@@ -295,10 +303,15 @@ function handleFullscreenChange() {
       document.body.appendChild(fsFooter);
     }
 
-    // 3. MULA SLIDESHOW AUTOMATIK (Tukar page setiap 5 saat)
+    // 3. MULA SLIDESHOW AUTOMATIK
     playSlide();
 
   } else {
+    // PAPARKAN SEMULA BUTANG KAWALAN SELEPAS TEKAN ESC
+    if (controlPanel) {
+      controlPanel.style.display = "block"; // atau "flex" mengikut kesesuaian css anda
+    }
+
     // Padam elemen apabila mod skrin penuh ditutup
     if (fsHeader) fsHeader.remove();
     if (fsFooter) fsFooter.remove();
@@ -308,7 +321,6 @@ function handleFullscreenChange() {
   }
 }
 
-
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 
@@ -316,7 +328,7 @@ document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
    START
 ========================= */
 
-setInterval(loadData, 5000);
+setInterval(loadData,3000);
 
 loadData();
 
