@@ -78,7 +78,7 @@ body::before{
 }
 
 .sub-title{
-  font-size:clamp(16px,2vw,50px);
+    font-size: clamp(20px, 5vw, 70px);
   letter-spacing:4px;
   font-weight:600;
 
@@ -93,7 +93,7 @@ body::before{
 .title{
   margin-top:10px;
 
-  font-size:clamp(20px,5vw,80px);
+  font-size:clamp(28px,5vw,80px);
   font-weight:700;
 
   color:white;
@@ -392,7 +392,7 @@ tbody tr:hover{
 
   color:#ffcb56;
 
-  font-size:14px;
+    font-size: clamp(14px, 2vw, 50px);
 }
 
 /* =========================
@@ -412,17 +412,18 @@ body.fullscreen-active .mobile-search-wrapper{
 
 #fullscreenHeader{
   text-align:center;
+  font-size: clamp(28px, 5vw, 72px);
   padding:20px;
 }
 
 .fs-sub-title{
   color:#ffcb56;
-  font-size:26px;
+  font-size: clamp(26px, 5vw, 70px);
   letter-spacing:4px;
 }
 
 .fs-main-title{
-  font-size:54px;
+  font-size: clamp(28px, 5vw, 72px);
   font-weight:700;
 
   text-shadow:
@@ -432,6 +433,7 @@ body.fullscreen-active .mobile-search-wrapper{
 #fullscreenFooter{
   text-align:center;
   padding:24px;
+  font-size: clamp(18px, 5vw, 68px);
   color:#ffcb56;
 }
 
