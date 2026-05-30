@@ -274,8 +274,29 @@ function handleFullscreenChange() {
   let fsFooter = document.getElementById("fullscreenFooter");
   
   // Ambil elemen panel kawalan butang
-  const controlPanel = document.getElementById("mainControlPanel");
-  
+const controlPanel = document.querySelector(".control-buttons");
+
+   const paginationPanel =
+document.getElementById("pagination");
+
+if(isFullscreen){
+
+  if(controlPanel)
+    controlPanel.style.display="none";
+
+  if(paginationPanel)
+    paginationPanel.style.display="none";
+
+}else{
+
+  if(controlPanel)
+    controlPanel.style.display="flex";
+
+  if(paginationPanel)
+    paginationPanel.style.display="flex";
+
+}
+   
   if (isFullscreen) {
     // SEMBUNYIKAN BUTANG KAWALAN SEMASA FULLSCREEN
     if (controlPanel) {
@@ -320,6 +341,7 @@ function handleFullscreenChange() {
     pauseSlide();
   }
 }
+
 
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
