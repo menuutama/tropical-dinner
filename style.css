@@ -405,28 +405,28 @@ tbody tr:hover{
 /* =========================
    FULLSCREEN MODE
 ========================= */
-
 body.fullscreen-active {
   cursor: none;
   margin: 0;
   padding: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* Sekat terus fungsi skrol */
+  overflow: hidden; /* Sekat terus fungsi skrol utama pada skrin */
   box-sizing: border-box;
 }
 
 body.fullscreen-active .control-buttons,
 body.fullscreen-active .pagination,
 body.fullscreen-active .live-box,
-body.fullscreen-active .mobile-search-wrapper{
+body.fullscreen-active .mobile-search-wrapper {
   display: none !important;
 }
 
-fullscreen-active .header,
+/* PEMBETULAN: Ditambah titik (.) pada class dan ditukar 'active' kepada 'block' */
+body.fullscreen-active .header,
 body.fullscreen-active .footer,
-body.fullscreen-active .notice{
-   display: active !important;
+body.fullscreen-active .notice {
+   display: block !important;
 }
 
 /* Struktur Utama Flexbox */
@@ -436,7 +436,7 @@ body.fullscreen-active .container {
   width: 100vw;
   height: 100vh;
   max-width: none;
-  padding: 2vh 2vw; /* Guna vh/vw untuk padding responsif */
+  padding: 2vh 2vw; /* Pading responsif ikut saiz skrin */
   box-sizing: border-box;
   justify-content: space-between;
 }
@@ -451,7 +451,7 @@ body.fullscreen-active .container {
 
 .fs-sub-title {
   color: #ffcb56;
-  font-size: clamp(16px, 3vh, 36px); /* Guna tinggi skrin (vh) sebagai rujukan */
+  font-size: clamp(16px, 3vh, 36px); 
   letter-spacing: 4px;
 }
 
@@ -461,7 +461,7 @@ body.fullscreen-active .container {
   text-shadow: 0 0 20px #00aaff;
 }
 
-.body.fullscreen-active .title {
+body.fullscreen-active .title {
   font-size: clamp(30px, 6vh, 90px);
 }
 
@@ -476,28 +476,67 @@ body.fullscreen-active .table-wrapper {
   overflow: hidden; /* Pastikan kandungan jadual tidak melimpah keluar wrapper */
   display: flex;
   flex-direction: column;
+  align-items: center; /* Letakkan table di tengah secara melintang */
 }
 
+/* MENUKAR TABLE KEPADA STRUKTUR FLEXBOX */
 body.fullscreen-active table {
   width: 95%;
   height: 100%;
-  table-layout: fixed; /* Paksa lebar kolum kekal sama */
+  display: flex;
+  flex-direction: column;
   border-collapse: collapse;
+}
+
+body.fullscreen-active thead {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0; /* Kekalkan kedudukan header jadual */
+}
+
+body.fullscreen-active tbody {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto; /* Jika row > 10, bahagian dalam tbody sahaja boleh skrol rahsia */
+  scrollbar-width: none; /* Sorok scrollbar di Firefox */
+}
+
+body.fullscreen-active tbody::-webkit-scrollbar {
+  display: none; /* Sorok scrollbar di Chrome/Safari */
+}
+
+/* SET SETIAP ROW (TH & TR) */
+body.fullscreen-active thead tr,
+body.fullscreen-active tbody tr {
+  display: flex;
+  width: 100%;
+  
+  /* PEMBETULAN UTAMA: Kekalkan saiz row jika < 10 dan fit tepat jika cukup 10 */
+  height: 8.5vh; 
+  max-height: 8.5vh; 
+  
+  align-items: center; /* Tulisan sentiasa di tengah secara menegak (vertical center) */
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Garisan nipis antara baris */
+}
+
+/* SET SETIAP CELL KOLUM (TH & TD) */
+body.fullscreen-active thead th,
+body.fullscreen-active tbody td {
+  font-size: clamp(14px, 2.2vh, 30px);
+  padding: 0 10px; /* Buang padding vh atas-bawah kerana tinggi dikawal oleh 8.5vh pada row */
+  box-sizing: border-box;
+  white-space: nowrap; /* Elak teks nama pemenang terputus atau turun ke bawah */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Letak tanda '...' jika teks terlalu panjang */
+  
+  flex: 1; /* Bahagikan lebar kolum secara sama rata secara default */
 }
 
 body.fullscreen-active thead th {
   font-size: clamp(16px, 2.5vh, 32px);
-  padding: 1.5vh 10px; /* Padding dinamif ikut tinggi skrin */
-  box-sizing: border-box;
-}
-
-body.fullscreen-active tbody td {
-  font-size: clamp(14px, 2.2vh, 30px);
-  padding: 1.2vh 10px;
-  box-sizing: border-box;
-  white-space: nowrap; /* Elak teks turun baris baru yang buat jadual tinggi */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Letak '...' jika teks terlalu panjang */
+  font-weight: bold;
 }
 
 body.fullscreen-active .place-badge {
@@ -513,7 +552,6 @@ body.fullscreen-active .place-badge {
   font-size: clamp(12px, 2vh, 28px);
   flex-shrink: 0; /* Halang footer daripada mengecil */
 }
-
 /* =========================
    PHONE
 ========================= */
