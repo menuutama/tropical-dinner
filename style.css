@@ -263,7 +263,7 @@ thead th{
 }
 
 tbody td{
-  /*padding:18px;*/
+  padding:18px;
   text-align:center;
   word-wrap:break-word;
   overflow-wrap:break-word;
