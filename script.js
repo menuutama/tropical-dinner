@@ -303,28 +303,7 @@ if(isFullscreen){
       controlPanel.style.display = "none";
     }
 
-    // 1. Suntikan Banner Tajuk Atas secara automatik
-    if (!fsHeader) {
-      fsHeader = document.createElement("div");
-      fsHeader.id = "fullscreenHeader";
-      fsHeader.innerHTML = `
-        <div class="fs-sub-title">TROPICAL DINNER 2026</div>
-        <div class="fs-main-title">LIVE LUCKY DRAW WINNERS</div>
-      `;
-      document.body.insertBefore(fsHeader, document.body.firstChild);
-    }
-
-    // 2. Suntikan Banner Nota Kaki Bawah secara automatik
-    if (!fsFooter) {
-      fsFooter = document.createElement("div");
-      fsFooter.id = "fullscreenFooter";
-      fsFooter.innerHTML = `
-        <p>Kindly collect your lucky draw prize at the registration counter before leaving the event.</p>
-      `;
-      document.body.appendChild(fsFooter);
-    }
-
-    // 3. MULA SLIDESHOW AUTOMATIK
+       // MULA SLIDESHOW AUTOMATIK
     playSlide();
 
   } else {
@@ -333,11 +312,7 @@ if(isFullscreen){
       controlPanel.style.display = "block"; // atau "flex" mengikut kesesuaian css anda
     }
 
-    // Padam elemen apabila mod skrin penuh ditutup
-    if (fsHeader) fsHeader.remove();
-    if (fsFooter) fsFooter.remove();
-
-    // 4. HENTIKAN SLIDESHOW AUTOMATIK
+     // HENTIKAN SLIDESHOW AUTOMATIK
     pauseSlide();
   }
 }
