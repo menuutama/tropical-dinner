@@ -416,11 +416,17 @@ body.fullscreen-active {
 
 body.fullscreen-active .control-buttons,
 body.fullscreen-active .pagination,
-body.fullscreen-active .mobile-search-wrapper,
+body.fullscreen-active .mobile-search-wrapper
 /*body.fullscreen-active .header,
 body.fullscreen-active .footer,
 body.fullscreen-active .notice*/ {
   display: none !important;
+}
+
+fullscreen-active .header,
+body.fullscreen-active .footer,
+body.fullscreen-active .notice{
+   display: active !important;
 }
 
 /* Struktur Utama Flexbox */
