@@ -25,7 +25,25 @@ const searchHTML = `
 `;
 
 document.addEventListener("DOMContentLoaded", () => {
+   const params = new URLSearchParams(window.location.search);
 
+if (params.get("projector") === "1") {
+
+  setTimeout(() => {
+
+    const docEl = document.documentElement;
+
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(err => {
+        console.log("Fullscreen blocked:", err);
+      });
+    }
+
+    playSlide();
+
+  }, 1000);
+
+}
   const liveUpdateEl = document.querySelector(".live-update-badge");
 
   if (liveUpdateEl) {
@@ -244,10 +262,16 @@ function lastPage() {
 ==================================================================== */
 
 function openProjectorMode() {
-  if (window.innerWidth <= 1024) {
-    console.log("Fungsi Fullscreen Slideshow disekat untuk Phone/Tablet.");
-    return; 
-  }
+
+  if (window.innerWidth <= 1024) return;
+
+  const projectorWindow = window.open(
+    window.location.href + "?projector=1",
+    "_blank",
+    "width=1920,height=1080"
+  );
+
+}
 
   const docEl = document.documentElement;
 
