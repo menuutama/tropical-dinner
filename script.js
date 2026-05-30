@@ -311,7 +311,8 @@ if(isFullscreen){
     if (controlPanel) {
       controlPanel.style.display = "block"; // atau "flex" mengikut kesesuaian css anda
     }
-
+if (fsHeader) fsHeader.remove();
+if (fsFooter) fsFooter.remove();
      // HENTIKAN SLIDESHOW AUTOMATIK
     pauseSlide();
   }
