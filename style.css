@@ -81,11 +81,12 @@ body::before{
   letter-spacing:4px;
   font-weight:600;
 
-  color:#ffcb56;
+ color:#ff3b3b;
 
   text-shadow:
-  0 0 10px #ffcb56,
-  0 0 20px #ffcb56;
+  0 0 10px #ff3b3b,
+  0 0 20px #ff3b3b,
+  0 0 40px #ff3b3b;
 }
 
 .title{
@@ -239,6 +240,7 @@ body::before{
 table{
   width:100%;
   border-collapse:collapse;
+  table-layout:fixed;
 }
 
 thead{
@@ -259,9 +261,35 @@ thead th{
 tbody td{
   padding:18px;
   text-align:center;
-
+  word-wrap:break-word;
+  overflow-wrap:break-word;
   border-bottom:
   1px solid rgba(255,255,255,.08);
+}
+
+th:nth-child(1),
+td:nth-child(1){
+  width:10%;
+}
+
+th:nth-child(2),
+td:nth-child(2){
+  width:15%;
+}
+
+th:nth-child(3),
+td:nth-child(3){
+  width:35%;
+}
+
+th:nth-child(4),
+td:nth-child(4){
+  width:20%;
+}
+
+th:nth-child(5),
+td:nth-child(5){
+  width:20%;
 }
 
 tbody tr:nth-child(even){
@@ -438,6 +466,38 @@ body.fullscreen-active .mobile-search-wrapper{
     display:flex;
   }
 
+     table{
+    font-size:11px;
+  }
+
+  thead th{
+    padding:8px 4px;
+  }
+
+  tbody td{
+    padding:10px 4px;
+  }
+
+   td:nth-child(3){
+
+  white-space:normal;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+
+  overflow:hidden;
+}
+
+     .table-wrapper{
+    overflow:hidden;
+  }
+
+  .place-badge{
+    padding:6px 10px;
+    font-size:11px;
+  }
+   
   .projector-trigger-btn{
     display:none;
   }
