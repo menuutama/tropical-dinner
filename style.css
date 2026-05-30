@@ -257,7 +257,7 @@ thead{
 thead th{
   color:#081329;
   padding:18px;
-  font-size:clamp(12px,1vw,18px);
+  font-size:clamp(10px,1vw,20px);
   word-wrap:break-word;
   overflow-wrap:break-word;
 }
@@ -267,7 +267,7 @@ tbody td{
   text-align:center;
   word-wrap:break-word;
   overflow-wrap:break-word;
-  font-size:clamp(12px,1vw,18px);
+  font-size:clamp(8px,1vw,18px);
 
   border-bottom:
   1px solid rgba(255,255,255,.08);
