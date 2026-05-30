@@ -238,7 +238,7 @@ body::before{
 }
 
 table{
-  width:90%;
+  width:100%;
   border-collapse:collapse;
   table-layout:fixed;
 }
@@ -255,7 +255,7 @@ thead{
 thead th{
   color:#081329;
   padding:18px;
-  font-size:16px;
+  font-size:18px;
 }
 
 tbody td{
@@ -428,7 +428,7 @@ body.fullscreen-active .mobile-search-wrapper{
 
 #fullscreenFooter{
   text-align:center;
-  padding:15px;
+  padding:24px;
   color:#ffcb56;
 }
 
@@ -437,7 +437,7 @@ body.fullscreen-active .mobile-search-wrapper{
 ========================= */
 
 body.fullscreen-active table{
-  font-size:32px;
+  font-size:36px;
 }
 
 body.fullscreen-active thead th{
