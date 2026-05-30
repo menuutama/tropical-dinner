@@ -106,7 +106,7 @@ body{
   width:100%;
   background:rgba(255,255,255,0.05);
   border:1px solid rgba(255,255,255,0.08);
-  border-radius:24px;
+  border-radius:65¡px;
   overflow:hidden;
   backdrop-filter:blur(10px);
 
@@ -350,7 +350,7 @@ tbody td{
 
 .table-wrapper{
   overflow:visible;
-  border-radius:16px;
+  border-radius:10px;
 }
 
   table{
@@ -361,7 +361,7 @@ tbody td{
   thead th{
     font-size:11px;
     padding:12px 8px;
-    border-radius:16px;
+    border-radius:10px;
 
     position:sticky;
     top:0;
