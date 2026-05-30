@@ -1,4 +1,5 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyEIR8saftBM9WH1l-CCbF7d0KdUsbrlmmSfjT-pHcKKgx7B2u6bdWUWYSItL-rJ1bp/exec";
+import { API_URL } from './api.js';
+
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
