@@ -363,5 +363,3 @@ function pauseSlide() {
   renderPage();
   renderPagination();
 }
-
-aku xtau nak ubah dekat mana, kalu aku nak bila tekan button fullscreen tu dia akn pop-up new window browser then fullscreen. nnt bila dia dh popup new window browser baru aku manualy tekan  SHIFT + START + ARROW KIRI ATAU KANAN
