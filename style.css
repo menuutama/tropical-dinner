@@ -77,7 +77,7 @@ body::before{
 }
 
 .sub-title{
-  margin-top: 50px;
+  margin-top: 20px;
   font-size:clamp(20px,3vw,68px);
   letter-spacing:4px;
   font-weight:600;
@@ -332,7 +332,8 @@ tbody tr:hover{
 ========================= */
 
 .footer{
-  margin-top:20px;
+  margin-bottom:20px;
+  font-size:clamp(10px,1.3vw,26px);
 }
 
 .pagination{
@@ -416,10 +417,7 @@ body.fullscreen-active {
 
 body.fullscreen-active .control-buttons,
 body.fullscreen-active .pagination,
-body.fullscreen-active .mobile-search-wrapper
-/*body.fullscreen-active .header,
-body.fullscreen-active .footer,
-body.fullscreen-active .notice*/ {
+body.fullscreen-active .mobile-search-wrapper{
   display: none !important;
 }
 
