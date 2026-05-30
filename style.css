@@ -84,9 +84,9 @@ body::before{
   color:#ff3b3b;
 
   text-shadow:
+  0 0 5px #ff3b3b,
   0 0 10px #ff3b3b,
-  0 0 20px #ff3b3b,
-  0 0 40px #ff3b3b;
+  0 0 20px #ff3b3b;
 }
 
 .title{
@@ -416,7 +416,8 @@ body.fullscreen-active .mobile-search-wrapper{
 /* TABLE BESAR */
 
 body.fullscreen-active .container{
-  width:99%;
+  width:98%;
+  hight:100vw;
   max-width:none;
   padding:10px;
 }
