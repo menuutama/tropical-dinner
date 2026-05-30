@@ -267,7 +267,7 @@ tbody td{
   text-align:center;
   word-wrap:break-word;
   overflow-wrap:break-word;
-  font-size:clamp(9px,1vw,18px);
+  font-size:clamp(10px,1vw,18px);
 
   border-bottom:
   1px solid rgba(255,255,255,.08);
