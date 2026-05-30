@@ -406,13 +406,6 @@ body.fullscreen-active{
   cursor:none;
 }
 
-/* SHOW  UI */
-body.fullscreen-active .header,
-body.fullscreen-active .notice,
-body.fullscreen-active .footer{
-  display:active !important;
-}
-
 /* HIDE  UI */
 body.fullscreen-active .control-buttons,
 body.fullscreen-active .pagination,
