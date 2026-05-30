@@ -278,17 +278,19 @@ function openProjectorMode() {
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen().catch(console.error);
-    } else if (docEl.webkitRequestFullscreen) { 
+    }
+    else if (docEl.webkitRequestFullscreen) { 
       docEl.webkitRequestFullscreen();
     }
-  } else {
+  }
+  else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
+    } 
+    else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
     }
-  }
-}
+
 
 function handleFullscreenChange() {
   const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
