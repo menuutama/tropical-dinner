@@ -405,67 +405,38 @@ tbody tr:hover{
 /* =========================
    FULLSCREEN MODE
 ========================= */
-/* SET SETIAP CELL KOLUM (TH & TD) */
-body.fullscreen-active thead th,
-body.fullscreen-active tbody td {
-  font-size: clamp(14px, 2.2vh, 30px);
-  padding: 0 15px; /* Jarak kiri kanan antara teks kolum */
-  box-sizing: border-box;
-  white-space: nowrap; 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-  display: flex;
-  align-items: center;
+/* Menghentikan skrol dan set saiz skrin penuh */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh; /* Paksa tinggi mengikut saiz skrin */
+    overflow: hidden; /* Menghilangkan fungsi skrol terus */
+    box-sizing: border-box;
 }
 
-body.fullscreen-active thead th {
-  font-size: clamp(16px, 2.5vh, 32px);
-  font-weight: bold;
+/* Letakkan pada container utama yang membungkus semua kandungan */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between; /* Agih ruang kosong secara seimbang */
+    padding: 15px;
 }
 
-/* PEMBETULAN UTAMA: Agihan Lebar Kolum Secara Spesifik */
-/* Kolum 1: PLACE (12%) */
-body.fullscreen-active thead th:nth-child(1),
-body.fullscreen-active tbody td:nth-child(1) {
-  flex: 0 0 12%;
-  justify-content: center; /* Lencana tempat duduk di tengah */
+/* Memastikan jadual/table mengecil secara automatik */
+.table-responsive {
+    flex: 1; /* Ambil baki ruang yang ada tanpa tolak elemen lain keluar skrin */
+    min-height: 0; /* Penting untuk flexbox supaya table boleh mengecil */
+    overflow-y: auto; /* JIKA data table terlalu banyak, hanya dalam petak table sahaja boleh skrol, skrin utama tetap kaku */
 }
 
-/* Kolum 2: LUCKY NO. (15%) */
-body.fullscreen-active thead th:nth-child(2),
-body.fullscreen-active tbody td:nth-child(2) {
-  flex: 0 0 15%;
-  justify-content: center; /* Nombor bertuah di tengah */
+table {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed; /* Paksa kolum ikut lebar yang ditetapkan tanpa lari */
 }
-
-/* Kolum 3: WINNER (35%) - Diberi ruang paling besar supaya nama penuh keluar */
-body.fullscreen-active thead th:nth-child(3),
-body.fullscreen-active tbody td:nth-child(3) {
-  flex: 0 0 35%;
-  justify-content: flex-start; /* Nama rapat ke kiri */
-}
-
-/* Kolum 4: COMPANY (18%) */
-body.fullscreen-active thead th:nth-child(4),
-body.fullscreen-active tbody td:nth-child(4) {
-  flex: 0 0 18%;
-  justify-content: flex-start; /* Nama syarikat rapat ke kiri */
-}
-
-/* Kolum 5: PRIZE (20%) */
-body.fullscreen-active thead th:nth-child(5),
-body.fullscreen-active tbody td:nth-child(5) {
-  flex: 0 0 20%;
-  justify-content: flex-start; /* Nama hadiah rapat ke kiri */
-}
-
-body.fullscreen-active .place-badge {
-  font-size: clamp(12px, 2vh, 26px);
-  padding: 0.8vh 1.5vw;
-  margin: 0 auto; /* Memastikan lencana kekal di tengah */
-}
-
 /* =========================
    PHONE
 ========================= */
