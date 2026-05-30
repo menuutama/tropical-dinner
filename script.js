@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyEIR8saftBM9WH1l-CCbF7d0KdUsbrlmmSfjT-pHcKKgx7B2u6bdWUWYSItL-rJ1bp/exec";
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
