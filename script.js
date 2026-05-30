@@ -1,5 +1,5 @@
-import { API_URL } from './api.js';
-
+//import { API_URL } from './api.js';
+const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
@@ -26,25 +26,7 @@ const searchHTML = `
 `;
 
 document.addEventListener("DOMContentLoaded", () => {
-   const params = new URLSearchParams(window.location.search);
 
-if (params.get("projector") === "1") {
-
-  setTimeout(() => {
-
-    const docEl = document.documentElement;
-
-    if (docEl.requestFullscreen) {
-      docEl.requestFullscreen().catch(err => {
-        console.log("Fullscreen blocked:", err);
-      });
-    }
-
-    playSlide();
-
-  }, 1000);
-
-}
   const liveUpdateEl = document.querySelector(".live-update-badge");
 
   if (liveUpdateEl) {
@@ -263,35 +245,27 @@ function lastPage() {
 ==================================================================== */
 
 function openProjectorMode() {
-
-  if (window.innerWidth <= 1024) return;
-
-  const projectorWindow = window.open(
-    window.location.href + "?projector=1",
-    "_blank",
-    "width=1920,height=1080"
-  );
-
-}
+  if (window.innerWidth <= 1024) {
+    console.log("Fungsi Fullscreen Slideshow disekat untuk Phone/Tablet.");
+    return; 
+  }
 
   const docEl = document.documentElement;
 
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen().catch(console.error);
-    }
-    else if (docEl.webkitRequestFullscreen) { 
+    } else if (docEl.webkitRequestFullscreen) { 
       docEl.webkitRequestFullscreen();
     }
-  }
-  else {
+  } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
-    } 
-    else if (document.webkitExitFullscreen) {
+    } else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
     }
-
+  }
+}
 
 function handleFullscreenChange() {
   const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -389,3 +363,5 @@ function pauseSlide() {
   renderPage();
   renderPagination();
 }
+
+aku xtau nak ubah dekat mana, kalu aku nak bila tekan button fullscreen tu dia akn pop-up new window browser then fullscreen. nnt bila dia dh popup new window browser baru aku manualy tekan  SHIFT + START + ARROW KIRI ATAU KANAN
