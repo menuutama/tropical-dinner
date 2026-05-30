@@ -109,7 +109,7 @@ body::before{
 
 .live-box{
   margin:20px auto 10px;
-  font-size:clamp(12px,1vw,18px);
+  font-size:clamp(10px,1vw,18px);
 
   display:inline-flex;
   align-items:center;
@@ -336,6 +336,7 @@ tbody tr:hover{
 }
 
 .pagination{
+  font-size:clamp(10px,1vw,18px);
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
