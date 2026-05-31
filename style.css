@@ -76,17 +76,25 @@ body::before{
   margin-bottom:25px;
 }
 
-.sub-title{
-  font-size:clamp(18px,2vw,42px);
-  letter-spacing:4px;
-  font-weight:700;
+.sub-title {
+  font-size: clamp(18px, 2vw, 42px);
+  letter-spacing: 4px;
+  font-weight: 700;
 
-  color:#ff3b3b;
+  /* Buat warna gradient (merah gelap ke merah terang/shine) */
+  background: linear-gradient(to bottom, #8b0000 0%, #ff3b3b 50%, #5c0000 100%);
+  
+  /* Potong background mengikut bentuk tulisan */
+  -webkit-background-clip: text;
+  background-clip: text;
+  
+  /* Jadikan warna text asal lutsinar supaya gradient kelihatan */
+  -webkit-text-fill-color: transparent;
 
-  text-shadow:
-  0 0 5px rgba(255, 59, 59, 0.6),
-  0 0 10px rgba(255, 59, 59, 0.4);
+  /* Glow yang lebih lembut dan seimbang */
+  text-shadow: 0 0 8px rgba(255, 59, 59, 0.3);
 }
+
 
 .title{
   margin-top:10px;
