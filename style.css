@@ -84,9 +84,8 @@ body::before{
   color:#ff3b3b;
 
   text-shadow:
-  0 0 5px #ff3b3b,
-  0 0 10px #ff3b3b,
-  0 0 20px #ff3b3b;
+  0 0 5px rgba(255, 59, 59, 0.6),
+  0 0 10px rgba(255, 59, 59, 0.4);
 }
 
 .title{
