@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzZwNdloDzOXhuegoIcVhHzeGWBQ2jOKPbArMEC5P4ikxsBdA6abz2ELsIAAId28TQs/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzQkx9tCL1pfsFB8jWbfdSXLjQOChG9boIY9Ko_XwWVU1SyOSJP9UQvga96bjf6rRfD/exec";
 
 let allData = [];
 let selectedRow = null;
@@ -79,12 +79,16 @@ function renderTable(){
     if(luckyNo === "") return false;
 
     return (
-      String(item.no).toLowerCase().includes(keyword) ||
+      String(item.place).toLowerCase().includes(keyword) ||
       String(item.luckyNo).toLowerCase().includes(keyword) ||
       String(item.employeeName).toLowerCase().includes(keyword) ||
       String(item.companyName).toLowerCase().includes(keyword) ||
       String(item.prize).toLowerCase().includes(keyword)
     );
+  });
+
+  filtered.sort((a, b) => {
+    return Number(a.place) - Number(b.place);
   });
 
   if(filtered.length === 0){
@@ -104,7 +108,7 @@ function renderTable(){
         class="collect-row ${isCollected ? "collected-row-red" : ""}"
         onclick="openPopup(${item.row})"
       >
-        <td>${escapeHTML(item.no)}</td>
+        <td>${escapeHTML(item.place)}</td>
         <td>${escapeHTML(item.luckyNo)}</td>
         <td>${escapeHTML(item.employeeName)}</td>
         <td>${escapeHTML(item.companyName)}</td>
@@ -115,7 +119,7 @@ function renderTable(){
 }
 
 function openPopup(row){
-  selectedRow = allData.find(item => item.row === row);
+  selectedRow = allData.find(item => Number(item.row) === Number(row));
 
   if(!selectedRow) return;
 
@@ -153,7 +157,7 @@ function collectPrize(){
       if(result.status === "success"){
         selectedRow.status = "COLLECT";
         closePopup();
-        renderTable();
+        loadData(false);
       }else{
         alert("Failed to save collection status.");
         collectBtn.disabled = false;
