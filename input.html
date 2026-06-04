@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en"> 
+  <head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Lucky Draw System</title> 
+    <link rel="stylesheet" href="style.css">
+  </head>
+  
+  <body>   
+    <!-- ===== PAGE TITLE ===== -->
+    <header class="hero-header">
+      <h1>TROPICAL DINNER 2026</h1>
+      <h2>Lucky Draw System</h2>
+    </header> 
+    
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="container"> 
+      
+      <!-- INPUT AREA -->
+      <div class="input-box"> 
+        <div class="input-container">
+          <input type="text" id="luckyNo" inputmode="numeric" pattern="[0-9]*" placeholder="Enter Lucky No." oninput="toggleClearBtn()" onkeypress="if(event.key === 'Enter') addItem()" > 
+         <!-- <input type="text" id="luckyNo" inputmode="numeric" pattern="[0-9]*" placeholder="Masukkan nombor bertuah"> -->
+
+          <button type="button" id="clearInputBtn" class="clear-btn" onclick="clearInput()">X</button>
+        </div>
+        <button id="addBtn" onclick="addItem()"> Add </button> 
+      </div> 
+      
+      <!-- TABLE AREA --> 
+      <div class="main-content"> 
+        <div class="table-wrapper">
+          <table> 
+            <thead>
+              <tr> 
+                <th>PLACE</th> 
+                <th>LUCKY NO.</th>
+                <th>WINNER</th>
+                <th>COMPANY</th> 
+                <th>PRIZE</th>
+                <th>ACTION</th>
+              </tr> 
+            </thead> 
+            <tbody id="winnerTable">
+              <!-- Diisi secara dinamik melalui JavaScript -->
+            </tbody> 
+          </table> 
+          
+          <!-- PAGINATION BUTTONS -->
+          <div id="pagination" class="pagination-container"></div>
+        </div>
+      </div> 
+    </div>
+    
+    <!-- ===== JAVASCRIPT LOGIC ===== --> 
+    <script>
+      const API_URL = "https://script.google.com/macros/s/AKfycbxusRPIiXwg1B_39miCIF8Nh6t8qR3guFbLQsBuMGFaknA6tSlTXJ-uVFP0PM-XNb2j/exec";
+      let allData = [];
+
+      // Konfigurasi Pagination
+      let currentPage = 1;
+      const rowsPerPage = 10;
+
+      /* FUNGSI SUSUN DATA (Helper) */
+      function sortData(data) {
+        return data.sort((a, b) => {
+          const numA = parseInt((a.place || "").match(/\d+/) ? (a.place || "").match(/\d+/)[0] : 999, 10);
+          const numB = parseInt((b.place || "").match(/\d+/) ? (b.place || "").match(/\d+/)[0] : 999, 10);
+          return numA - numB; 
+        });
+      }
+
+      /* 1. MUAT TURUN & SUSUN DATA */
+      async function loadData(){
+        try {
+          const res = await fetch(API_URL);
+          const data = await res.json(); 
+          allData = sortData(data);
+          renderTable();
+        } catch(err) {
+          console.error("LOAD ERROR:", err);
+        }
+      }
+
+      /* 2. PAPARKAN JADUAL SECARA PUKAL */
+      function renderTable(){
+        const tbody = document.getElementById("winnerTable");
+        
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const paginatedItems = allData.slice(startIndex, endIndex);
+
+        if (paginatedItems.length === 0 && currentPage > 1) {
+          currentPage--;
+          renderTable();
+          return;
+        }
+
+        tbody.innerHTML = paginatedItems.map(item => `
+          <tr>
+            <td>${item.place || ""}</td>
+            <td>${item.luckyNo || ""}</td>
+            <td>${item.winner || ""}</td>
+            <td>${item.company || ""}</td>
+            <td>${item.prize || ""}</td>
+            <td>
+              <button class="btn-edit" onclick="editRow('${item.row}')">Edit</button>
+              <button class="btn-danger" onclick="deleteRow('${item.row}')">Delete</button>
+            </td>
+          </tr>
+        `).join("");
+
+        setupPagination();
+      }
+
+      /* 3. BINA INTERFAS PAGINATION (FIRST PAGE & LAST PAGE) */
+function setupPagination() {
+  const paginationContainer = document.getElementById("pagination");
+  paginationContainer.innerHTML = "";
+
+  const totalPages = Math.ceil(allData.length / rowsPerPage);
+  if (totalPages <= 1) return;
+
+  // 1. TUKAR PREVIOUS KEPADA FIRST PAGE (Halaman 1)
+  const firstBtn = document.createElement("button");
+  firstBtn.className = "pagination-btn";
+  firstBtn.innerText = "First Page"; // Kekalkan teks paparan asal
+  firstBtn.disabled = currentPage === 1;
+  firstBtn.onclick = () => { currentPage = 1; renderTable(); }; // Lompat terus ke page 1
+  paginationContainer.appendChild(firstBtn);
+
+  // Logat julat untuk paparan 3 butang angka sahaja
+  let startPage = currentPage - 1;
+  let endPage = currentPage + 1;
+
+  if (startPage < 1) {
+    startPage = 1;
+    endPage = Math.min(3, totalPages);
+  }
+
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = Math.max(1, totalPages - 2);
+  }
+
+  // 2. Cipta 3 butang angka di tengah
+  for (let i = startPage; i <= endPage; i++) {
+    const pageBtn = document.createElement("button");
+    pageBtn.className = `pagination-btn ${currentPage === i ? 'active' : ''}`;
+    pageBtn.innerText = i;
+    pageBtn.onclick = () => { currentPage = i; renderTable(); };
+    paginationContainer.appendChild(pageBtn);
+  }
+
+  // 3. TUKAR NEXT KEPADA LAST PAGE (Halaman Terakhir)
+  const lastBtn = document.createElement("button");
+  lastBtn.className = "pagination-btn";
+  lastBtn.innerText = "Last Page"; // Kekalkan teks paparan asal
+  lastBtn.disabled = currentPage === totalPages;
+  lastBtn.onclick = () => { currentPage = totalPages; renderTable(); }; // Lompat terus ke page terakhir
+  paginationContainer.appendChild(lastBtn);
+}
+
+
+/* 4. TAMBAH DATA (Kemas Kini Tempatan + Auto Padam Input Jika Salah) */
+async function addItem(){
+  const luckyNoInput = document.getElementById("luckyNo");
+  const addBtn = document.getElementById("addBtn");
+  const luckyNo = luckyNoInput.value.trim();
+
+  if(!luckyNo) return alert("Enter lucky number");
+
+  addBtn.disabled = true;
+  addBtn.innerText = "Adding...";
+
+  try {
+    const res = await fetch(`${API_URL}?action=add&luckyNo=${encodeURIComponent(luckyNo)}`);
+    const result = await res.json();
+
+    // --------------------------------------------------------
+    // KOD TAMBAHAN BARU: Jika status dari backend adalah 'not_in_winner_table'
+    // --------------------------------------------------------
+    if (result.status === "not_in_winner_table") {
+      // Efek kotak input bergegar
+      luckyNoInput.classList.add("shake-input");
+      setTimeout(() => {
+        luckyNoInput.classList.remove("shake-input");
+      }, 300);
+
+      alert("Nombor ini tidak tersenarai dalam winnerTable B2:B!"); 
+      clearInput(); // Auto padam & fokus semula
+    } 
+    // --------------------------------------------------------
+    // KOD ASAL ANDA DI BAWAH (KEKAL & TIDAK DIUBAH)
+    // --------------------------------------------------------
+    else if(result.status === "not_found") {
+      alert("Lucky Draw No. Not Found"); 
+      clearInput(); 
+    } else if(result.status === "duplicate") {
+      alert("Nombor bertuah ini sudah pun didaftarkan!");
+      clearInput(); 
+    } else if(result.status === "success") {
+      luckyNoInput.value = "";
+      toggleClearBtn();
+      
+      if(result.data) {
+        allData = allData.filter(item => String(item.row) !== String(result.data.row));
+        allData.push(result.data);
+        allData = sortData(allData);
+        renderTable();
+      } else {
+        await loadData();
+      }
+    } else if(result.status === "error") {
+      alert(result.message); 
+      clearInput();
+    }
+  } catch (error) {
+    console.error("Ralat komunikasi API:", error);
+  } finally {
+    addBtn.disabled = false;
+    addBtn.innerText = "Add";
+  }
+}
+// Mengesan dan menggerakkan kotak input jika cuba menaip digit ke-5
+document.getElementById("luckyNo").addEventListener("input", function(e) {
+  const inputField = e.target;
+  
+  // Jika panjang nombor yang ditaip mencecah atau melebihi 5 digit
+  if (inputField.value.length >= 5) {
+    
+    // 1. Masukkan class untuk cetuskan animasi gegar (shaking)
+    inputField.classList.add("shake-input");
+    
+    // 2. Potong dan sekat input supaya kekal 4 digit sahaja serta-merta
+    inputField.value = inputField.value.slice(0, 4);
+    
+    // 3. Buang class gegar selepas 300ms supaya boleh bergegar lagi jika ditekan lagi
+    setTimeout(() => {
+      inputField.classList.remove("shake-input");
+    }, 300);
+  }
+});
+
+// Mengawal input supaya hanya menerima nombor & bergegar jika taip huruf
+document.getElementById("luckyNo").addEventListener("input", function(e) {
+  const inputField = e.target;
+  
+  // Semak jika ada karakter selain nombor dimasukkan
+  if (/[^\d]/.test(inputField.value)) {
+    
+    // 1. Tambah class untuk cetuskan animasi gegar
+    inputField.classList.add("shake-input");
+    
+    // 2. Padam karakter bukan nombor tersebut serta-merta
+    inputField.value = inputField.value.replace(/[^\d]/g, '');
+    
+    // 3. Buang class gegar selepas 300ms supaya boleh bergegar semula pada input salah yang seterusnya
+    setTimeout(() => {
+      inputField.classList.remove("shake-input");
+    }, 300);
+  }
+});
+
+      /* 5. URUSAN BUTANG X CLEAR INPUT */
+      function toggleClearBtn() {
+        const inputVal = document.getElementById("luckyNo").value;
+        document.getElementById("clearInputBtn").style.display = inputVal.length > 0 ? "block" : "none";
+      }
+
+      function clearInput() {
+        const inputField = document.getElementById("luckyNo");
+        inputField.value = "";
+        inputField.focus();
+        toggleClearBtn();
+      }
+
+      /* 6. PADAM DATA BARIS (Kemas Kini Tempatan - Pantas Tanpa Reload) */
+      async function deleteRow(row){
+        if(!confirm("Adakah anda pasti mahu memadam baris ini?")) return;
+
+        try {
+          const res = await fetch(`${API_URL}?action=delete&row=${row}`);
+          const result = await res.json();
+          
+          if(result.status === "success") {
+            // Padam terus dari memori array browser
+            allData = allData.filter(item => String(item.row) !== String(row));
+            renderTable();
+          } else {
+            alert("Gagal memadam data di server.");
+          }
+        } catch (error) {
+          console.error("Error deleting:", error);
+        }
+      }
+
+/* 7. EDIT DATA BARIS (Kemas Kini Tempatan - Kekal Popup Jika Salah + Fungsi Enter) */
+async function editRow(row) {
+  let modal = document.getElementById("custom-edit-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "custom-edit-modal";
+    modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;";
+    modal.innerHTML = `
+      <div id="modal-box" style="background:white; padding:20px; border-radius:8px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:280px;">
+        <h4 style="margin-top:0;">New Lucky Number:</h4>
+        <input type="text" id="modal-input" style="width:80%; padding:10px; font-size:18px; text-align:center; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; outline:none;">
+        <br>
+        <button id="modal-submit" style="padding:8px 15px; margin-right:10px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer;">Simpan</button>
+        <button id="modal-cancel" style="padding:8px 15px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer;">Batal</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  const modalBox = document.getElementById("modal-box");
+  const inputField = document.getElementById("modal-input");
+  const btnSubmit = document.getElementById("modal-submit");
+  const btnCancel = document.getElementById("modal-cancel");
+
+  // Cari data sedia ada berdasarkan row untuk diletakkan dalam input
+  const currentItem = allData.find(item => String(item.row) === String(row));
+  inputField.value = currentItem ? currentItem.luckyNo : "";
+  modal.style.display = "flex";
+  inputField.focus();
+  inputField.select(); // Highlight nombor asal
+
+  // Fungsi kesan bergegar pada popup
+  function triggerModalShake() {
+    modalBox.classList.add("shake-input");
+    setTimeout(() => {
+      modalBox.classList.remove("shake-input");
+    }, 300);
+  }
+
+  // Kawalan input: Hanya Nombor & Maksimum 4 Digit
+  inputField.oninput = function(e) {
+    let value = e.target.value;
+
+    if (/[^\d]/.test(value)) {
+      triggerModalShake();
+      value = value.replace(/[^\d]/g, '');
+    }
+
+    if (value.length >= 5) {
+      triggerModalShake();
+      value = value.slice(0, 4);
+    }
+
+    e.target.value = value;
+  };
+
+  return new Promise((resolve) => {
+    // Fungsi utama untuk hantar dan simpan data
+    const saveData = async () => {
+      const newNo = inputField.value.trim();
+      
+      if (!newNo) {
+        triggerModalShake();
+        alert("Enter lucky number");
+        inputField.focus();
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = "Saving...";
+
+      try {
+        const res = await fetch(`${API_URL}?action=edit&row=${row}&luckyNo=${encodeURIComponent(newNo)}`);
+        const result = await res.json();
+
+        // JIKA RESPOND SALAH: Popup KEKAL, naik alert, bergegar, dan highlight text
+        if (result.status === "not_in_winner_table") {
+          triggerModalShake();
+          alert("Nombor ini tidak tersenarai dalam winnerTable B2:B!");
+          inputField.focus();
+          inputField.select(); 
+        } 
+        else if (result.status === "not_found") {
+          triggerModalShake();
+          alert("Lucky Draw No. Not Found");
+          inputField.focus();
+          inputField.select();
+        } 
+        else if (result.status === "duplicate") {
+          triggerModalShake();
+          alert("Nombor bertuah ini sudah pun didaftarkan!");
+          inputField.focus();
+          inputField.select();
+        } 
+        else if (result.status === "error") {
+          triggerModalShake();
+          alert(result.message);
+          inputField.focus();
+          inputField.select();
+        } 
+        // JIKA BERJAYA: Baru tutup popup dan kemas kini UI
+        else if (result.status === "success") {
+          modal.style.display = "none"; // Tutup popup di sini sahaja
+          
+          // RE-FIX: Mentakrifkan semula 'index' yang hilang sebelum ini
+          const index = allData.findIndex(item => String(item.row) === String(row));
+          if (index !== -1) {
+            if (result.data) {
+              allData[index] = { ...allData[index], ...result.data };
+            } else {
+              allData[index].luckyNo = newNo;
+            }
+            allData = sortData(allData);
+            renderTable();
+          }
+          resolve();
+        }
+      } catch (error) {
+        console.error("Error editing:", error);
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Simpan";
+      }
+    };
+
+    // Trigger simpan bila klik butang simpan
+    btnSubmit.onclick = saveData;
+
+    // BARU: Trigger simpan bila tekan kekunci 'Enter' pada keyboard
+    inputField.onkeydown = function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault(); // Elak browser submit form secara default
+        saveData();
+      }
+    };
+
+    // Butang Batal
+    btnCancel.onclick = () => {
+      modal.style.display = "none";
+      resolve();
+    };
+  });
+}
+   
+      /* MULAKAN PROSES */
+      loadData();
+</script>
+   <script>
+const LOCALHOST_URL = "http://localhost:3000";
+const VERSION_URL = "https://menuutama.github.io/tropical/version.json";
+
+async function checkLocalhostStatus(){
+  const toggle = document.getElementById("localhostToggle");
+  if(!toggle) return false;
+
+  try{
+    const res = await fetch(`${LOCALHOST_URL}/api/status?time=${Date.now()}`, {
+      method:"GET",
+      cache:"no-store"
+    });
+
+    if(res.ok){
+      toggle.classList.remove("offline");
+      toggle.classList.add("online");
+      return true;
+    }
+  }catch(e){}
+
+  toggle.classList.remove("online");
+  toggle.classList.add("offline");
+  return false;
+}
+
+function compareVersion(localV, onlineV){
+  const local = String(localV).split(".").map(Number);
+  const online = String(onlineV).split(".").map(Number);
+
+  for(let i = 0; i < Math.max(local.length, online.length); i++){
+    const a = local[i] || 0;
+    const b = online[i] || 0;
+
+    if(b > a) return true;
+    if(b < a) return false;
+  }
+
+  return false;
+}
+
+async function checkUpdate(){
+  const updateBtn = document.getElementById("updateBtn");
+
+  if(!updateBtn) return;
+
+  updateBtn.style.display = "none";
+  updateBtn.classList.remove("has-update");
+
+  try{
+    const onlineRes = await fetch(`${VERSION_URL}?time=${Date.now()}`, {
+      cache:"no-store"
+    });
+
+    const onlineData = await onlineRes.json();
+
+    const localRes = await fetch(`${LOCALHOST_URL}/api/version?time=${Date.now()}`, {
+      cache:"no-store"
+    });
+
+    const localData = await localRes.json();
+
+    const needUpdate = compareVersion(
+      localData.currentVersion,
+      onlineData.latestVersion
+    );
+
+    if(needUpdate){
+      updateBtn.style.display = "flex";
+      updateBtn.classList.add("has-update");
+
+      updateBtn.onclick = function(e){
+        e.preventDefault();
+
+        const confirmUpdate =
+          confirm(
+            `New update available!\n\nCurrent Version: ${localData.currentVersion}\nLatest Version: ${onlineData.latestVersion}\n\nDownload update now?`
+          );
+
+        if(confirmUpdate){
+          window.open(
+            onlineData.downloadUrl,
+            "UpdateInstallerPopup",
+            "width=700,height=600,left=300,top=120,resizable=yes,scrollbars=yes"
+          );
+        }
+      };
+    }
+
+  }catch(e){
+    updateBtn.style.display = "none";
+    updateBtn.classList.remove("has-update");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  const btn = document.getElementById("localhostBtn");
+
+  checkLocalhostStatus();
+  checkUpdate();
+
+  setInterval(checkLocalhostStatus, 3000);
+  setInterval(checkUpdate, 15000);
+
+  if(btn){
+    btn.addEventListener("click", async function(e){
+      e.preventDefault();
+
+      const isOnline = await checkLocalhostStatus();
+
+     if(isOnline){
+
+   const confirmOff = confirm("Turn OFF localhost?");
+
+   if(confirmOff){
+      try{
+         await fetch(`${LOCALHOST_URL}/api/shutdown?time=${Date.now()}`, {
+            method:"GET",
+            cache:"no-store"
+         });
+      }catch(e){}
+
+      setTimeout(checkLocalhostStatus,1200);
+   }
+
+}else{
+
+   const wantDownload = confirm(
+      "LOCALHOST is OFF.\n\nIf you already installed it, please open the shortcut: Tropical Dinner Localhost.\n\nClick OK to download installer.\nClick Cancel if already installed."
+   );
+
+   if(wantDownload){
+
+      try{
+
+         const res = await fetch(`${VERSION_URL}?time=${Date.now()}`, {
+            cache:"no-store"
+         });
+
+         const data = await res.json();
+
+         window.open(
+            data.downloadUrl,
+            "DownloadInstallerPopup",
+            "width=700,height=600,left=300,top=120,resizable=yes,scrollbars=yes"
+         );
+
+      }catch(e){
+         alert("Cannot get installer link. Please check internet connection.");
+      }
+
+   }
+
+});
+  }
+});
+</script>
+  </body>
+</html>
