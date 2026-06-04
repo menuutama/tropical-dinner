@@ -14,13 +14,6 @@
   <h2>Lucky Draw System</h2>
 </header>
 
-<div class="search-area">
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search Lucky No / Winner / Company">
-    <button class="search-clear-btn" id="clearBtn">×</button>
-  </div>
-</div>
-
 <div class="container">
 
   <div class="input-box">
@@ -31,10 +24,40 @@
         inputmode="numeric"
         pattern="[0-9]*"
         placeholder="Enter Lucky No."
-        oninput="toggleClearBtn()"
-        onkeypress="if(event.key === 'Enter') addItem()"
+        autocomplete="off"
       >
-      <button type="button" id="clearInputBtn" class="clear-btn" onclick="clearInput()">X</button>
+      <button type="button" id="clearInputBtn" class="clear-btn">X</button>
+    </div>
+
+    <button id="addBtn">Add</button>
+  </div>
+
+  <div class="main-content">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>PLACE</th>
+            <th>LUCKY NO.</th>
+            <th>WINNER</th>
+            <th>COMPANY</th>
+            <th>PRIZE</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+
+        <tbody id="winnerTable"></tbody>
+      </table>
+
+      <div id="pagination" class="pagination-container"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="input.js"></script>
+</body>
+</html>      <button type="button" id="clearInputBtn" class="clear-btn" onclick="clearInput()">X</button>
     </div>
 
     <button id="addBtn" onclick="addItem()">Add</button>
