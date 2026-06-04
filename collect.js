@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwEko2f1f-tIIcOL5zsZmod_g6_2gqxBCKgyHRlvniSudC1qzZr_U4zqUghIWmOvr0l/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwN_3E7OgvxSfwUn9KadJFh7SJtvbl8cjy8dHeWsxvmNMXFFspBKH_VKsgp4J6a-Q_R/exec";
 
 let allData = [];
 let selectedRow = null;
@@ -15,7 +15,13 @@ const popupLuckyNo = document.getElementById("popupLuckyNo");
 const popupEmployee = document.getElementById("popupEmployee");
 const popupCompany = document.getElementById("popupCompany");
 
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener("DOMContentLoaded", () => {
+  loadData();
+
+  setInterval(() => {
+    loadData(false);
+  }, 3000);
+});
 
 searchInput.addEventListener("input", function(){
   clearSearchBtn.style.display = this.value ? "block" : "none";
@@ -39,7 +45,15 @@ popup.addEventListener("click", function(e){
 
 collectBtn.addEventListener("click", collectPrize);
 
-function loadData(){
+function loadData(showLoading = true){
+  if(showLoading){
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5">Loading...</td>
+      </tr>
+    `;
+  }
+
   fetch(`${API_URL}?action=getCollectionData&t=${Date.now()}`)
     .then(res => res.json())
     .then(data => {
@@ -50,7 +64,7 @@ function loadData(){
       console.error(err);
       tableBody.innerHTML = `
         <tr>
-          <td colspan="4">Failed to load data</td>
+          <td colspan="5">Failed to load data</td>
         </tr>
       `;
     });
@@ -60,17 +74,23 @@ function renderTable(){
   const keyword = searchInput.value.toLowerCase().trim();
 
   let filtered = allData.filter(item => {
+    const luckyNo = String(item.luckyNo || "").trim();
+
+    if(luckyNo === "") return false;
+
     return (
+      String(item.no).toLowerCase().includes(keyword) ||
       String(item.luckyNo).toLowerCase().includes(keyword) ||
       String(item.employeeName).toLowerCase().includes(keyword) ||
-      String(item.companyName).toLowerCase().includes(keyword)
+      String(item.companyName).toLowerCase().includes(keyword) ||
+      String(item.prize).toLowerCase().includes(keyword)
     );
   });
 
   if(filtered.length === 0){
     tableBody.innerHTML = `
       <tr>
-        <td colspan="4">No data found</td>
+        <td colspan="5">No data found</td>
       </tr>
     `;
     return;
@@ -84,6 +104,7 @@ function renderTable(){
         class="collect-row ${isCollected ? "collected-row-red" : ""}"
         onclick="openPopup(${item.row})"
       >
+        <td>${escapeHTML(item.no)}</td>
         <td>${escapeHTML(item.luckyNo)}</td>
         <td>${escapeHTML(item.employeeName)}</td>
         <td>${escapeHTML(item.companyName)}</td>
