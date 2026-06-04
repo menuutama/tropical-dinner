@@ -3,18 +3,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxQsB2UjnTrEio-c2LRG8Vd
 let allAttendData = [];
 let selectedRow = null;
 
-/* =========================
-   API URL HELPER
-========================= */
-
 function apiUrl(params){
   const joiner = API_URL.includes("?") ? "&" : "?";
   return `${API_URL}${joiner}${params}`;
 }
-
-/* =========================
-   LOAD DATA
-========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   getAttendData();
@@ -26,17 +18,102 @@ async function getAttendData(){
     const data = await res.json();
 
     allAttendData = data;
-    displayAttendData(allAttendData);
+
+    loadCompanyDropdown();
+    restoreCompanyFilter();
+    filterAttendData();
 
   }catch(err){
     console.error(err);
-
     document.getElementById("attendTableBody").innerHTML = `
       <tr>
-        <td colspan="4">Failed to load data</td>
+        <td colspan="3">Failed to load data</td>
       </tr>
     `;
   }
+}
+
+/* =========================
+   COMPANY DROPDOWN
+========================= */
+
+function loadCompanyDropdown(){
+  const companyFilter = document.getElementById("companyFilter");
+
+  const currentValue = localStorage.getItem("attendanceCompanyFilter") || "ALL";
+
+  companyFilter.innerHTML = `<option value="ALL">All Company</option>`;
+
+  const companies = [...new Set(
+    allAttendData
+      .map(item => String(item.companyName || "").trim())
+      .filter(name => name !== "")
+  )].sort();
+
+  companies.forEach(company => {
+    const option = document.createElement("option");
+    option.value = company;
+    option.textContent = company;
+    companyFilter.appendChild(option);
+  });
+
+  companyFilter.value = companies.includes(currentValue) ? currentValue : "ALL";
+}
+
+function restoreCompanyFilter(){
+  const savedCompany = localStorage.getItem("attendanceCompanyFilter");
+  const companyFilter = document.getElementById("companyFilter");
+
+  if(savedCompany){
+    companyFilter.value = savedCompany;
+  }
+}
+
+/* =========================
+   FILTER + SEARCH
+========================= */
+
+function filterAttendData(){
+  const input = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+  const companyFilter = document.getElementById("companyFilter");
+
+  const keyword = input.value.toLowerCase().trim();
+  const selectedCompany = companyFilter.value;
+
+  localStorage.setItem("attendanceCompanyFilter", selectedCompany);
+
+  clearBtn.style.display = keyword ? "block" : "none";
+
+  const filtered = allAttendData.filter(item => {
+    const luckyNo = String(item.luckyNo || "").toLowerCase();
+    const employeeName = String(item.employeeName || "").toLowerCase();
+    const companyName = String(item.companyName || "").toLowerCase();
+
+    const matchSearch =
+      luckyNo.includes(keyword) ||
+      employeeName.includes(keyword) ||
+      companyName.includes(keyword);
+
+    const matchCompany =
+      selectedCompany === "ALL" ||
+      String(item.companyName || "").trim() === selectedCompany;
+
+    return matchSearch && matchCompany;
+  });
+
+  displayAttendData(filtered);
+}
+
+function clearSearch(){
+  const input = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  input.value = "";
+  clearBtn.style.display = "none";
+
+  filterAttendData();
+  input.focus();
 }
 
 /* =========================
@@ -50,7 +127,7 @@ function displayAttendData(data){
   if(!data || data.length === 0){
     tbody.innerHTML = `
       <tr>
-        <td colspan="4">No data found</td>
+        <td colspan="3">No data found</td>
       </tr>
     `;
     return;
@@ -62,56 +139,19 @@ function displayAttendData(data){
     tr.classList.add("attend-row");
 
     if(item.status === "ATTEND"){
-      tr.classList.add("attended-row");
+      tr.classList.add("attended-row-green");
     }
 
     tr.innerHTML = `
       <td>${item.luckyNo || ""}</td>
       <td>${item.employeeName || ""}</td>
       <td>${item.companyName || ""}</td>
-      <td class="${item.status === "ATTEND" ? "status-attend" : ""}">
-        ${item.status || ""}
-      </td>
     `;
 
     tr.onclick = () => openPopup(item);
 
     tbody.appendChild(tr);
   });
-}
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchAttendData(){
-  const input = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("clearSearchBtn");
-
-  const keyword = input.value.toLowerCase().trim();
-
-  clearBtn.style.display = keyword ? "block" : "none";
-
-  const filtered = allAttendData.filter(item => {
-    return (
-      String(item.luckyNo || "").toLowerCase().includes(keyword) ||
-      String(item.employeeName || "").toLowerCase().includes(keyword) ||
-      String(item.companyName || "").toLowerCase().includes(keyword)
-    );
-  });
-
-  displayAttendData(filtered);
-}
-
-function clearSearch(){
-  const input = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("clearSearchBtn");
-
-  input.value = "";
-  clearBtn.style.display = "none";
-
-  displayAttendData(allAttendData);
-  input.focus();
 }
 
 /* =========================
@@ -189,8 +229,8 @@ async function updateAttendance(status){
         target.status = status;
       }
 
-      displayAttendData(allAttendData);
       closePopup();
+      filterAttendData();
 
     }else{
       alert("Failed to update attendance.");
