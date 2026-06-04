@@ -1,6 +1,7 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyIgPXR5x-vwSuASXVyhKlzxnFU-Ja_i-smnSJ3kNfvebZXYVQprhCmqRqpZS6Hkggc/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzYh7RkpdgmhzChhnoLKz9Ie7D8oH-XrtoUfGDe3jGoowFn9NrdXc8lkwlpHXAFXXyZ/exec";
 
 let allData = [];
+let attendList = [];
 let currentPage = 1;
 const rowsPerPage = 10;
 
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function(){
   const clearBtn = document.getElementById("clearInputBtn");
   const addBtn = document.getElementById("addBtn");
 
-  loadData();
+  loadAllData();
 
   luckyInput.addEventListener("input", function(){
     validateLuckyInput();
@@ -32,6 +33,27 @@ document.addEventListener("DOMContentLoaded", function(){
   toggleAddButton();
 });
 
+async function loadAllData(){
+  await loadAttendList();
+  await loadData();
+}
+
+async function loadAttendList(){
+  try{
+    const res = await fetch(`${API_URL}?action=getAttendList`);
+    const data = await res.json();
+
+    attendList = data.map(item => String(item).trim());
+  }catch(err){
+    console.error("ATTEND LIST ERROR:", err);
+    attendList = [];
+  }
+}
+
+function isAttendNumber(luckyNo){
+  return attendList.includes(String(luckyNo).trim());
+}
+
 function escapeHTML(text){
   if(text == null) return "";
   return text.toString()
@@ -40,12 +62,6 @@ function escapeHTML(text){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
-}
-
-function isValidLuckyRange(no){
-  if(!/^\d{4}$/.test(no)) return false;
-  const num = parseInt(no,10);
-  return num >= 1 && num <= 220;
 }
 
 function sortData(data){
@@ -95,7 +111,7 @@ function toggleAddButton(){
     return String(item.luckyNo || "").trim() === luckyNo;
   });
 
-  if(isValidLuckyRange(luckyNo) && !alreadyAdded){
+  if(luckyNo.length === 4 && !alreadyAdded && isAttendNumber(luckyNo)){
     addBtn.style.display = "inline-block";
   }else{
     addBtn.style.display = "none";
@@ -192,44 +208,17 @@ async function addItem(){
   const addBtn = document.getElementById("addBtn");
   const luckyNo = luckyNoInput.value.trim();
 
-  if(!luckyNo){
-    alert("Enter lucky number");
-    return;
-  }
+  if(!luckyNo) return;
 
-  if(!/^\d{4}$/.test(luckyNo)){
-    luckyNoInput.classList.add("shake-input");
-    setTimeout(()=>{
-      luckyNoInput.classList.remove("shake-input");
-    },300);
+  if(!/^\d{4}$/.test(luckyNo)) return;
 
-    alert("Lucky number mesti cukup 4 digit.");
-    luckyNoInput.focus();
-    return;
-  }
-
-  if(!isValidLuckyRange(luckyNo)){
-    luckyNoInput.classList.add("shake-input");
-    setTimeout(()=>{
-      luckyNoInput.classList.remove("shake-input");
-    },300);
-
-    alert("Lucky number mesti antara 0001 hingga 0220.");
-    luckyNoInput.focus();
-    return;
-  }
+  if(!isAttendNumber(luckyNo)) return;
 
   const alreadyAdded = allData.some(item=>{
     return String(item.luckyNo || "").trim() === luckyNo;
   });
 
   if(alreadyAdded){
-    luckyNoInput.classList.add("shake-input");
-    setTimeout(()=>{
-      luckyNoInput.classList.remove("shake-input");
-    },300);
-
-    alert("Nombor bertuah ini sudah pun didaftarkan!");
     clearInput();
     return;
   }
@@ -241,27 +230,7 @@ async function addItem(){
     const res = await fetch(`${API_URL}?action=add&luckyNo=${encodeURIComponent(luckyNo)}`);
     const result = await res.json();
 
-    if(result.status === "not_in_winner_table"){
-      luckyNoInput.classList.add("shake-input");
-      setTimeout(()=>{
-        luckyNoInput.classList.remove("shake-input");
-      },300);
-
-      alert("Nombor ini tidak tersenarai dalam winnerTable B2:B!");
-      clearInput();
-    }
-
-    else if(result.status === "not_found"){
-      alert("Lucky Draw No. Not Found");
-      clearInput();
-    }
-
-    else if(result.status === "duplicate"){
-      alert("Nombor bertuah ini sudah pun didaftarkan!");
-      clearInput();
-    }
-
-    else if(result.status === "success"){
+    if(result.status === "success"){
       luckyNoInput.value = "";
       toggleClearBtn();
 
@@ -271,12 +240,21 @@ async function addItem(){
         allData = sortData(allData);
         renderTable();
       }else{
-        await loadData();
+        await loadAllData();
       }
     }
 
-    else if(result.status === "error"){
-      alert(result.message);
+    else if(result.status === "not_attend"){
+      clearInput();
+    }
+
+    else if(result.status === "duplicate"){
+      alert("Nombor bertuah ini sudah pun didaftarkan!");
+      clearInput();
+    }
+
+    else{
+      alert(result.message || "Nombor tidak sah.");
       clearInput();
     }
 
@@ -355,14 +333,12 @@ async function editRow(row){
     modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;";
 
     modal.innerHTML = `
-      <div id="modal-box" style="position:relative; background:white; padding:55px 20px 20px; border-radius:8px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:280px;">
-        <button id="modal-cancel" style="position:absolute; top:8px; right:13px; background:none; border:none; font-size:34px; font-weight:bold; color:#e53935; cursor:pointer; line-height:1;">×</button>
-
+      <div id="modal-box" style="background:white; padding:20px; border-radius:8px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:280px;">
+        <h4 style="margin-top:0;">New Lucky Number:</h4>
         <input type="text" id="modal-input" style="width:80%; padding:10px; font-size:18px; text-align:center; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; outline:none;">
-
         <br>
-
-        <button id="modal-submit" style="padding:8px 15px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer;">Simpan</button>
+        <button id="modal-submit" style="padding:8px 15px; margin-right:10px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer;">Simpan</button>
+        <button id="modal-cancel" style="padding:8px 15px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer;">Batal</button>
       </div>
     `;
 
@@ -396,7 +372,7 @@ async function editRow(row){
              String(item.luckyNo || "").trim() === newNo;
     });
 
-    if(isValidLuckyRange(newNo) && !duplicateLocal){
+    if(newNo.length === 4 && !duplicateLocal && isAttendNumber(newNo)){
       btnSubmit.style.display = "inline-block";
     }else{
       btnSubmit.style.display = "none";
@@ -426,44 +402,15 @@ async function editRow(row){
     const saveData = async function(){
       const newNo = inputField.value.trim();
 
-      if(!newNo){
-        triggerModalShake();
-        alert("Enter lucky number");
-        inputField.focus();
-        return;
-      }
-
-      if(!/^\d{4}$/.test(newNo)){
-        triggerModalShake();
-        alert("Lucky number mesti cukup 4 digit.");
-        inputField.focus();
-        inputField.select();
-        toggleModalSaveButton();
-        return;
-      }
-
-      if(!isValidLuckyRange(newNo)){
-        triggerModalShake();
-        alert("Lucky number mesti antara 0001 hingga 0220.");
-        inputField.focus();
-        inputField.select();
-        toggleModalSaveButton();
-        return;
-      }
+      if(!/^\d{4}$/.test(newNo)) return;
+      if(!isAttendNumber(newNo)) return;
 
       const duplicateLocal = allData.some(item=>{
         return String(item.row) !== String(row) &&
                String(item.luckyNo || "").trim() === newNo;
       });
 
-      if(duplicateLocal){
-        triggerModalShake();
-        alert("Nombor bertuah ini sudah pun didaftarkan!");
-        inputField.focus();
-        inputField.select();
-        toggleModalSaveButton();
-        return;
-      }
+      if(duplicateLocal) return;
 
       btnSubmit.disabled = true;
       btnSubmit.innerText = "Saving...";
@@ -472,35 +419,7 @@ async function editRow(row){
         const res = await fetch(`${API_URL}?action=edit&row=${row}&luckyNo=${encodeURIComponent(newNo)}`);
         const result = await res.json();
 
-        if(result.status === "not_in_winner_table"){
-          triggerModalShake();
-          alert("Nombor ini tidak tersenarai dalam winnerTable B2:B!");
-          inputField.focus();
-          inputField.select();
-        }
-
-        else if(result.status === "not_found"){
-          triggerModalShake();
-          alert("Lucky Draw No. Not Found");
-          inputField.focus();
-          inputField.select();
-        }
-
-        else if(result.status === "duplicate"){
-          triggerModalShake();
-          alert("Nombor bertuah ini sudah pun didaftarkan!");
-          inputField.focus();
-          inputField.select();
-        }
-
-        else if(result.status === "error"){
-          triggerModalShake();
-          alert(result.message);
-          inputField.focus();
-          inputField.select();
-        }
-
-        else if(result.status === "success"){
+        if(result.status === "success"){
           modal.style.display = "none";
 
           const index = allData.findIndex(item=>String(item.row) === String(row));
@@ -518,6 +437,9 @@ async function editRow(row){
           }
 
           resolve();
+        }else{
+          inputField.focus();
+          inputField.select();
         }
 
       }catch(error){
