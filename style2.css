@@ -529,3 +529,26 @@ table button:nth-child(2){
     width:100%;
   }
 }
+
+/* =========================
+   COLLECTION SYSTEM EXTRA
+========================= */
+
+.collect-search-box{
+  max-width:520px;
+}
+
+.collect-row{
+  cursor:pointer;
+}
+
+.collected-row-red td{
+  color:#ff5c5c !important;
+  font-weight:700;
+  opacity:.9;
+}
+
+.collected-row-red:hover td{
+  background:rgba(255,51,68,.12) !important;
+  border-color:rgba(255,51,68,.35) !important;
+}
