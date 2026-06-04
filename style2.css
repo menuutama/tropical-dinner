@@ -263,7 +263,7 @@ table button:nth-child(2){
   gap:8px;
   margin:25px auto 10px;
   width:100%;
-  margin-bottom:70px !important;
+  margin-bottom:70px !important; 
 }
 
 .pagination-btn{
