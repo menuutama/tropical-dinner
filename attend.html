@@ -26,7 +26,7 @@
         placeholder="Search Lucky No / Employee / Company"
         oninput="searchAttendData()"
       >
-      <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()">×</button>
+      <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()">X</button>
     </div>
   </div>
 
@@ -41,6 +41,7 @@
             <th>Status</th>
           </tr>
         </thead>
+
         <tbody id="attendTableBody">
           <tr>
             <td colspan="4">Loading data...</td>
@@ -54,6 +55,7 @@
 
 <div id="attendPopup" class="popup-overlay">
   <div class="popup-box">
+
     <button class="popup-close" onclick="closePopup()">×</button>
 
     <h2>Attendance Detail</h2>
@@ -63,6 +65,7 @@
     <p><b>Company Name:</b> <span id="popupCompany"></span></p>
 
     <button id="attendBtn" class="attend-btn" onclick="markAttend()">Attend</button>
+
   </div>
 </div>
 
