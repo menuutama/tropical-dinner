@@ -186,13 +186,34 @@ async function addItem(){
   const addBtn = document.getElementById("addBtn");
   const luckyNo = luckyNoInput.value.trim();
 
-  if(!luckyNo) return alert("Enter lucky number");
+  if(!luckyNo){
+    alert("Enter lucky number");
+    return;
+  }
 
-  if(luckyNo.length !== 4){
+  if(!/^\d{4}$/.test(luckyNo)){
     luckyNoInput.classList.add("shake-input");
     setTimeout(()=>{
       luckyNoInput.classList.remove("shake-input");
     },300);
+
+    alert("Lucky number mesti cukup 4 digit.");
+    luckyNoInput.focus();
+    return;
+  }
+
+  const alreadyAdded = allData.some(item=>{
+    return String(item.luckyNo || "").trim() === luckyNo;
+  });
+
+  if(alreadyAdded){
+    luckyNoInput.classList.add("shake-input");
+    setTimeout(()=>{
+      luckyNoInput.classList.remove("shake-input");
+    },300);
+
+    alert("Nombor bertuah ini sudah pun didaftarkan!");
+    clearInput();
     return;
   }
 
@@ -348,6 +369,23 @@ async function editRow(row){
     },300);
   }
 
+  function toggleModalSaveButton(){
+    const newNo = inputField.value.trim();
+
+    const duplicateLocal = allData.some(item=>{
+      return String(item.row) !== String(row) &&
+             String(item.luckyNo || "").trim() === newNo;
+    });
+
+    if(newNo.length === 4 && !duplicateLocal){
+      btnSubmit.style.display = "inline-block";
+    }else{
+      btnSubmit.style.display = "none";
+    }
+  }
+
+  toggleModalSaveButton();
+
   inputField.oninput = function(e){
     let value = e.target.value;
 
@@ -362,6 +400,7 @@ async function editRow(row){
     }
 
     e.target.value = value;
+    toggleModalSaveButton();
   };
 
   return new Promise((resolve)=>{
@@ -372,6 +411,29 @@ async function editRow(row){
         triggerModalShake();
         alert("Enter lucky number");
         inputField.focus();
+        return;
+      }
+
+      if(!/^\d{4}$/.test(newNo)){
+        triggerModalShake();
+        alert("Lucky number mesti cukup 4 digit.");
+        inputField.focus();
+        inputField.select();
+        toggleModalSaveButton();
+        return;
+      }
+
+      const duplicateLocal = allData.some(item=>{
+        return String(item.row) !== String(row) &&
+               String(item.luckyNo || "").trim() === newNo;
+      });
+
+      if(duplicateLocal){
+        triggerModalShake();
+        alert("Nombor bertuah ini sudah pun didaftarkan!");
+        inputField.focus();
+        inputField.select();
+        toggleModalSaveButton();
         return;
       }
 
@@ -435,6 +497,7 @@ async function editRow(row){
       }finally{
         btnSubmit.disabled = false;
         btnSubmit.innerText = "Simpan";
+        toggleModalSaveButton();
       }
     };
 
@@ -443,7 +506,10 @@ async function editRow(row){
     inputField.onkeydown = function(e){
       if(e.key === "Enter"){
         e.preventDefault();
-        saveData();
+
+        if(btnSubmit.style.display !== "none"){
+          saveData();
+        }
       }
     };
 
