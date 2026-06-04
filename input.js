@@ -1,4 +1,5 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzYh7RkpdgmhzChhnoLKz9Ie7D8oH-XrtoUfGDe3jGoowFn9NrdXc8lkwlpHXAFXXyZ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxusRPIiXwg1B_39miCIF8Nh6t8qR3guFbLQsBuMGFaknA6tSlTXJ-uVFP0PM-XNb2j/exec";
 
 let allData = [];
 let attendList = [];
@@ -209,9 +210,7 @@ async function addItem(){
   const luckyNo = luckyNoInput.value.trim();
 
   if(!luckyNo) return;
-
   if(!/^\d{4}$/.test(luckyNo)) return;
-
   if(!isAttendNumber(luckyNo)) return;
 
   const alreadyAdded = allData.some(item=>{
@@ -333,12 +332,65 @@ async function editRow(row){
     modal.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;";
 
     modal.innerHTML = `
-      <div id="modal-box" style="background:white; padding:20px; border-radius:8px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.2); width:280px;">
-        <h4 style="margin-top:0;">New Lucky Number:</h4>
-        <input type="text" id="modal-input" style="width:80%; padding:10px; font-size:18px; text-align:center; margin-bottom:15px; border:1px solid #ccc; border-radius:4px; outline:none;">
+      <div id="modal-box" style="
+        position:relative;
+        background:white;
+        padding:50px 20px 20px;
+        border-radius:8px;
+        text-align:center;
+        box-shadow:0 4px 15px rgba(0,0,0,0.2);
+        width:280px;
+      ">
+        <button
+          id="modal-cancel"
+          style="
+            position:absolute;
+            top:5px;
+            right:12px;
+            background:none;
+            border:none;
+            color:#e53935;
+            font-size:42px;
+            font-weight:bold;
+            cursor:pointer;
+            line-height:1;
+            padding:0;
+          "
+          title="Close"
+        >
+          ×
+        </button>
+
+        <input
+          type="text"
+          id="modal-input"
+          style="
+            width:80%;
+            padding:10px;
+            font-size:18px;
+            text-align:center;
+            margin-bottom:15px;
+            border:1px solid #ccc;
+            border-radius:4px;
+            outline:none;
+          "
+        >
+
         <br>
-        <button id="modal-submit" style="padding:8px 15px; margin-right:10px; background:#28a745; color:white; border:none; border-radius:4px; cursor:pointer;">Simpan</button>
-        <button id="modal-cancel" style="padding:8px 15px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer;">Batal</button>
+
+        <button
+          id="modal-submit"
+          style="
+            padding:8px 18px;
+            background:#28a745;
+            color:white;
+            border:none;
+            border-radius:4px;
+            cursor:pointer;
+          "
+        >
+          Simpan
+        </button>
       </div>
     `;
 
@@ -366,13 +418,21 @@ async function editRow(row){
 
   function toggleModalSaveButton(){
     const newNo = inputField.value.trim();
+    const oldNo = currentItem ? String(currentItem.luckyNo || "").trim() : "";
+
+    const sameAsOriginal = newNo === oldNo;
 
     const duplicateLocal = allData.some(item=>{
       return String(item.row) !== String(row) &&
              String(item.luckyNo || "").trim() === newNo;
     });
 
-    if(newNo.length === 4 && !duplicateLocal && isAttendNumber(newNo)){
+    if(
+      newNo.length === 4 &&
+      !sameAsOriginal &&
+      !duplicateLocal &&
+      isAttendNumber(newNo)
+    ){
       btnSubmit.style.display = "inline-block";
     }else{
       btnSubmit.style.display = "none";
@@ -401,8 +461,10 @@ async function editRow(row){
   return new Promise((resolve)=>{
     const saveData = async function(){
       const newNo = inputField.value.trim();
+      const oldNo = currentItem ? String(currentItem.luckyNo || "").trim() : "";
 
       if(!/^\d{4}$/.test(newNo)) return;
+      if(newNo === oldNo) return;
       if(!isAttendNumber(newNo)) return;
 
       const duplicateLocal = allData.some(item=>{
