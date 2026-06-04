@@ -1,5 +1,4 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbzYh7RkpdgmhzChhnoLKz9Ie7D8oH-XrtoUfGDe3jGoowFn9NrdXc8lkwlpHXAFXXyZ/exec";
-const API_URL = "https://script.google.com/macros/s/AKfycbxusRPIiXwg1B_39miCIF8Nh6t8qR3guFbLQsBuMGFaknA6tSlTXJ-uVFP0PM-XNb2j/exec";
 
 let allData = [];
 let attendList = [];
