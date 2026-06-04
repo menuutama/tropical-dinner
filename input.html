@@ -649,6 +649,156 @@ table button {
       const API_URL = "https://script.google.com/macros/s/AKfycbxusRPIiXwg1B_39miCIF8Nh6t8qR3guFbLQsBuMGFaknA6tSlTXJ-uVFP0PM-XNb2j/exec";
       let allData = [];
 
+      /* =========================
+   SEARCH HTML INJECT
+========================= */
+
+const searchHTML = `
+<div class="mobile-search-wrapper">
+  <div class="search-box">
+    <input 
+      type="text"
+      id="searchInput"
+      placeholder="Search Lucky No / Winner / Company"
+    />
+    <button class="clear-btn" id="clearBtn">x</button>
+  </div>
+</div>
+`;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const liveUpdateEl = document.querySelector(".live-update-badge");
+
+  if (liveUpdateEl) {
+    liveUpdateEl.insertAdjacentHTML("afterend", searchHTML);
+  } else {
+    document.body.insertAdjacentHTML("afterbegin", searchHTML);
+  }
+
+  const input = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearBtn");
+
+  if (input) {
+    input.addEventListener("input", performSearch);
+
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") performSearch();
+    });
+  }
+
+  if (clearBtn && input) {
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      performSearch();
+      input.focus();
+    });
+  }
+
+});
+
+/* =========================
+   SEARCH FUNCTION
+========================= */
+
+function performSearch() {
+
+  const input = document.getElementById("searchInput");
+  if (!input) return;
+
+  const keyword = input.value.trim().toLowerCase();
+
+  if (keyword === "") {
+    renderPage();
+    renderPagination();
+    return;
+  }
+
+  const filtered = allData.filter(item => {
+
+    const luckyNo = (item.luckyNo || "").toString().toLowerCase();
+    const winner  = (item.winner || "").toString().toLowerCase();
+    const company = (item.company || "").toString().toLowerCase();
+
+    return (
+      luckyNo.includes(keyword) ||
+      winner.includes(keyword) ||
+      company.includes(keyword)
+    );
+
+  });
+
+  const tbody = document.getElementById("winnerTable");
+
+  if (!tbody) return;
+
+  tbody.innerHTML = filtered.map(item => `
+    <tr>
+      <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
+      <td>${escapeHTML(item.luckyNo)}</td>
+      <td>${escapeHTML(item.winner)}</td>
+      <td>${escapeHTML(item.company)}</td>
+      <td>${escapeHTML(item.prize)}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("pagination").innerHTML = "";
+} 
+
+/* =========================
+   SAFE HTML
+========================= */
+
+function escapeHTML(text) {
+  if (text == null) return "";
+  return text.toString()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "'");
+}
+
+/* =========================
+   LOAD DATA
+========================= */
+
+async function loadData() {
+
+  try {
+
+    const response = await fetch(API_URL);
+    const rawData = await response.json();
+
+    const filteredData = rawData
+      .filter(item => (item.luckyNo || "").toString().trim() !== "")
+      .sort((a, b) => {
+        const numA = parseInt((a.place || "").match(/\d+/)?.[0] || 999);
+        const numB = parseInt((b.place || "").match(/\d+/)?.[0] || 999);
+        return numA - numB;
+      });
+
+    const newHash = JSON.stringify(filteredData);
+    if (newHash === lastDataHash) return;
+
+    lastDataHash = newHash;
+    allData = filteredData;
+
+    currentPage = Math.min(currentPage, Math.ceil(allData.length / ROWS_PER_PAGE) || 1);
+
+    const input = document.getElementById("searchInput");
+    if (input && input.value.trim() !== "") {
+      performSearch();
+    } else {
+      renderPage();
+      renderPagination();
+    }
+
+  } catch (err) {
+    console.error("FETCH ERROR:", err);
+  }
+}
+      
       // Konfigurasi Pagination
       let currentPage = 1;
       const rowsPerPage = 10;
