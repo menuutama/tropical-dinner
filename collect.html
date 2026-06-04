@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lucky Draw Prize Collection System</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="hero-header">
+  <h1>TROPICAL DINNER 2026</h1>
+  <h2>Lucky Draw Prize Collection System</h2>
+</header>
+
+<div class="container">
+
+  <div class="input-box collect-search-box">
+    <div class="input-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Search Lucky No / Employee / Company"
+        autocomplete="off"
+      >
+      <button class="clear-btn" id="clearSearchBtn">X</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Lucky No.</th>
+            <th>Employee Name</th>
+            <th>Company Name</th>
+            <th>Prize</th>
+          </tr>
+        </thead>
+        <tbody id="collectTableBody">
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="popup-overlay" id="collectPopup">
+  <div class="popup-box">
+    <button class="popup-close" id="closePopupBtn">&times;</button>
+
+    <h2>Prize Collection</h2>
+
+    <p><b>Lucky Draw No.:</b> <span id="popupLuckyNo"></span></p>
+    <p><b>Employee Name:</b> <span id="popupEmployee"></span></p>
+    <p><b>Company Name:</b> <span id="popupCompany"></span></p>
+
+    <button class="attend-btn" id="collectBtn">Collect</button>
+  </div>
+</div>
+
+<script src="collect.js"></script>
+
+</body>
+</html>
