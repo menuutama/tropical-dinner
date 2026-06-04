@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Attendance System</title>
-
 <link rel="stylesheet" href="style2.css">
 </head>
 
@@ -18,16 +17,22 @@
 
 <div class="container">
 
-  <div class="input-box">
+  <div class="input-box attend-filter-box">
+
+    <select id="companyFilter" onchange="filterAttendData()">
+      <option value="ALL">All Company</option>
+    </select>
+
     <div class="input-container">
       <input
         type="text"
         id="searchInput"
         placeholder="Search Lucky No / Employee / Company"
-        oninput="searchAttendData()"
+        oninput="filterAttendData()"
       >
       <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()">X</button>
     </div>
+
   </div>
 
   <div class="main-content">
@@ -38,13 +43,12 @@
             <th>Lucky Draw No.</th>
             <th>Employee Name</th>
             <th>Company Name</th>
-            <th>Status</th>
           </tr>
         </thead>
 
         <tbody id="attendTableBody">
           <tr>
-            <td colspan="4">Loading data...</td>
+            <td colspan="3">Loading data...</td>
           </tr>
         </tbody>
       </table>
