@@ -310,3 +310,96 @@ table button:nth-child(2){
     height:46px;
   }
 }
+
+/* =========================
+   ATTENDANCE SYSTEM EXTRA
+========================= */
+
+.attend-row{
+  cursor:pointer;
+}
+
+.status-attend{
+  color:#7CFFB2;
+  font-weight:700;
+}
+
+.attended-row td{
+  opacity:.65;
+}
+
+.popup-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  padding:20px;
+}
+
+.popup-overlay.show{
+  display:flex;
+}
+
+.popup-box{
+  position:relative;
+  width:100%;
+  max-width:430px;
+  background:rgba(16,40,79,.95);
+  border:1px solid rgba(77,163,255,.35);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 20px 45px rgba(0,0,0,.55);
+}
+
+.popup-box h2{
+  margin:0 0 22px;
+  text-align:center;
+  font-size:24px;
+  background:linear-gradient(135deg,#7ad3ff 0%,#1d6fff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.popup-box p{
+  font-size:15px;
+  color:#e0e9f5;
+  margin:12px 0;
+}
+
+.popup-close{
+  position:absolute;
+  top:12px;
+  right:16px;
+  background:transparent;
+  border:none;
+  color:rgba(255,255,255,.65);
+  font-size:28px;
+  cursor:pointer;
+}
+
+.popup-close:hover{
+  color:#ff3344;
+}
+
+.attend-btn{
+  width:100%;
+  margin-top:22px;
+  padding:13px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#1d6fff 0%,#004ecc 100%);
+  color:#fff;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 4px 15px rgba(29,111,255,.4);
+}
+
+.attend-btn:disabled{
+  background:#6d7890;
+  cursor:not-allowed;
+  box-shadow:none;
+}
