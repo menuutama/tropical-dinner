@@ -32,10 +32,6 @@ document.addEventListener("DOMContentLoaded", function(){
   toggleAddButton();
 });
 
-/* =========================
-   SAFE HTML
-========================= */
-
 function escapeHTML(text){
   if(text == null) return "";
   return text.toString()
@@ -46,10 +42,6 @@ function escapeHTML(text){
     .replace(/'/g,"&#039;");
 }
 
-/* =========================
-   SORT DATA
-========================= */
-
 function sortData(data){
   return data.sort((a,b)=>{
     const numA = parseInt((a.place || "").match(/\d+/) ? (a.place || "").match(/\d+/)[0] : 999,10);
@@ -57,10 +49,6 @@ function sortData(data){
     return numA - numB;
   });
 }
-
-/* =========================
-   LOAD DATA
-========================= */
 
 async function loadData(){
   try{
@@ -75,10 +63,6 @@ async function loadData(){
     console.error("LOAD ERROR:",err);
   }
 }
-
-/* =========================
-   FILTER TERUS DARI INPUT LUCKY NO.
-========================= */
 
 function filterFromLuckyInput(){
   const keyword = document.getElementById("luckyNo").value.trim();
@@ -97,10 +81,6 @@ function filterFromLuckyInput(){
   document.getElementById("pagination").innerHTML = "";
 }
 
-/* =========================
-   SHOW / HIDE ADD BUTTON
-========================= */
-
 function toggleAddButton(){
   const luckyNo = document.getElementById("luckyNo").value.trim();
   const addBtn = document.getElementById("addBtn");
@@ -109,16 +89,12 @@ function toggleAddButton(){
     return String(item.luckyNo || "").trim() === luckyNo;
   });
 
-  if(luckyNo === "" || alreadyAdded){
-    addBtn.style.display = "none";
-  }else{
+  if(luckyNo.length === 4 && !alreadyAdded){
     addBtn.style.display = "inline-block";
+  }else{
+    addBtn.style.display = "none";
   }
 }
-
-/* =========================
-   RENDER TABLE
-========================= */
 
 function renderTable(){
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -152,10 +128,6 @@ function renderRows(data){
     </tr>
   `).join("");
 }
-
-/* =========================
-   PAGINATION
-========================= */
 
 function setupPagination(){
   const paginationContainer = document.getElementById("pagination");
@@ -209,16 +181,20 @@ function setupPagination(){
   paginationContainer.appendChild(lastBtn);
 }
 
-/* =========================
-   ADD DATA
-========================= */
-
 async function addItem(){
   const luckyNoInput = document.getElementById("luckyNo");
   const addBtn = document.getElementById("addBtn");
   const luckyNo = luckyNoInput.value.trim();
 
   if(!luckyNo) return alert("Enter lucky number");
+
+  if(luckyNo.length !== 4){
+    luckyNoInput.classList.add("shake-input");
+    setTimeout(()=>{
+      luckyNoInput.classList.remove("shake-input");
+    },300);
+    return;
+  }
 
   addBtn.disabled = true;
   addBtn.innerText = "Adding...";
@@ -275,10 +251,6 @@ async function addItem(){
   }
 }
 
-/* =========================
-   VALIDATE INPUT
-========================= */
-
 function validateLuckyInput(){
   const inputField = document.getElementById("luckyNo");
 
@@ -301,10 +273,6 @@ function validateLuckyInput(){
   }
 }
 
-/* =========================
-   CLEAR INPUT
-========================= */
-
 function toggleClearBtn(){
   const inputVal = document.getElementById("luckyNo").value;
   document.getElementById("clearInputBtn").style.display = inputVal.length > 0 ? "block" : "none";
@@ -319,10 +287,6 @@ function clearInput(){
   toggleAddButton();
   renderTable();
 }
-
-/* =========================
-   DELETE DATA
-========================= */
 
 async function deleteRow(row){
   if(!confirm("Adakah anda pasti mahu memadam baris ini?")) return;
@@ -343,10 +307,6 @@ async function deleteRow(row){
     console.error("Error deleting:",error);
   }
 }
-
-/* =========================
-   EDIT DATA - POPUP ASAL KEKAL
-========================= */
 
 async function editRow(row){
   let modal = document.getElementById("custom-edit-modal");
