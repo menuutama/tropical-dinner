@@ -4,7 +4,598 @@
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Lucky Draw System</title> 
-    <link rel="stylesheet" href="style.css">
+    <style>
+      /* ========================================================
+   GLOBAL STYLES & FONTS
+   ======================================================== */
+@import url('https://googleapis.com');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: radial-gradient(circle at center, #0c1f40 0%, #050d1a 100%);
+  color: #ffffff;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+/* ========================================================
+   NAVIGATION BAR
+   ======================================================== */
+.topnav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  background: linear-gradient(90deg, rgba(6, 20, 46, 0.95), rgba(18, 60, 122, 0.95));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 111, 255, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(29, 111, 255, 0.2);
+  width: 100%;
+}
+
+.topnav a {
+  color: #b0c9f0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.topnav a:hover {
+  color: #ffffff;
+  background: rgba(29, 111, 255, 0.2);
+  box-shadow: 0 0 15px rgba(29, 111, 255, 0.4);
+}
+
+/* ========================================================
+   HERO HEADER
+   ======================================================== */
+.hero-header {
+  width: 100%;
+  text-align: center;
+  padding: 40px 15px 10px;
+}
+
+.hero-header h1 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 55px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  font-size: clamp(18px, 2vw, 42px);
+  letter-spacing: 4px;
+  font-weight: 700;
+
+  /* Buat warna gradient (merah gelap ke merah terang/shine) */
+  background: linear-gradient(to bottom, #8b0000 0%, #ff3b3b 50%, #5c0000 100%);
+  
+  /* Potong background mengikut bentuk tulisan */
+  -webkit-background-clip: text;
+  background-clip: text;
+  
+  /* Jadikan warna text asal lutsinar supaya gradient kelihatan */
+  -webkit-text-fill-color: transparent;
+
+  /* Glow yang lebih lembut dan seimbang */
+  text-shadow: 0 0 8px rgba(255, 59, 59, 0.3);
+}
+
+.hero-header h2 {
+  margin: 8px 0 0;
+  font-size: clamp(20px, 3.5vw, 38px);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #7ad3ff 0%, #1d6fff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(29, 111, 255, 0.6));
+}
+
+/* ========================================================
+   CONTAINER & INPUT AREA (FIXED: "X" Indoor Input Box)
+   ======================================================== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-box {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 20px auto 30px;
+  padding: 0 10px;
+}
+
+.input-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 12px 40px 12px 16px !important; /* Ruang kanan untuk butang X */
+  border: 1px solid rgba(77, 163, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(16, 40, 79, 0.6);
+  color: #ffffff;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.input-container input:focus {
+  border-color: #4da3ff;
+  box-shadow: 0 0 15px rgba(77, 163, 255, 0.4);
+  background: rgba(16, 40, 79, 0.9);
+}
+/* Animasi Gegar */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Class gegar */
+.shake-input {
+  animation: shake 0.3s ease-in-out;
+  border-color: #ff4d4d !important; /* Border jadi merah semasa gegar */
+  box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+}
+
+
+/* Butang X Terapung di Dalam Input Box */
+.clear-btn {
+  position: absolute;
+  right: 14px;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  top: 50%;
+  transform: translateY(-50%) !important;
+  display: none;
+  z-index: 5;
+  transition: color 0.2s ease;
+  width: auto !important;
+  height: auto !important;
+}
+
+.clear-btn:hover {
+  color: #ff3344 !important;
+  text-shadow: 0 0 10px rgba(255, 51, 68, 0.6);
+}
+
+.input-box button:not(.clear-btn) {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1d6fff 0%, #004ecc 100%);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(29, 111, 255, 0.4);
+  white-space: nowrap;
+  height: 46px;
+}
+
+.input-box button:not(.clear-btn):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(77, 163, 255, 0.6);
+}
+
+/* ========================================================
+   TABLE DESIGN & PAGINATION
+   ======================================================== */
+.main-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.table-wrapper {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin: 0;
+  min-width: 600px;
+}
+
+th {
+  background: rgba(15, 45, 94, 0.6);
+  color: #8bc4ff;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px;
+  border-bottom: 2px solid rgba(77, 163, 255, 0.3);
+  white-space: nowrap;
+}
+
+th:first-child { border-top-left-radius: 12px; }
+th:last-child { border-top-right-radius: 12px; }
+
+td {
+  background: rgba(16, 40, 79, 0.4);
+  color: #e0e9f5;
+  font-size: 14px;
+  padding: 12px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+}
+
+tr td:first-child { 
+  border-left: 1px solid rgba(255, 255, 255, 0.03);
+  border-top-left-radius: 10px; 
+  border-bottom-left-radius: 10px; 
+}
+tr td:last-child { 
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  border-top-right-radius: 10px; 
+  border-bottom-right-radius: 10px; 
+}
+
+tr:hover td {
+  background: rgba(29, 111, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(77, 163, 255, 0.3);
+}
+
+table button {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 2px;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  display: inline-block;
+}
+
+.btn-edit, table button:nth-child(1) {
+  background: linear-gradient(135deg, #f5b041 0%, #ca8a22 100%) !important;
+  color: #000000 !important;
+  font-weight: 600;
+}
+
+.btn-danger, table button:nth-child(2) {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Pagination Container (Centered) */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 25px auto 10px;
+  width: 100%;
+}
+
+.pagination-btn {
+  background: rgba(16, 40, 79, 0.6) !important;
+  border: 1px solid rgba(77, 163, 255, 0.3) !important;
+  color: #b0c9f0 !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d6fff 0%, #004ecc 100%) !important;
+  color: #ffffff !important;
+  border-color: #4da3ff !important;
+}
+
+.pagination-btn.active {
+  background: linear-gradient(135deg, #1d6fff 0%, #004ecc 100%) !important;
+  color: #ffffff !important;
+  border-color: #4da3ff !important;
+  font-weight: 700 !important;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========================================================
+   📱 RESPONSIVE MEDIA QUERIES
+   ======================================================== */
+@media screen and (max-width: 600px) {
+  .topnav a {
+    padding: 6px 10px;
+    font-size: 12px;
+    flex: 1 1 calc(50% - 10px);
+  }
+
+  .input-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .input-container {
+    width: 100%;
+  }
+
+  .input-box button:not(.clear-btn) {
+    width: 100%;
+    height: 46px;
+  }
+}
+
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .banner-card {
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    background: #fff;
+    transition: transform 0.2s ease;
+  }
+  /* Efek sedikit timbul apabila tetikus diletakkan di atas kotak gambar*/
+  .banner-card:hover {
+    transform: translateY(-5px);
+  }
+  .banner-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+/* =========================
+   OFFLINE MEDIA SUPPORT
+========================= */
+
+.media-icon-text{
+  margin-top:8px;
+  font-size:13px;
+  font-weight:600;
+  color:#e2e8f0;
+  text-align:center;
+}
+
+.video-thumb{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+.video-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+/* ON LOCALHOST BUTTON */
+
+.download-btn{
+  background-color:#0078d4;
+  color:#ffffff !important;
+  border-radius:6px;
+  font-weight:600;
+  text-decoration:none;
+  padding:10px 14px;
+  transition:0.2s;
+}
+
+.download-btn:hover{
+  background-color:#005a9e;
+  box-shadow:0 0 18px rgba(0,120,212,0.7);
+}
+
+.localhost-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#b0c9f0 !important;
+  text-decoration:none;
+  font-weight:500;
+  font-size:13px;
+  letter-spacing:.5px;
+  padding:8px 14px;
+  border-radius:8px;
+}
+
+.localhost-link:hover{
+  color:#ffffff !important;
+  background:rgba(29,111,255,.2);
+  box-shadow:0 0 15px rgba(29,111,255,.4);
+}
+
+.localhost-toggle{
+  width:46px;
+  height:22px;
+  border-radius:20px;
+  border:2px solid #16d9ff;
+  background:#07152d;
+  box-shadow:0 0 10px #16d9ff, inset 0 0 10px rgba(22,217,255,.35);
+  position:relative;
+}
+
+.localhost-knob{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#73ff5f;
+  box-shadow:0 0 12px #73ff5f;
+  position:absolute;
+  right:2px;
+  top:1px;
+}
+
+.localhost-text{
+  font:inherit;
+}
+
+.localhost-toggle.offline{
+  border-color:#ff4d3d;
+  box-shadow:0 0 10px #ff4d3d, inset 0 0 10px rgba(255,77,61,.35);
+}
+
+.localhost-toggle.offline .localhost-knob{
+  left:2px;
+  right:auto;
+  background:#ff4d3d;
+  box-shadow:0 0 12px #ff4d3d;
+}
+
+.localhost-toggle.online{
+  border-color:#16d9ff;
+  box-shadow:0 0 10px #16d9ff, inset 0 0 10px rgba(22,217,255,.35);
+}
+
+.localhost-toggle.online .localhost-knob{
+  right:2px;
+  left:auto;
+  background:#73ff5f;
+  box-shadow:0 0 12px #73ff5f;
+}
+
+.localhost-toggle.offline{
+  border-color:#ff4d3d;
+  box-shadow:0 0 10px #ff4d3d, inset 0 0 10px rgba(255,77,61,.35);
+}
+
+.localhost-toggle.offline .localhost-knob{
+  left:2px;
+  right:auto;
+  background:#ff4d3d;
+  box-shadow:0 0 12px #ff4d3d;
+}
+
+.localhost-toggle.online{
+  border-color:#16d9ff;
+  box-shadow:0 0 10px #16d9ff, inset 0 0 10px rgba(22,217,255,.35);
+}
+
+.localhost-toggle.online .localhost-knob{
+  right:2px;
+  left:auto;
+  background:#73ff5f;
+  box-shadow:0 0 12px #73ff5f;
+}
+
+/* =========================
+   UPDATE ICON - VERSION UPDATE
+========================= */
+
+.update-link{
+  margin-left:auto !important;
+  width:38px !important;
+  height:38px !important;
+  padding:0 !important;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+.update-link img{
+  width:24px !important;
+  height:24px !important;
+  object-fit:contain !important;
+  display:block;
+}
+
+.update-link.has-update img{
+  animation:updateSpinClockwise 2.2s linear infinite;
+  filter:
+    drop-shadow(0 0 4px rgba(56,189,248,.55))
+    drop-shadow(0 0 8px rgba(56,189,248,.35));
+}
+
+.update-link.has-update:hover{
+  background:rgba(56,189,248,.12) !important;
+  box-shadow:
+    0 0 10px rgba(56,189,248,.7),
+    0 0 22px rgba(56,189,248,.45),
+    inset 0 0 12px rgba(56,189,248,.18) !important;
+}
+
+.update-link.has-update:hover img{
+  animation:updateSpinAntiClockwise 1.2s linear infinite;
+  filter:
+    drop-shadow(0 0 8px #7dd3fc)
+    drop-shadow(0 0 18px #38bdf8)
+    drop-shadow(0 0 28px #0ea5e9);
+}
+
+@keyframes updateSpinClockwise{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
+
+@keyframes updateSpinAntiClockwise{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(-360deg); }
+}
+    </style>
   </head>
   
   <body>   
