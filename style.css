@@ -17,6 +17,7 @@ body{
   font-family:'Poppins',sans-serif;
   color:#fff;
   overflow-x:hidden;
+  padding-bottom:70px !important;
 
   background:
   linear-gradient(
@@ -735,6 +736,7 @@ body.fullscreen-active .place-badge{
   gap:10px;
   flex-wrap:wrap;
   padding:18px;
+  margin-bottom:70px !important;
 }
 
 .pagination-btn{
