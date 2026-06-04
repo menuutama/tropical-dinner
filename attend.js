@@ -1,7 +1,16 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxx-J1KEgWzamkAPamCqIw7pMCntgLaY3zMnf4MC1Y-hsKeUEG0w9K6prAWGu0tiJM/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxQsB2UjnTrEio-c2LRG8VdwLVIIAydz-C4XqrVWxeC_Fe_qit5uhkvRbBTxiisRdwD/exec";
 
 let allAttendData = [];
 let selectedRow = null;
+
+/* =========================
+   API URL HELPER
+========================= */
+
+function apiUrl(params){
+  const joiner = API_URL.includes("?") ? "&" : "?";
+  return `${API_URL}${joiner}${params}`;
+}
 
 /* =========================
    LOAD DATA
@@ -13,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function getAttendData(){
   try{
-    const res = await fetch(`${API_URL}?action=getAttendData&time=${Date.now()}`);
+    const res = await fetch(apiUrl(`action=getAttendData&time=${Date.now()}`));
     const data = await res.json();
 
     allAttendData = data;
@@ -21,6 +30,7 @@ async function getAttendData(){
 
   }catch(err){
     console.error(err);
+
     document.getElementById("attendTableBody").innerHTML = `
       <tr>
         <td colspan="4">Failed to load data</td>
@@ -49,18 +59,22 @@ function displayAttendData(data){
   data.forEach(item => {
     const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${item.luckyNo || ""}</td>
-      <td>${item.employeeName || ""}</td>
-      <td>${item.companyName || ""}</td>
-      <td>${item.status || ""}</td>
-    `;
-
-    tr.onclick = () => openPopup(item);
+    tr.classList.add("attend-row");
 
     if(item.status === "ATTEND"){
       tr.classList.add("attended-row");
     }
+
+    tr.innerHTML = `
+      <td>${item.luckyNo || ""}</td>
+      <td>${item.employeeName || ""}</td>
+      <td>${item.companyName || ""}</td>
+      <td class="${item.status === "ATTEND" ? "status-attend" : ""}">
+        ${item.status || ""}
+      </td>
+    `;
+
+    tr.onclick = () => openPopup(item);
 
     tbody.appendChild(tr);
   });
@@ -71,25 +85,33 @@ function displayAttendData(data){
 ========================= */
 
 function searchAttendData(){
-  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  const input = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  const keyword = input.value.toLowerCase().trim();
+
+  clearBtn.style.display = keyword ? "block" : "none";
 
   const filtered = allAttendData.filter(item => {
     return (
-      String(item.luckyNo).toLowerCase().includes(keyword) ||
-      String(item.employeeName).toLowerCase().includes(keyword) ||
-      String(item.companyName).toLowerCase().includes(keyword)
+      String(item.luckyNo || "").toLowerCase().includes(keyword) ||
+      String(item.employeeName || "").toLowerCase().includes(keyword) ||
+      String(item.companyName || "").toLowerCase().includes(keyword)
     );
   });
 
   displayAttendData(filtered);
-
-  document.getElementById("clearSearch").style.display = keyword ? "block" : "none";
 }
 
 function clearSearch(){
-  document.getElementById("searchInput").value = "";
-  document.getElementById("clearSearch").style.display = "none";
+  const input = document.getElementById("searchInput");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  input.value = "";
+  clearBtn.style.display = "none";
+
   displayAttendData(allAttendData);
+  input.focus();
 }
 
 /* =========================
@@ -106,8 +128,8 @@ function openPopup(item){
   const attendBtn = document.getElementById("attendBtn");
 
   if(item.status === "ATTEND"){
-    attendBtn.innerText = "Already Attend";
-    attendBtn.disabled = true;
+    attendBtn.innerText = "Edit Attendance";
+    attendBtn.disabled = false;
   }else{
     attendBtn.innerText = "Attend";
     attendBtn.disabled = false;
@@ -122,49 +144,64 @@ function closePopup(){
 }
 
 /* =========================
-   MARK ATTEND
+   ATTEND / EDIT ATTEND
 ========================= */
 
 async function markAttend(){
   if(!selectedRow) return;
 
+  if(selectedRow.status === "ATTEND"){
+    const pass = prompt("Enter password to edit attendance:");
+
+    if(pass !== "abc123" && pass !== "ABC123"){
+      alert("Wrong password.");
+      return;
+    }
+
+    const confirmEdit = confirm("Remove ATTEND status for this person?");
+    if(!confirmEdit) return;
+
+    await updateAttendance("");
+    return;
+  }
+
+  await updateAttendance("ATTEND");
+}
+
+async function updateAttendance(status){
   const attendBtn = document.getElementById("attendBtn");
+
   attendBtn.disabled = true;
   attendBtn.innerText = "Saving...";
 
   try{
-    const res = await fetch(
-      `${API_URL}?action=markAttend&row=${selectedRow.row}`
-    );
+    const res = await fetch(apiUrl(
+      `action=updateAttend&row=${selectedRow.row}&status=${encodeURIComponent(status)}`
+    ));
 
     const result = await res.json();
 
     if(result.status === "success"){
-      selectedRow.status = "ATTEND";
+      selectedRow.status = status;
 
       const target = allAttendData.find(x => x.row === selectedRow.row);
       if(target){
-        target.status = "ATTEND";
+        target.status = status;
       }
 
-      attendBtn.innerText = "Already Attend";
-
       displayAttendData(allAttendData);
-
-      setTimeout(() => {
-        closePopup();
-      }, 500);
+      closePopup();
 
     }else{
       alert("Failed to update attendance.");
       attendBtn.disabled = false;
-      attendBtn.innerText = "Attend";
+      attendBtn.innerText = selectedRow.status === "ATTEND" ? "Edit Attendance" : "Attend";
     }
 
   }catch(err){
     console.error(err);
     alert("Error update attendance.");
     attendBtn.disabled = false;
-    attendBtn.innerText = "Attend";
+    attendBtn.innerText = selectedRow.status === "ATTEND" ? "Edit Attendance" : "Attend";
   }
 }
