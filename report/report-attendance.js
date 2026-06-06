@@ -4,7 +4,7 @@ let allData = [];
 let filteredData = [];
 let summaryData = [];
 
-async function loadAttendanceReport() {
+async function loadAttendanceReport(); {
   try {
     const res = await fetch(API_URL);
     allData = await res.json()
