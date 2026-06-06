@@ -6,17 +6,19 @@
   position:fixed;
   top:0;
   right:0;
+
   width:100%;
-  height:60px;
+  height:90px;
 
   display:flex;
   justify-content:flex-end;
   align-items:center;
 
-  padding:12px 25px;
+  padding:20px 25px;
+
+  z-index:99999;
 
   background:transparent;
-  z-index:99999;
 
   pointer-events:none;
 }
@@ -26,41 +28,76 @@
   pointer-events:auto;
 }
 
+/* =========================
+   REPORT BUTTON
+========================= */
+
 .report-btn{
 
-  padding:10px 22px;
+  width:70px;
+  height:70px;
 
   border:none;
-  border-radius:30px;
+  border-radius:50%;
 
   cursor:pointer;
 
-  color:#fff;
-  font-size:14px;
-  font-weight:700;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
   background:
   linear-gradient(
     135deg,
-    rgba(0,132,255,.85),
-    rgba(255,70,210,.85)
+    #0d6efd,
+    #ff4fd8
   );
 
-  backdrop-filter:blur(10px);
+  backdrop-filter:blur(15px);
 
   box-shadow:
-  0 0 15px rgba(0,132,255,.45);
+    0 0 20px rgba(13,110,253,.45),
+    0 0 35px rgba(255,79,216,.25);
 
-  transition:.3s;
+  transition:all .3s ease;
 }
 
 .report-btn:hover{
 
-  transform:translateY(-2px);
+  transform:
+    translateY(-3px)
+    scale(1.08);
 
   box-shadow:
-  0 0 20px rgba(255,70,210,.65);
+    0 0 25px rgba(13,110,253,.75),
+    0 0 45px rgba(255,79,216,.55);
 }
+
+.report-btn:active{
+  transform:scale(.95);
+}
+
+/* =========================
+   ICON
+========================= */
+
+.report-icon{
+
+  width:38px;
+  height:38px;
+
+  object-fit:contain;
+
+  filter:
+    brightness(0)
+    invert(1);
+
+  pointer-events:none;
+}
+
+/* =========================
+   SUB MENU
+========================= */
 
 .report-submenu{
 
@@ -68,36 +105,58 @@
 
   position:absolute;
 
-  top:52px;
+  top:85px;
   right:0;
 
-  min-width:320px;
+  width:320px;
 
   overflow:hidden;
 
-  border-radius:18px;
+  border-radius:20px;
 
   background:
-  rgba(0,10,40,.95);
+    rgba(0,10,40,.96);
 
   backdrop-filter:blur(15px);
 
   border:
-  1px solid rgba(255,255,255,.15);
+    1px solid rgba(255,255,255,.15);
 
   box-shadow:
-  0 10px 35px rgba(0,0,0,.45);
+    0 15px 40px rgba(0,0,0,.45);
+
+  animation:menuFade .25s ease;
 }
 
 .report-submenu.show{
   display:block;
 }
 
+@keyframes menuFade{
+
+  from{
+    opacity:0;
+    transform:
+      translateY(-10px);
+  }
+
+  to{
+    opacity:1;
+    transform:
+      translateY(0);
+  }
+
+}
+
+/* =========================
+   SUB MENU LINK
+========================= */
+
 .report-submenu a{
 
   display:block;
 
-  padding:15px 18px;
+  padding:16px 20px;
 
   color:#fff;
 
@@ -106,7 +165,7 @@
   font-size:14px;
   font-weight:600;
 
-  transition:.3s;
+  transition:.25s;
 }
 
 .report-submenu a:hover{
@@ -117,16 +176,60 @@
     #0d6efd,
     #ff4fd8
   );
+
+  padding-left:28px;
+}
+
+.report-submenu a:not(:last-child){
+
+  border-bottom:
+    1px solid rgba(255,255,255,.08);
+
 }
 
 /* =========================
-   PHONE & TABLET HIDE
+   LAPTOP / DESKTOP / TV ONLY
 ========================= */
 
 @media (max-width:1024px){
 
   .report-menu-bar{
     display:none;
+  }
+
+}
+
+/* =========================
+   TV SCREEN
+========================= */
+
+@media (min-width:1920px){
+
+  .report-btn{
+
+    width:85px;
+    height:85px;
+
+  }
+
+  .report-icon{
+
+    width:46px;
+    height:46px;
+
+  }
+
+  .report-submenu{
+
+    width:380px;
+
+  }
+
+  .report-submenu a{
+
+    font-size:16px;
+    padding:20px 24px;
+
   }
 
 }
