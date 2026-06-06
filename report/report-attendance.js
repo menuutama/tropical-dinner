@@ -380,7 +380,7 @@ function downloadPDF() {
 /* =====================================================
    EXCEL - 3 SHEETS
    FONT SIZE: 24 / 16 / 11
-   UPDATED EXCEL ONLY
+   EXCEL ONLY UPDATED
 ===================================================== */
 
 function downloadExcel() {
