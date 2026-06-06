@@ -33,39 +33,68 @@
   <div class="main-content">
     <div class="table-wrapper">
       <table>
-       <thead>
-  <tr>
-    <th>Place</th>
-    <th>Lucky No.</th>
-    <th>Employee Name</th>
-    <th>Company Name</th>
-    <th>Prize</th>
-  </tr>
-</thead>
+        <thead>
+          <tr>
+            <th>Place</th>
+            <th>Lucky No.</th>
+            <th>Employee Name</th>
+            <th>Company Name</th>
+            <th>Prize</th>
+          </tr>
+        </thead>
 
-<tbody id="collectTableBody">
-  <tr>
-    <td colspan="5">Loading...</td>
-  </tr>
-</tbody>
+        <tbody id="collectTableBody">
+          <tr>
+            <td colspan="5">Loading...</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
 
 </div>
 
-<div class="popup-overlay" id="collectPopup">
-  <div class="popup-box">
-    <button class="popup-close" id="closePopupBtn">&times;</button>
+<!-- PRIZE COLLECTION POPUP -->
+<div class="winner-modal" id="collectPopup">
 
-    <h2>Prize Collection</h2>
+  <div class="winner-modal-box collect-modal-box">
 
-    <p><b>Lucky Draw No.:</b> <span id="popupLuckyNo"></span></p>
-    <p><b>Employee Name:</b> <span id="popupEmployee"></span></p>
-    <p><b>Company Name:</b> <span id="popupCompany"></span></p>
+    <button class="modal-close" id="closePopupBtn">
+      ×
+    </button>
 
-    <button class="attend-btn" id="collectBtn">Collect</button>
+    <div class="modal-place" id="popupPlace"></div>
+
+    <div class="modal-winner" id="popupEmployee"></div>
+
+    <div class="modal-info">
+      Lucky No : <span id="popupLuckyNo"></span>
+    </div>
+
+    <div class="modal-info">
+      Company : <span id="popupCompany"></span>
+    </div>
+
+    <img
+      id="popupImage"
+      class="modal-image"
+      src=""
+      alt="Prize Image"
+    >
+
+    <div class="modal-prize" id="popupPrize"></div>
+
+    <div class="modal-note">
+      **Image for display purposes only.<br>
+      (Gambar untuk tujuan paparan sahaja)
+    </div>
+
+    <button class="attend-btn collect-action-btn" id="collectBtn">
+      Collect
+    </button>
+
   </div>
+
 </div>
 
 <script src="collect.js"></script>
