@@ -10,9 +10,7 @@ body {
   color: #000;
 }
 
-/* =========================
-   TOOLBAR
-========================= */
+/* TOOLBAR */
 
 .report-toolbar {
   width: 100%;
@@ -64,9 +62,7 @@ body {
   background: #850000;
 }
 
-/* =========================
-   A4 PREVIEW
-========================= */
+/* A4 PREVIEW */
 
 .preview-wrapper {
   width: 100%;
@@ -85,9 +81,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* =========================
-   LETTER HEAD PREVIEW
-========================= */
+/* LETTER HEAD */
 
 .letter-head {
   text-align: center;
@@ -96,7 +90,6 @@ body {
 
 .letter-head h1 {
   color: red;
-  font-family: Arial, sans-serif;
   font-size: 26px;
   font-weight: 800;
   line-height: 1.1;
@@ -104,16 +97,13 @@ body {
 
 .letter-head h2 {
   color: #000;
-  font-family: Arial, sans-serif;
   font-size: 16px;
   font-weight: 700;
   margin-top: 6px;
   line-height: 1.1;
 }
 
-/* =========================
-   MAIN TABLE PREVIEW
-========================= */
+/* TABLE */
 
 .report-table {
   width: 100%;
@@ -132,7 +122,7 @@ body {
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   word-break: normal;
 }
 
@@ -142,28 +132,24 @@ body {
   text-align: center;
 }
 
-/* No. */
 .report-table th:nth-child(1),
 .report-table td:nth-child(1) {
   width: 42px;
   text-align: center;
 }
 
-/* Employee Name */
 .report-table th:nth-child(2),
 .report-table td:nth-child(2) {
   width: auto;
   text-align: left;
 }
 
-/* Company */
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
   width: 95px;
   text-align: center;
 }
 
-/* Attendance */
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
   width: 90px;
@@ -178,9 +164,7 @@ body {
   line-height: 1;
 }
 
-/* =========================
-   SUMMARY PREVIEW
-========================= */
+/* SUMMARY */
 
 .summary-title {
   margin-top: 18px;
@@ -207,7 +191,7 @@ body {
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   word-break: normal;
 }
 
@@ -230,9 +214,7 @@ body {
   background: #d9d9d9;
 }
 
-/* =========================
-   PRINT
-========================= */
+/* PRINT */
 
 @media print {
   @page {
@@ -264,11 +246,35 @@ body {
     box-shadow: none !important;
     overflow: visible !important;
   }
+
+  .letter-head h1 {
+    color: red !important;
+    font-size: 26px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .letter-head h2 {
+    font-size: 16px !important;
+  }
+
+  .report-table th,
+  .report-table td,
+  .summary-table th,
+  .summary-table td {
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+    height: 22px !important;
+  }
+
+  .report-table tr,
+  .summary-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
   .preview-wrapper {
