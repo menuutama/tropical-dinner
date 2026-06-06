@@ -183,9 +183,7 @@ function renderSummaryTable() {
   document.getElementById("grandNotAttend").textContent = grandNotAttend;
 }
 
-/* =====================================================
-   PDF DIRECT DOWNLOAD - A4 PORTRAIT + 1 INCH MARGIN
-===================================================== */
+/* ================= PDF ================= */
 
 function downloadPDF() {
   const { jsPDF } = window.jspdf;
@@ -198,23 +196,17 @@ function downloadPDF() {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-
-  const margin = 72; // 1 inch
+  const margin = 72;
   const contentWidth = pageWidth - margin * 2;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.setTextColor(255, 0, 0);
-  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin, {
-    align: "center"
-  });
+  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin, { align: "center" });
 
-  doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
-  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 18, {
-    align: "center"
-  });
+  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 18, { align: "center" });
 
   const tableBody = filteredData.map((item, index) => [
     index + 1,
@@ -227,12 +219,7 @@ function downloadPDF() {
     startY: margin + 42,
     head: [["No.", "Employee Name", "Company", "Attendance"]],
     body: tableBody,
-    margin: {
-      top: margin,
-      right: margin,
-      bottom: margin,
-      left: margin
-    },
+    margin: { top: margin, right: margin, bottom: margin, left: margin },
     tableWidth: contentWidth,
     theme: "grid",
     styles: {
@@ -242,46 +229,28 @@ function downloadPDF() {
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
-      minCellHeight: 12,
-      valign: "middle",
-      overflow: "linebreak"
+      minCellHeight: 12
     },
     headStyles: {
       fillColor: [232, 232, 232],
       textColor: [0, 0, 0],
-      fontStyle: "bold",
-      halign: "center"
+      fontStyle: "bold"
     },
     columnStyles: {
       0: { cellWidth: 35, halign: "center" },
       1: { cellWidth: 190, halign: "left" },
       2: { cellWidth: 150, halign: "left" },
-      3: { cellWidth: contentWidth - 35 - 190 - 150, halign: "center" }
-    },
-    didDrawPage: function () {
-      const pageNumber = doc.internal.getNumberOfPages();
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.setTextColor(100, 100, 100);
-
-      doc.text(
-        `Page ${pageNumber}`,
-        pageWidth / 2,
-        pageHeight - 30,
-        { align: "center" }
-      );
+      3: { cellWidth: contentWidth - 375, halign: "center" }
     }
   });
 
   let finalY = doc.lastAutoTable.finalY + 20;
 
-  if (finalY > pageHeight - margin - 100) {
+  if (finalY > pageHeight - margin - 120) {
     doc.addPage();
     finalY = margin;
   }
 
-  doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(0, 0, 0);
   doc.text("Attendance Summary", margin, finalY);
@@ -302,12 +271,7 @@ function downloadPDF() {
     startY: finalY + 8,
     head: [["Company", "Total Attend", "Total Not Attend"]],
     body: summaryBody,
-    margin: {
-      top: margin,
-      right: margin,
-      bottom: margin,
-      left: margin
-    },
+    margin: { top: margin, right: margin, bottom: margin, left: margin },
     tableWidth: contentWidth * 0.75,
     theme: "grid",
     styles: {
@@ -316,19 +280,12 @@ function downloadPDF() {
       cellPadding: 4,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
-      lineWidth: 0.5,
-      valign: "middle"
+      lineWidth: 0.5
     },
     headStyles: {
       fillColor: [232, 232, 232],
       textColor: [0, 0, 0],
-      fontStyle: "bold",
-      halign: "center"
-    },
-    columnStyles: {
-      0: { cellWidth: 180, halign: "left" },
-      1: { cellWidth: 90, halign: "center" },
-      2: { cellWidth: 110, halign: "center" }
+      fontStyle: "bold"
     },
     didParseCell: function (data) {
       if (data.row.index === summaryBody.length - 1) {
@@ -341,54 +298,7 @@ function downloadPDF() {
   doc.save("Report_Attendance_Tropical_Dinner_2026.pdf");
 }
 
-/* =====================================================
-   WORD
-===================================================== */
-
-function downloadWord() {
-  const reportHTML = document.getElementById("reportArea").innerHTML;
-
-  const content = `
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        @page { size: A4 portrait; margin: 1in; }
-        body { font-family: Arial, sans-serif; color:#000; }
-        h1 { color:red; text-align:center; font-size:24px; margin:0; }
-        h2 { text-align:center; font-size:16px; margin:6px 0 18px; }
-        table { width:100%; border-collapse:collapse; table-layout:fixed; }
-        th, td { border:1px solid #000; padding:4px 6px; font-size:10px; color:#000; }
-        th { background:#e8e8e8; font-weight:bold; text-align:center; }
-        td:nth-child(2), td:nth-child(3) { text-align:left; }
-        td:nth-child(1), td:nth-child(4) { text-align:center; }
-        .summary-title { font-size:13px; margin-top:18px; }
-        .summary-table { width:70%; }
-      </style>
-    </head>
-    <body>${reportHTML}</body>
-    </html>
-  `;
-
-  const blob = new Blob(["\ufeff", content], {
-    type: "application/msword"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-
-  a.href = url;
-  a.download = "Report_Attendance_Tropical_Dinner_2026.doc";
-  document.body.appendChild(a);
-  a.click();
-
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-/* =====================================================
-   EXCEL - 3 SHEET
-===================================================== */
+/* ================= EXCEL ================= */
 
 function downloadExcel() {
   const wb = XLSX.utils.book_new();
@@ -418,37 +328,62 @@ function buildAllReportSheet() {
   });
 
   data.push([]);
-  data.push(["Attendance Summary", "", ""]);
-  data.push(["Company", "Total Attend", "Total Not Attend"]);
+
+  const summaryTitleRow = data.length + 1;
+  data.push(["Attendance Summary", "", "", ""]);
+
+  const summaryHeaderRow = data.length + 1;
+  data.push(["Company", "Total Attend", "Total Not Attend", ""]);
 
   summaryData.forEach(item => {
-    data.push([item.company, item.attend, item.notAttend]);
+    data.push([item.company, item.attend, item.notAttend, ""]);
   });
 
   data.push([
     "GRAND TOTAL",
     document.getElementById("grandAttend").textContent,
-    document.getElementById("grandNotAttend").textContent
+    document.getElementById("grandNotAttend").textContent,
+    ""
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
 
-  const summaryTitleRowIndex = filteredData.length + 5;
-
   ws["!merges"] = [
     { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
     { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
-    { s: { r: summaryTitleRowIndex, c: 0 }, e: { r: summaryTitleRowIndex, c: 2 } }
+    { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 2 } }
   ];
 
   ws["!cols"] = [
-    { wch: 7 },
-    { wch: 36 },
+    { wch: 8 },
+    { wch: 38 },
     { wch: 30 },
     { wch: 14 }
   ];
 
-  applyExcelStyle(ws, data.length, 4, true);
+  applyExcelStyle(ws, data.length, 4);
+
+  ws["A1"].s = excelTitleStyle();
+  ws["A2"].s = excelSubtitleStyle();
+
+  ["A4", "B4", "C4", "D4"].forEach(cell => {
+    if (ws[cell]) ws[cell].s = excelHeaderStyle();
+  });
+
+  const summaryTitleCell = "A" + summaryTitleRow;
+  if (ws[summaryTitleCell]) {
+    ws[summaryTitleCell].s = {
+      font: { name: "Arial", sz: 10, bold: false, color: { rgb: "000000" } },
+      alignment: { horizontal: "center", vertical: "center", wrapText: true },
+      border: excelBorder()
+    };
+  }
+
+  ["A", "B", "C"].forEach(col => {
+    const cell = col + summaryHeaderRow;
+    if (ws[cell]) ws[cell].s = excelHeaderStyle();
+  });
+
   return ws;
 }
 
@@ -469,13 +404,18 @@ function buildListSheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!cols"] = [
-    { wch: 7 },
-    { wch: 36 },
+    { wch: 8 },
+    { wch: 38 },
     { wch: 30 },
     { wch: 14 }
   ];
 
-  applyExcelStyle(ws, data.length, 4, false);
+  applyExcelStyle(ws, data.length, 4);
+
+  ["A1", "B1", "C1", "D1"].forEach(cell => {
+    if (ws[cell]) ws[cell].s = excelHeaderStyle();
+  });
+
   return ws;
 }
 
@@ -502,68 +442,25 @@ function buildSummarySheet() {
     { wch: 18 }
   ];
 
-  applyExcelStyle(ws, data.length, 3, false);
+  applyExcelStyle(ws, data.length, 3);
+
+  ["A1", "B1", "C1"].forEach(cell => {
+    if (ws[cell]) ws[cell].s = excelHeaderStyle();
+  });
+
   return ws;
 }
 
-function applyExcelStyle(ws, rowCount, colCount, hasLetterHead) {
+function applyExcelStyle(ws, rowCount, colCount) {
   Object.keys(ws).forEach(cell => {
     if (cell[0] === "!") return;
 
     ws[cell].s = {
-      font: {
-        name: "Arial",
-        sz: 10,
-        color: { rgb: "000000" }
-      },
-      alignment: {
-        vertical: "center",
-        horizontal: "center",
-        wrapText: true
-      },
-      border: getExcelBorder()
+      font: { name: "Arial", sz: 10, color: { rgb: "000000" } },
+      alignment: { horizontal: "center", vertical: "center", wrapText: true },
+      border: excelBorder()
     };
   });
-
-  if (hasLetterHead) {
-    ws["A1"].s = {
-      font: { name: "Arial", sz: 18, bold: true, color: { rgb: "FF0000" } },
-      alignment: { horizontal: "center", vertical: "center" }
-    };
-
-    ws["A2"].s = {
-      font: { name: "Arial", sz: 13, bold: true, color: { rgb: "000000" } },
-      alignment: { horizontal: "center", vertical: "center" }
-    };
-
-    ["A4", "B4", "C4", "D4"].forEach(cell => {
-      if (ws[cell]) ws[cell].s = getExcelHeaderStyle();
-    });
-
-    const summaryTitleRow = filteredData.length + 6;
-    const summaryTitleCell = "A" + summaryTitleRow;
-
-    if (ws[summaryTitleCell]) {
-      ws[summaryTitleCell].s = {
-        font: { name: "Arial", sz: 10, bold: false, color: { rgb: "000000" } },
-        alignment: { horizontal: "center", vertical: "center" },
-        border: getExcelBorder()
-      };
-    }
-
-    const summaryHeaderRow = filteredData.length + 7;
-    ["A", "B", "C"].forEach(col => {
-      const cell = col + summaryHeaderRow;
-      if (ws[cell]) ws[cell].s = getExcelHeaderStyle();
-    });
-
-  } else {
-    const letters = ["A", "B", "C", "D"];
-    for (let i = 0; i < colCount; i++) {
-      const cell = letters[i] + "1";
-      if (ws[cell]) ws[cell].s = getExcelHeaderStyle();
-    }
-  }
 
   ws["!rows"] = [];
   for (let r = 0; r < rowCount; r++) {
@@ -571,22 +468,75 @@ function applyExcelStyle(ws, rowCount, colCount, hasLetterHead) {
   }
 }
 
-function getExcelHeaderStyle() {
+function excelTitleStyle() {
+  return {
+    font: { name: "Arial", sz: 18, bold: true, color: { rgb: "FF0000" } },
+    alignment: { horizontal: "center", vertical: "center" }
+  };
+}
+
+function excelSubtitleStyle() {
+  return {
+    font: { name: "Arial", sz: 13, bold: true, color: { rgb: "000000" } },
+    alignment: { horizontal: "center", vertical: "center" }
+  };
+}
+
+function excelHeaderStyle() {
   return {
     font: { name: "Arial", sz: 10, bold: true, color: { rgb: "000000" } },
     fill: { fgColor: { rgb: "E8E8E8" } },
     alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: getExcelBorder()
+    border: excelBorder()
   };
 }
 
-function getExcelBorder() {
+function excelBorder() {
   return {
     top: { style: "thin", color: { rgb: "000000" } },
     bottom: { style: "thin", color: { rgb: "000000" } },
     left: { style: "thin", color: { rgb: "000000" } },
     right: { style: "thin", color: { rgb: "000000" } }
   };
+}
+
+/* ================= WORD ================= */
+
+function downloadWord() {
+  const reportHTML = document.getElementById("reportArea").innerHTML;
+
+  const content = `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        @page { size: A4 portrait; margin: 1in; }
+        body { font-family: Arial, sans-serif; color:#000; }
+        h1 { color:red; text-align:center; font-size:24px; margin:0; }
+        h2 { text-align:center; font-size:16px; margin:6px 0 18px; }
+        table { width:100%; border-collapse:collapse; table-layout:fixed; }
+        th, td { border:1px solid #000; padding:4px 6px; font-size:10px; color:#000; }
+        th { background:#e8e8e8; font-weight:bold; text-align:center; }
+      </style>
+    </head>
+    <body>${reportHTML}</body>
+    </html>
+  `;
+
+  const blob = new Blob(["\ufeff", content], {
+    type: "application/msword"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "Report_Attendance_Tropical_Dinner_2026.doc";
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 loadAttendanceReport();
