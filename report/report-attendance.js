@@ -14,9 +14,7 @@ async function loadAttendanceReport() {
 
   } catch (err) {
     document.getElementById("attendanceBody").innerHTML = `
-      <tr>
-        <td colspan="4">Failed to load data</td>
-      </tr>
+      <tr><td colspan="4">Failed to load data</td></tr>
     `;
     console.error(err);
   }
@@ -42,9 +40,7 @@ function loadCompanyDropdown() {
   const companyFilter = document.getElementById("companyFilter");
 
   const companies = [...new Set(
-    allData
-      .map(item => item.company || "")
-      .filter(company => company.trim() !== "")
+    allData.map(item => item.company || "").filter(c => c.trim() !== "")
   )].sort((a, b) => a.localeCompare(b));
 
   companies.forEach(company => {
@@ -63,14 +59,8 @@ function applyFilterAndSort() {
     const companyMatch = selectedCompany === "ALL" || item.company === selectedCompany;
 
     let attendanceMatch = true;
-
-    if (selectedAttendance === "ATTEND") {
-      attendanceMatch = isAttend(item.attendance);
-    }
-
-    if (selectedAttendance === "NOT_ATTEND") {
-      attendanceMatch = !isAttend(item.attendance);
-    }
+    if (selectedAttendance === "ATTEND") attendanceMatch = isAttend(item.attendance);
+    if (selectedAttendance === "NOT_ATTEND") attendanceMatch = !isAttend(item.attendance);
 
     return companyMatch && attendanceMatch;
   });
@@ -139,11 +129,7 @@ function renderSummaryTable() {
     const company = item.company || "Unknown Company";
 
     if (!summary[company]) {
-      summary[company] = {
-        company: company,
-        attend: 0,
-        notAttend: 0
-      };
+      summary[company] = { company, attend: 0, notAttend: 0 };
     }
 
     if (isAttend(item.attendance)) {
@@ -198,17 +184,17 @@ function downloadPDF() {
 
   doc.setFontSize(18);
   doc.setTextColor(0, 0, 0);
-  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 26, { align: "center" });
+  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 28, { align: "center" });
 
   const tableBody = filteredData.map((item, index) => [
     index + 1,
     item.employeeName || "",
     item.company || "",
-    getAttendIcon(item.attendance)
+    isAttend(item.attendance) ? "" : "×"
   ]);
 
   doc.autoTable({
-    startY: margin + 55,
+    startY: margin + 60,
     head: [["No.", "Employee Name", "Company", "Attendance"]],
     body: tableBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
@@ -221,9 +207,8 @@ function downloadPDF() {
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
-      minCellHeight: 18,
-      valign: "middle",
-      overflow: "linebreak"
+      minCellHeight: 20,
+      valign: "middle"
     },
     headStyles: {
       fillColor: [232, 232, 232],
@@ -232,22 +217,32 @@ function downloadPDF() {
       halign: "center"
     },
     columnStyles: {
-      0: { cellWidth: 35, halign: "center" },
-      1: { cellWidth: 190, halign: "left" },
+      0: { cellWidth: 38, halign: "center" },
+      1: { cellWidth: 210, halign: "left" },
       2: { cellWidth: 150, halign: "left" },
-      3: { cellWidth: contentWidth - 375, halign: "center" }
+      3: { cellWidth: contentWidth - 398, halign: "center" }
+    },
+    didDrawCell: function (data) {
+      if (data.section === "body" && data.column.index === 3) {
+        const item = filteredData[data.row.index];
+        const x = data.cell.x + data.cell.width / 2;
+        const y = data.cell.y + data.cell.height / 2;
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.2);
+
+        if (isAttend(item.attendance)) {
+          doc.line(x - 5, y, x - 1, y + 5);
+          doc.line(x - 1, y + 5, x + 7, y - 6);
+        }
+      }
     }
   });
 
   let finalY = doc.lastAutoTable.finalY + 24;
 
-  if (finalY > 700) {
-    doc.addPage();
-    finalY = margin;
-  }
-
-  doc.setFontSize(18);
-  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
   doc.text("Attendance Summary", margin, finalY);
 
   const summaryBody = summaryData.map(item => [
@@ -263,16 +258,16 @@ function downloadPDF() {
   ]);
 
   doc.autoTable({
-    startY: finalY + 12,
+    startY: finalY + 10,
     head: [["Company", "Total Attend", "Total Not Attend"]],
     body: summaryBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
-    tableWidth: contentWidth * 0.75,
+    tableWidth: contentWidth * 0.8,
     theme: "grid",
     styles: {
       font: "helvetica",
       fontSize: 12,
-      cellPadding: 5,
+      cellPadding: 4,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5
@@ -314,12 +309,7 @@ function buildAllReportSheet() {
   data.push(["No.", "Employee Name", "Company", "Attendance"]);
 
   filteredData.forEach((item, index) => {
-    data.push([
-      index + 1,
-      item.employeeName || "",
-      item.company || "",
-      getAttendIcon(item.attendance)
-    ]);
+    data.push([index + 1, item.employeeName || "", item.company || "", getAttendIcon(item.attendance)]);
   });
 
   data.push([]);
@@ -334,12 +324,7 @@ function buildAllReportSheet() {
     data.push([item.company, item.attend, item.notAttend, ""]);
   });
 
-  data.push([
-    "GRAND TOTAL",
-    document.getElementById("grandAttend").textContent,
-    document.getElementById("grandNotAttend").textContent,
-    ""
-  ]);
+  data.push(["GRAND TOTAL", document.getElementById("grandAttend").textContent, document.getElementById("grandNotAttend").textContent, ""]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
 
@@ -349,31 +334,14 @@ function buildAllReportSheet() {
     { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 2 } }
   ];
 
-  ws["!cols"] = [
-    { wch: 9 },
-    { wch: 42 },
-    { wch: 34 },
-    { wch: 16 }
-  ];
+  ws["!cols"] = [{ wch: 8 }, { wch: 38 }, { wch: 30 }, { wch: 14 }];
 
   applyExcelStyle(ws, data.length);
 
   ws["A1"].s = excelTitleStyle();
   ws["A2"].s = excelSubtitleStyle();
 
-  ["A4", "B4", "C4", "D4"].forEach(cell => {
-    if (ws[cell]) ws[cell].s = excelHeaderStyle();
-  });
-
-  const summaryTitleCell = "A" + summaryTitleRow;
-  if (ws[summaryTitleCell]) {
-    ws[summaryTitleCell].s = {
-      font: { name: "Arial", sz: 18, bold: true, color: { rgb: "000000" } },
-      alignment: { horizontal: "center", vertical: "center", wrapText: true },
-      border: excelBorder()
-    };
-  }
-
+  ["A4", "B4", "C4", "D4"].forEach(c => ws[c] && (ws[c].s = excelHeaderStyle()));
   ["A", "B", "C"].forEach(col => {
     const cell = col + summaryHeaderRow;
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
@@ -383,65 +351,35 @@ function buildAllReportSheet() {
 }
 
 function buildListSheet() {
-  const data = [];
-
-  data.push(["No.", "Employee Name", "Company", "Attendance"]);
+  const data = [["No.", "Employee Name", "Company", "Attendance"]];
 
   filteredData.forEach((item, index) => {
-    data.push([
-      index + 1,
-      item.employeeName || "",
-      item.company || "",
-      getAttendIcon(item.attendance)
-    ]);
+    data.push([index + 1, item.employeeName || "", item.company || "", getAttendIcon(item.attendance)]);
   });
 
   const ws = XLSX.utils.aoa_to_sheet(data);
-
-  ws["!cols"] = [
-    { wch: 9 },
-    { wch: 42 },
-    { wch: 34 },
-    { wch: 16 }
-  ];
+  ws["!cols"] = [{ wch: 8 }, { wch: 38 }, { wch: 30 }, { wch: 14 }];
 
   applyExcelStyle(ws, data.length);
-
-  ["A1", "B1", "C1", "D1"].forEach(cell => {
-    if (ws[cell]) ws[cell].s = excelHeaderStyle();
-  });
+  ["A1", "B1", "C1", "D1"].forEach(c => ws[c] && (ws[c].s = excelHeaderStyle()));
 
   return ws;
 }
 
 function buildSummarySheet() {
-  const data = [];
-
-  data.push(["Company", "Total Attend", "Total Not Attend"]);
+  const data = [["Company", "Total Attend", "Total Not Attend"]];
 
   summaryData.forEach(item => {
     data.push([item.company, item.attend, item.notAttend]);
   });
 
-  data.push([
-    "GRAND TOTAL",
-    document.getElementById("grandAttend").textContent,
-    document.getElementById("grandNotAttend").textContent
-  ]);
+  data.push(["GRAND TOTAL", document.getElementById("grandAttend").textContent, document.getElementById("grandNotAttend").textContent]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
-
-  ws["!cols"] = [
-    { wch: 36 },
-    { wch: 18 },
-    { wch: 22 }
-  ];
+  ws["!cols"] = [{ wch: 32 }, { wch: 16 }, { wch: 18 }];
 
   applyExcelStyle(ws, data.length);
-
-  ["A1", "B1", "C1"].forEach(cell => {
-    if (ws[cell]) ws[cell].s = excelHeaderStyle();
-  });
+  ["A1", "B1", "C1"].forEach(c => ws[c] && (ws[c].s = excelHeaderStyle()));
 
   return ws;
 }
@@ -449,7 +387,6 @@ function buildSummarySheet() {
 function applyExcelStyle(ws, rowCount) {
   Object.keys(ws).forEach(cell => {
     if (cell[0] === "!") return;
-
     ws[cell].s = {
       font: { name: "Arial", sz: 12, color: { rgb: "000000" } },
       alignment: { horizontal: "center", vertical: "center", wrapText: true },
@@ -458,12 +395,7 @@ function applyExcelStyle(ws, rowCount) {
   });
 
   ws["!rows"] = [];
-  for (let r = 0; r < rowCount; r++) {
-    ws["!rows"][r] = { hpt: 24 };
-  }
-
-  ws["!rows"][0] = { hpt: 32 };
-  ws["!rows"][1] = { hpt: 26 };
+  for (let r = 0; r < rowCount; r++) ws["!rows"][r] = { hpt: 22 };
 }
 
 function excelTitleStyle() {
@@ -510,10 +442,10 @@ function downloadWord() {
       <style>
         @page { size: A4 portrait; margin: 1in; }
         body { font-family: Arial, sans-serif; color:#000; }
-        h1 { color:red; text-align:center; font-size:26px; margin:0; font-family:Arial,sans-serif; }
-        h2 { text-align:center; font-size:18px; margin:6px 0 18px; font-family:Arial,sans-serif; }
-        table { width:100%; border-collapse:collapse; table-layout:fixed; font-family:Arial,sans-serif; }
-        th, td { border:1px solid #000; padding:4px 6px; font-size:12px; color:#000; font-family:Arial,sans-serif; }
+        h1 { color:red; text-align:center; font-size:26px; margin:0; }
+        h2 { text-align:center; font-size:18px; margin:6px 0 18px; }
+        table { width:100%; border-collapse:collapse; table-layout:fixed; }
+        th, td { border:1px solid #000; padding:4px 6px; font-size:12px; color:#000; }
         th { background:#e8e8e8; font-weight:bold; text-align:center; }
       </style>
     </head>
@@ -521,10 +453,7 @@ function downloadWord() {
     </html>
   `;
 
-  const blob = new Blob(["\ufeff", content], {
-    type: "application/msword"
-  });
-
+  const blob = new Blob(["\ufeff", content], { type: "application/msword" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
 
@@ -532,7 +461,6 @@ function downloadWord() {
   a.download = "Report_Attendance_Tropical_Dinner_2026.doc";
   document.body.appendChild(a);
   a.click();
-
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
