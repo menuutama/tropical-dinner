@@ -1,17 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Tropical Dinner 2026 - Live Lucky Draw</title>
-
-<!-- CSS FILE -->
-<link rel="preconnect" href="https://googleapis.com">
-<!--- <link href="https://googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"> --->
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -21,52 +15,47 @@
 <div class="container">
 
   <div class="header">
+    <div class="sub-title">TROPICAL DINNER 2026</div>
+    <div class="title">LUCKY DRAW WINNERS</div>
 
-    <div class="sub-title">
-      TROPICAL DINNER 2026
-    </div>
-
-    <div class="title">
-      LUCKY DRAW WINNERS
-    </div>
-
-    <!-- Ditambah class "live-update-badge" untuk rujukan JS meletakkan search bar -->
     <div class="live-box live-update-badge">
       <div class="dot"></div>
       LIVE UPDATING
     </div>
 
+    <div class="search-wrapper">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search Lucky No / Winner / Company">
+        <button class="clear-btn" id="clearBtn">x</button>
+      </div>
+
+      <div class="click-note">
+        Click on your name to view your Lucky Draw prize.
+      </div>
+    </div>
   </div>
 
   <div class="table-wrapper">
-
     <table>
-
       <thead>
         <tr>
           <th>PLACE</th>
           <th>LUCKY NO.</th>
           <th>WINNER</th>
           <th>COMPANY</th>
-          <th>PRIZE</th>
         </tr>
       </thead>
-
       <tbody id="winnerTable"></tbody>
-
     </table>
-
   </div>
 
   <div class="footer">
-
     <div class="pagination" id="pagination"></div>
 
     <div class="control-buttons">
       <button onclick="playSlide()">▶ Play</button>
-      <button onclick="pauseSlide()">⏸ Pause</button>     
+      <button onclick="pauseSlide()">⏸ Pause</button>
     </div>
-
   </div>
 
   <div class="notice">
@@ -75,7 +64,29 @@
 
 </div>
 
-<!-- JS FILE -->
+<div id="winnerModal" class="winner-modal">
+  <div class="winner-modal-box">
+
+    <button class="modal-close" onclick="closeWinnerModal()">×</button>
+
+    <div class="modal-place" id="modalPlace"></div>
+    <div class="modal-winner" id="modalWinner"></div>
+
+    <div class="modal-info" id="modalLuckyNo"></div>
+    <div class="modal-info" id="modalCompany"></div>
+
+    <img id="modalImage" class="modal-image" src="" alt="Prize Image">
+
+    <div class="modal-prize" id="modalPrize"></div>
+
+    <div class="modal-note">
+      **Image for display purposes only. <br>
+      (Gambar untuk tujuan paparan sahaja)
+    </div>
+
+  </div>
+</div>
+
 <script src="script.js"></script>
 
 </body>
