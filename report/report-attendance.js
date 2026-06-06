@@ -7,7 +7,7 @@ let summaryData = [];
 async function loadAttendanceReport() {
   try {
     const res = await fetch(API_URL);
-    allData = await res.json()
+    allData = await res.json();
 
     loadCompanyDropdown();
     applyFilterAndSort();
@@ -100,9 +100,7 @@ function sortReportData() {
     if (sortField === "company") {
       compare = cleanText(a.company).localeCompare(cleanText(b.company));
 
-      if (compare !== 0) {
-        return compare;
-      }
+      if (compare !== 0) return compare;
 
       return sortOrder === "za" ? nameCompare * -1 : nameCompare;
     }
@@ -110,9 +108,7 @@ function sortReportData() {
     if (sortField === "attendance") {
       compare = getAttendanceText(a.attendance).localeCompare(getAttendanceText(b.attendance));
 
-      if (compare !== 0) {
-        return compare;
-      }
+      if (compare !== 0) return compare;
 
       return sortOrder === "za" ? nameCompare * -1 : nameCompare;
     }
@@ -194,10 +190,6 @@ function renderSummaryTable() {
 
 /* =====================================================
    PDF DIRECT DOWNLOAD
-   A4 PORTRAIT + MARGIN 1 INCH
-   FONT SIZE: 24 / 16 / 11
-   FIX COMPANY FULL WORD
-   FIX ✓ × BY DRAWING SYMBOL
 ===================================================== */
 
 function downloadPDF() {
@@ -222,7 +214,7 @@ function downloadPDF() {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  const margin = 72; // 1 inch
+  const margin = 72;
   const contentWidth = pageWidth - margin * 2;
 
   const noWidth = 35;
@@ -255,17 +247,14 @@ function downloadPDF() {
     startY: margin + 50,
     head: [["No.", "Employee Name", "Company", "Attendance"]],
     body: tableBody,
-
     margin: {
       top: margin,
       right: margin,
       bottom: margin,
       left: margin
     },
-
     tableWidth: contentWidth,
     theme: "grid",
-
     styles: {
       font: "helvetica",
       fontSize: 11,
@@ -277,7 +266,6 @@ function downloadPDF() {
       valign: "middle",
       overflow: "hidden"
     },
-
     headStyles: {
       fillColor: [217, 217, 217],
       textColor: [0, 0, 0],
@@ -285,26 +273,12 @@ function downloadPDF() {
       halign: "center",
       valign: "middle"
     },
-
     columnStyles: {
-      0: {
-        cellWidth: noWidth,
-        halign: "center"
-      },
-      1: {
-        cellWidth: employeeWidth,
-        halign: "left"
-      },
-      2: {
-        cellWidth: companyWidth,
-        halign: "center"
-      },
-      3: {
-        cellWidth: attendanceWidth,
-        halign: "center"
-      }
+      0: { cellWidth: noWidth, halign: "center" },
+      1: { cellWidth: employeeWidth, halign: "left" },
+      2: { cellWidth: companyWidth, halign: "center" },
+      3: { cellWidth: attendanceWidth, halign: "center" }
     },
-
     didDrawCell: function (data) {
       if (data.section === "body" && data.column.index === 3) {
         const item = filteredData[data.row.index];
@@ -316,11 +290,9 @@ function downloadPDF() {
         doc.setLineWidth(1.5);
 
         if (isAttend(item.attendance)) {
-          // draw ✓
           doc.line(x - 6, y, x - 2, y + 5);
           doc.line(x - 2, y + 5, x + 8, y - 7);
         } else {
-          // draw ×
           doc.line(x - 5, y - 5, x + 5, y + 5);
           doc.line(x + 5, y - 5, x - 5, y + 5);
         }
@@ -356,17 +328,14 @@ function downloadPDF() {
     startY: finalY + 8,
     head: [["Company", "Total Attend", "Total Not Attend"]],
     body: summaryBody,
-
     margin: {
       top: margin,
       right: margin,
       bottom: margin,
       left: margin
     },
-
     tableWidth: contentWidth * 0.85,
     theme: "grid",
-
     styles: {
       font: "helvetica",
       fontSize: 11,
@@ -378,7 +347,6 @@ function downloadPDF() {
       valign: "middle",
       overflow: "hidden"
     },
-
     headStyles: {
       fillColor: [217, 217, 217],
       textColor: [0, 0, 0],
@@ -386,22 +354,11 @@ function downloadPDF() {
       halign: "center",
       valign: "middle"
     },
-
     columnStyles: {
-      0: {
-        cellWidth: 190,
-        halign: "left"
-      },
-      1: {
-        cellWidth: 100,
-        halign: "center"
-      },
-      2: {
-        cellWidth: 120,
-        halign: "center"
-      }
+      0: { cellWidth: 190, halign: "left" },
+      1: { cellWidth: 100, halign: "center" },
+      2: { cellWidth: 120, halign: "center" }
     },
-
     didParseCell: function (data) {
       if (data.section === "body" && data.row.index === summaryBody.length - 1) {
         data.cell.styles.fontStyle = "bold";
@@ -415,8 +372,6 @@ function downloadPDF() {
 
 /* =====================================================
    EXCEL - 3 SHEETS
-   FONT SIZE: 24 / 16 / 11
-   UPDATED EXCEL ONLY
 ===================================================== */
 
 function downloadExcel() {
@@ -736,8 +691,6 @@ function excelBorder() {
 
 /* =====================================================
    DOCUMENT / WORD
-   A4 PORTRAIT + MARGIN 1 INCH
-   FONT SIZE: 24 / 16 / 11
 ===================================================== */
 
 function downloadWord() {
@@ -946,3 +899,5 @@ function downloadWord() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+loadAttendanceReport();
