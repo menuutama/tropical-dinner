@@ -5,218 +5,219 @@
 }
 
 body {
-  background: #f2f2f2;
+  background: #d9d9d9;
   font-family: Arial, sans-serif;
   color: #000;
 }
 
-.page {
+/* =========================
+   TOOLBAR
+========================= */
+
+.report-toolbar {
   width: 100%;
-  max-width: 1100px;
-  margin: 25px auto;
   background: #fff;
-  padding: 25px;
-  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ccc;
+  position: sticky;
+  top: 0;
+  z-index: 99;
 }
 
-.filter-area {
+.control-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.filter-area select {
-  padding: 10px 14px;
-  border: 1px solid #999;
+.control-group select,
+.control-group button {
+  height: 36px;
+  border: 1px solid #b60000;
   border-radius: 6px;
-  font-weight: bold;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.control-group select {
   background: #fff;
-  min-width: 200px;
+  color: #b60000;
+  min-width: 165px;
 }
 
-.button-area {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.button-area button {
-  border: none;
+.control-group button {
   background: #b60000;
   color: #fff;
-  padding: 10px 18px;
-  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
+  min-width: 90px;
 }
 
-.button-area button:hover {
-  background: #800000;
+.control-group button:hover {
+  background: #850000;
 }
 
-#reportArea {
+/* =========================
+   A4 PREVIEW
+========================= */
+
+.preview-wrapper {
   width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  background: #fff;
-  padding: 0;
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
 }
+
+.a4-paper {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  padding: 25.4mm;
+  box-shadow: 0 0 10px rgba(0,0,0,.25);
+  overflow: visible;
+}
+
+/* =========================
+   LETTER HEAD
+========================= */
 
 .letter-head {
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 
 .letter-head h1 {
   color: red;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: 1px;
+  line-height: 1.1;
 }
 
 .letter-head h2 {
-  font-size: 21px;
+  font-size: 16px;
   margin-top: 6px;
+  line-height: 1.1;
 }
 
-.main-table,
+/* =========================
+   TABLE
+========================= */
+
+.report-table,
 .summary-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  margin-top: 12px;
 }
 
-.main-table th,
-.main-table td,
+.report-table th,
+.report-table td,
 .summary-table th,
 .summary-table td {
   border: 1px solid #000;
-  padding: 7px;
+  padding: 4px 6px;
+  font-size: 10px;
+  color: #000 !important;
+  line-height: 1.2;
+  height: 20px;
+  word-break: break-word;
+}
+
+.report-table th,
+.summary-table th {
+  background: #e8e8e8;
+  font-weight: bold;
   text-align: center;
-  font-size: 12px;
-  color: #000;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
-.main-table th:nth-child(1),
-.main-table td:nth-child(1) {
+.report-table th:nth-child(1),
+.report-table td:nth-child(1) {
   width: 8%;
+  text-align: center;
 }
 
-.main-table th:nth-child(2),
-.main-table td:nth-child(2) {
-  width: 38%;
+.report-table th:nth-child(2),
+.report-table td:nth-child(2) {
+  width: 40%;
   text-align: left;
 }
 
-.main-table th:nth-child(3),
-.main-table td:nth-child(3) {
+.report-table th:nth-child(3),
+.report-table td:nth-child(3) {
   width: 34%;
   text-align: left;
 }
 
-.main-table th:nth-child(4),
-.main-table td:nth-child(4) {
-  width: 20%;
-}
-
-.main-table th,
-.summary-table th {
-  background: #e8e8e8;
-  font-weight: bold;
+.report-table th:nth-child(4),
+.report-table td:nth-child(4) {
+  width: 18%;
+  text-align: center;
 }
 
 .attendance-icon {
   color: #000 !important;
+  font-size: 12px;
   font-weight: bold;
-  font-size: 17px;
   font-family: Arial, sans-serif;
 }
 
 .summary-title {
-  margin-top: 25px;
-  font-size: 16px;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-size: 13px;
 }
 
 .summary-table {
   width: 70%;
-  max-width: 700px;
 }
 
 .summary-table td:first-child {
   text-align: left;
 }
 
+.summary-table td:nth-child(2),
+.summary-table td:nth-child(3) {
+  text-align: center;
+}
+
 .summary-table tfoot th {
   background: #d9d9d9;
 }
 
-.pdf-mode {
-  width: 190mm !important;
-  max-width: 190mm !important;
-  margin: 0 auto !important;
-  overflow: visible !important;
-}
-
-.pdf-mode .letter-head h1 {
-  font-size: 22px !important;
-}
-
-.pdf-mode .letter-head h2 {
-  font-size: 16px !important;
-}
-
-.pdf-mode .main-table,
-.pdf-mode .summary-table {
-  width: 100% !important;
-  table-layout: fixed !important;
-}
-
-.pdf-mode .main-table th,
-.pdf-mode .main-table td,
-.pdf-mode .summary-table th,
-.pdf-mode .summary-table td {
-  font-size: 9px !important;
-  padding: 4px !important;
-  color: #000 !important;
-}
-
-.pdf-mode .attendance-icon {
-  color: #000 !important;
-  font-size: 12px !important;
-}
+/* =========================
+   PRINT + PDF
+========================= */
 
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm;
+    margin: 0;
   }
 
   body {
     background: #fff;
   }
 
-  .page {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    border-radius: 0;
-  }
-
-  .filter-area,
-  .button-area {
+  .report-toolbar {
     display: none;
   }
 
-  #reportArea {
-    width: 100%;
-    overflow: visible;
+  .preview-wrapper {
+    padding: 0;
+    display: block;
+  }
+
+  .a4-paper {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 25.4mm;
+    box-shadow: none;
   }
 
   .letter-head h1 {
@@ -225,40 +226,37 @@ body {
     print-color-adjust: exact;
   }
 
-  .main-table th,
+  .report-table th,
   .summary-table th,
   .summary-table tfoot th {
     background: #e8e8e8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-
-  .main-table th,
-  .main-table td,
-  .summary-table th,
-  .summary-table td {
-    font-size: 11px;
-    padding: 5px;
-  }
-
-  .summary-table {
-    width: 70%;
-  }
 }
 
-@media (max-width: 768px) {
-  .page {
-    margin: 0;
-    padding: 15px;
-    border-radius: 0;
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .preview-wrapper {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 20px;
   }
 
-  .filter-area select,
-  .button-area button {
-    width: 100%;
+  .a4-paper {
+    min-width: 210mm;
   }
 
-  .summary-table {
+  .report-toolbar {
+    position: static;
+  }
+
+  .control-group,
+  .control-group select,
+  .control-group button {
     width: 100%;
   }
 }
