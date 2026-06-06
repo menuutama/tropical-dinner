@@ -5,25 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Attendance System</title>
+
 <link rel="stylesheet" href="style2.css">
-  <link rel="stylesheet" href="menu.css">
 </head>
 
-<body>
-<div id="menuContainer"></div>
+<body class="attend-page">
 
-<script>
-fetch("menu.html")
-.then(res => res.text())
-.then(html => {
-  document.getElementById("menuContainer").innerHTML = html;
-
-  const script = document.createElement("script");
-  script.src = "menu.js";
-  document.body.appendChild(script);
-});
-</script>
-  
 <header class="hero-header">
   <h1>TROPICAL DINNER 2026</h1>
   <h2>Attendance System</h2>
