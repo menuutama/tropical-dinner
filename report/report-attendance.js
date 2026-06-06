@@ -380,6 +380,7 @@ function downloadPDF() {
 /* =====================================================
    EXCEL - 3 SHEETS
    FONT SIZE: 24 / 16 / 11
+   UPDATED EXCEL ONLY
 ===================================================== */
 
 function downloadExcel() {
@@ -415,32 +416,48 @@ function buildAllReportSheet() {
   data.push(["Attendance Summary", "", "", ""]);
 
   const summaryHeaderRow = data.length + 1;
-  data.push(["Company", "Total Attend", "Total Not Attend", ""]);
+  data.push(["Company", "", "Total Attend", "Total Not Attend"]);
 
   summaryData.forEach(item => {
-    data.push([item.company, item.attend, item.notAttend, ""]);
+    data.push([
+      item.company,
+      "",
+      item.attend,
+      item.notAttend
+    ]);
   });
 
   data.push([
     "GRAND TOTAL",
+    "",
     document.getElementById("grandAttend").textContent,
-    document.getElementById("grandNotAttend").textContent,
-    ""
+    document.getElementById("grandNotAttend").textContent
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
+  ws["!ref"] = `A1:D${data.length}`;
 
   ws["!merges"] = [
     { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
     { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
-    { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 2 } }
+    { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 3 } }
   ];
+
+  const summaryStartRow = summaryHeaderRow;
+  const summaryEndRow = summaryHeaderRow + summaryData.length + 1;
+
+  for (let r = summaryStartRow; r <= summaryEndRow; r++) {
+    ws["!merges"].push({
+      s: { r: r - 1, c: 0 },
+      e: { r: r - 1, c: 1 }
+    });
+  }
 
   ws["!cols"] = [
     { wch: 8 },
     { wch: 48 },
     { wch: 18 },
-    { wch: 14 }
+    { wch: 20 }
   ];
 
   applyExcelStyle(ws, data.length);
@@ -455,12 +472,12 @@ function buildAllReportSheet() {
   const summaryTitleCell = "A" + summaryTitleRow;
   if (ws[summaryTitleCell]) ws[summaryTitleCell].s = excelSummaryTitleStyle();
 
-  ["A", "B", "C"].forEach(col => {
+  ["A", "C", "D"].forEach(col => {
     const cell = col + summaryHeaderRow;
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
-  applyAttendanceExcelStyle(ws, 5, 4 + filteredData.length - 1);
+  applyAttendanceExcelStyle(ws, 5, 4 + filteredData.length);
 
   return ws;
 }
@@ -480,6 +497,7 @@ function buildListSheet() {
   });
 
   const ws = XLSX.utils.aoa_to_sheet(data);
+  ws["!ref"] = `A1:D${data.length}`;
 
   ws["!cols"] = [
     { wch: 8 },
@@ -502,21 +520,38 @@ function buildListSheet() {
 function buildSummarySheet() {
   const data = [];
 
-  data.push(["Company", "Total Attend", "Total Not Attend"]);
+  data.push(["Company", "", "Total Attend", "Total Not Attend"]);
 
   summaryData.forEach(item => {
-    data.push([item.company, item.attend, item.notAttend]);
+    data.push([
+      item.company,
+      "",
+      item.attend,
+      item.notAttend
+    ]);
   });
 
   data.push([
     "GRAND TOTAL",
+    "",
     document.getElementById("grandAttend").textContent,
     document.getElementById("grandNotAttend").textContent
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
+  ws["!ref"] = `A1:D${data.length}`;
+
+  ws["!merges"] = [];
+
+  for (let r = 1; r <= data.length; r++) {
+    ws["!merges"].push({
+      s: { r: r - 1, c: 0 },
+      e: { r: r - 1, c: 1 }
+    });
+  }
 
   ws["!cols"] = [
+    { wch: 18 },
     { wch: 18 },
     { wch: 18 },
     { wch: 20 }
@@ -524,7 +559,7 @@ function buildSummarySheet() {
 
   applyExcelStyle(ws, data.length);
 
-  ["A1", "B1", "C1"].forEach(cell => {
+  ["A1", "C1", "D1"].forEach(cell => {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
@@ -553,7 +588,9 @@ function applyExcelStyle(ws, rowCount) {
   ws["!rows"] = [];
 
   for (let r = 0; r < rowCount; r++) {
-    ws["!rows"][r] = { hpt: 26 };
+    ws["!rows"][r] = {
+      hpt: 26
+    };
   }
 }
 
