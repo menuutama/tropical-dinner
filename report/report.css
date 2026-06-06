@@ -41,6 +41,7 @@ body {
   border: 1px solid #b60000;
   border-radius: 6px;
   padding: 0 12px;
+  font-family: Arial, sans-serif;
   font-size: 13px;
   font-weight: 700;
   outline: none;
@@ -81,10 +82,11 @@ body {
   padding: 25.4mm;
   box-shadow: 0 0 10px rgba(0,0,0,.25);
   overflow: visible;
+  font-family: Arial, sans-serif;
 }
 
 /* =========================
-   LETTER HEAD
+   LETTER HEAD PREVIEW
 ========================= */
 
 .letter-head {
@@ -94,73 +96,74 @@ body {
 
 .letter-head h1 {
   color: red;
-  font-size: 24px;
+  font-family: Arial, sans-serif;
+  font-size: 26px;
   font-weight: 800;
   line-height: 1.1;
 }
 
 .letter-head h2 {
+  color: #000;
+  font-family: Arial, sans-serif;
   font-size: 16px;
+  font-weight: 700;
   margin-top: 6px;
   line-height: 1.1;
 }
 
 /* =========================
-   TABLE
+   MAIN TABLE PREVIEW
 ========================= */
 
-.report-table,
-.summary-table {
+.report-table {
+  width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-.report-table {
-  width: 100%;
-}
-
-.summary-table {
-  width: 70%;
-}
-
 .report-table th,
-.report-table td,
-.summary-table th,
-.summary-table td {
+.report-table td {
   border: 1px solid #000;
   padding: 4px 6px;
+  font-family: Arial, sans-serif;
   font-size: 11px;
   color: #000 !important;
-  line-height: 1.2;
   height: 22px;
-  word-break: break-word;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: normal;
 }
 
-.report-table th,
-.summary-table th {
+.report-table th {
   background: #e8e8e8;
   font-weight: bold;
   text-align: center;
 }
 
+/* No. */
 .report-table th:nth-child(1),
 .report-table td:nth-child(1) {
-  width: 40px;
+  width: 42px;
   text-align: center;
 }
 
+/* Employee Name */
 .report-table th:nth-child(2),
 .report-table td:nth-child(2) {
   width: auto;
   text-align: left;
 }
 
+/* Company */
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
-  width: 80px;
+  width: 95px;
   text-align: center;
 }
 
+/* Attendance */
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
   width: 90px;
@@ -169,16 +172,49 @@ body {
 
 .attendance-icon {
   color: #000 !important;
-  font-size: 16px !important;
-  font-weight: bold;
   font-family: Arial, sans-serif;
+  font-size: 11px !important;
+  font-weight: bold;
   line-height: 1;
 }
+
+/* =========================
+   SUMMARY PREVIEW
+========================= */
 
 .summary-title {
   margin-top: 18px;
   margin-bottom: 6px;
+  font-family: Arial, sans-serif;
   font-size: 11px;
+  color: #000;
+}
+
+.summary-table {
+  width: 70%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.summary-table th,
+.summary-table td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: #000 !important;
+  height: 22px;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: normal;
+}
+
+.summary-table th {
+  background: #e8e8e8;
+  font-weight: bold;
+  text-align: center;
 }
 
 .summary-table td:first-child {
@@ -227,100 +263,6 @@ body {
     margin: 0 !important;
     box-shadow: none !important;
     overflow: visible !important;
-  }
-
-  .letter-head {
-    margin-bottom: 18px !important;
-  }
-
-  .letter-head h1 {
-    color: red !important;
-    font-size: 24px !important;
-    line-height: 1.1 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .letter-head h2 {
-    font-size: 16px !important;
-    margin-top: 6px !important;
-    line-height: 1.1 !important;
-  }
-
-  .report-table,
-  .summary-table {
-    border-collapse: collapse !important;
-    table-layout: fixed !important;
-  }
-
-  .report-table {
-    width: 100% !important;
-  }
-
-  .summary-table {
-    width: 70% !important;
-  }
-
-  .report-table th,
-  .report-table td,
-  .summary-table th,
-  .summary-table td {
-    font-size: 11px !important;
-    padding: 4px 6px !important;
-    height: 22px !important;
-    line-height: 1.2 !important;
-    color: #000 !important;
-    border: 1px solid #000 !important;
-  }
-
-  .report-table th,
-  .summary-table th,
-  .summary-table tfoot th {
-    background: #e8e8e8 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .report-table th:nth-child(1),
-  .report-table td:nth-child(1) {
-    width: 40px !important;
-    text-align: center !important;
-  }
-
-  .report-table th:nth-child(2),
-  .report-table td:nth-child(2) {
-    width: auto !important;
-    text-align: left !important;
-  }
-
-  .report-table th:nth-child(3),
-  .report-table td:nth-child(3) {
-    width: 80px !important;
-    text-align: center !important;
-  }
-
-  .report-table th:nth-child(4),
-  .report-table td:nth-child(4) {
-    width: 90px !important;
-    text-align: center !important;
-  }
-
-  .attendance-icon {
-    font-size: 16px !important;
-    color: #000 !important;
-    font-weight: bold !important;
-  }
-
-  .summary-title {
-    font-size: 11px !important;
-    margin-top: 18px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .report-table tr,
-  .summary-table tr {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
   }
 }
 
