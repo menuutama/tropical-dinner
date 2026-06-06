@@ -194,11 +194,16 @@ function renderSummaryTable() {
 
 /* =====================================================
    PDF DIRECT DOWNLOAD
-   FONT SIZE: 24 / 16 / 11
    A4 PORTRAIT + MARGIN 1 INCH
+   FONT SIZE: 24 / 16 / 11
 ===================================================== */
 
 function downloadPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("PDF library not loaded. Check jsPDF script link.");
+    return;
+  }
+
   const { jsPDF } = window.jspdf;
 
   const doc = new jsPDF({
@@ -207,11 +212,22 @@ function downloadPDF() {
     format: "a4"
   });
 
+  if (typeof doc.autoTable !== "function") {
+    alert("PDF table library not loaded. Check jspdf-autotable script link.");
+    return;
+  }
+
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
   const margin = 72;
   const contentWidth = pageWidth - margin * 2;
+
+  const noWidth = 35;
+  const companyWidth = 70;
+  const attendanceWidth = 80;
+  const employeeWidth =
+    contentWidth - noWidth - companyWidth - attendanceWidth;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(24);
@@ -231,21 +247,24 @@ function downloadPDF() {
     index + 1,
     item.employeeName || "",
     item.company || "",
-    isAttend(item.attendance) ? "" : "×"
+    getAttendIcon(item.attendance)
   ]);
 
   doc.autoTable({
     startY: margin + 50,
     head: [["No.", "Employee Name", "Company", "Attendance"]],
     body: tableBody,
+
     margin: {
       top: margin,
       right: margin,
       bottom: margin,
       left: margin
     },
+
     tableWidth: contentWidth,
     theme: "grid",
+
     styles: {
       font: "helvetica",
       fontSize: 11,
@@ -255,54 +274,41 @@ function downloadPDF() {
       lineWidth: 0.5,
       minCellHeight: 22,
       valign: "middle",
-      overflow: "linebreak"
+      overflow: "ellipsize"
     },
+
     headStyles: {
-      fillColor: [232, 232, 232],
+      fillColor: [217, 217, 217],
       textColor: [0, 0, 0],
       fontStyle: "bold",
       halign: "center",
       valign: "middle"
     },
+
     columnStyles: {
       0: {
-        cellWidth: 35,
+        cellWidth: noWidth,
         halign: "center"
       },
       1: {
-        cellWidth: contentWidth - 35 - 70 - 80,
+        cellWidth: employeeWidth,
         halign: "left"
       },
       2: {
-        cellWidth: 70,
+        cellWidth: companyWidth,
         halign: "center"
       },
       3: {
-        cellWidth: 80,
+        cellWidth: attendanceWidth,
         halign: "center",
         fontStyle: "bold"
-      }
-    },
-    didDrawCell: function (data) {
-      if (data.section === "body" && data.column.index === 3) {
-        const item = filteredData[data.row.index];
-        const x = data.cell.x + data.cell.width / 2;
-        const y = data.cell.y + data.cell.height / 2;
-
-        doc.setDrawColor(0, 0, 0);
-        doc.setLineWidth(1.8);
-
-        if (isAttend(item.attendance)) {
-          doc.line(x - 6, y, x - 2, y + 6);
-          doc.line(x - 2, y + 6, x + 8, y - 7);
-        }
       }
     }
   });
 
   let finalY = doc.lastAutoTable.finalY + 22;
 
-  if (finalY > pageHeight - margin - 120) {
+  if (finalY > pageHeight - margin - 130) {
     doc.addPage();
     finalY = margin;
   }
@@ -313,7 +319,7 @@ function downloadPDF() {
   doc.text("Attendance Summary", margin, finalY);
 
   const summaryBody = summaryData.map(item => [
-    item.company,
+    item.company || "",
     item.attend,
     item.notAttend
   ]);
@@ -328,14 +334,17 @@ function downloadPDF() {
     startY: finalY + 8,
     head: [["Company", "Total Attend", "Total Not Attend"]],
     body: summaryBody,
+
     margin: {
       top: margin,
       right: margin,
       bottom: margin,
       left: margin
     },
+
     tableWidth: contentWidth * 0.75,
     theme: "grid",
+
     styles: {
       font: "helvetica",
       fontSize: 11,
@@ -344,17 +353,21 @@ function downloadPDF() {
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
       minCellHeight: 22,
-      valign: "middle"
+      valign: "middle",
+      overflow: "ellipsize"
     },
+
     headStyles: {
-      fillColor: [232, 232, 232],
+      fillColor: [217, 217, 217],
       textColor: [0, 0, 0],
       fontStyle: "bold",
-      halign: "center"
+      halign: "center",
+      valign: "middle"
     },
+
     columnStyles: {
       0: {
-        cellWidth: 140,
+        cellWidth: 160,
         halign: "left"
       },
       1: {
@@ -366,8 +379,9 @@ function downloadPDF() {
         halign: "center"
       }
     },
+
     didParseCell: function (data) {
-      if (data.row.index === summaryBody.length - 1) {
+      if (data.section === "body" && data.row.index === summaryBody.length - 1) {
         data.cell.styles.fontStyle = "bold";
         data.cell.styles.fillColor = [217, 217, 217];
       }
