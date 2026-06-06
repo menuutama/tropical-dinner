@@ -548,225 +548,199 @@ table button:nth-child(2){
 }
 
 /* ========================================
-   COLLECT POPUP STYLE
+   COLLECT POPUP STYLE - FIXED CENTER
 ======================================== */
 
-.winner-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.78);
+#collectPopup.winner-modal{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  background:rgba(0,0,0,.78) !important;
   backdrop-filter:blur(6px);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:99999;
-  padding:20px;
+  display:none !important;
+  justify-content:center !important;
+  align-items:center !important;
+  z-index:999999 !important;
+  padding:20px !important;
 }
 
-.winner-modal.show{
-  display:flex;
+#collectPopup.winner-modal.show{
+  display:flex !important;
 }
 
-.collect-modal-box{
-  position:relative;
-  width:100%;
-  max-width:540px;
+#collectPopup .collect-modal-box{
+  position:relative !important;
+  width:100% !important;
+  max-width:540px !important;
+  max-height:92vh !important;
+  overflow-y:auto !important;
 
-  background:
-  linear-gradient(
-    180deg,
-    #071c57 0%,
-    #03133d 100%
-  );
-
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:35px;
-
-  padding:28px;
-
-  text-align:center;
+  background:linear-gradient(180deg,#071c57 0%,#03133d 100%) !important;
+  border:1px solid rgba(255,255,255,.15) !important;
+  border-radius:35px !important;
+  padding:28px !important;
+  text-align:center !important;
 
   box-shadow:
   0 0 25px rgba(0,120,255,.35),
-  0 20px 60px rgba(0,0,0,.6);
+  0 20px 60px rgba(0,0,0,.6) !important;
 }
 
-.modal-close{
-  position:absolute;
-  top:18px;
-  right:18px;
+#collectPopup .modal-close{
+  position:absolute !important;
+  top:18px !important;
+  right:18px !important;
 
-  width:50px;
-  height:50px;
+  width:50px !important;
+  height:50px !important;
 
-  border:none;
-  border-radius:50%;
+  border:none !important;
+  border-radius:50% !important;
 
-  background:
-  linear-gradient(
-    135deg,
-    #ffe58a,
-    #d8a500
-  );
+  background:linear-gradient(135deg,#ffe58a,#d8a500) !important;
+  color:#111 !important;
 
-  color:#111;
-  font-size:28px;
-  font-weight:700;
-  cursor:pointer;
+  font-size:28px !important;
+  font-weight:700 !important;
+  line-height:50px !important;
 
-  box-shadow:
-  0 0 20px rgba(255,215,0,.45);
+  cursor:pointer !important;
+  box-shadow:0 0 20px rgba(255,215,0,.45) !important;
 }
 
-.modal-close:hover{
+#collectPopup .modal-close:hover{
   transform:scale(1.08);
 }
 
-.modal-place{
-  font-size:58px;
-  font-weight:800;
-
-  background:
-  linear-gradient(
-    180deg,
-    #fff2a3,
-    #f5bf32
-  );
-
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-
-  margin-bottom:10px;
+#collectPopup .modal-place{
+  font-size:58px !important;
+  font-weight:800 !important;
+  background:linear-gradient(180deg,#fff2a3,#f5bf32) !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  margin-bottom:10px !important;
+  padding-right:45px !important;
 }
 
-.modal-winner{
-  font-size:42px;
-  font-weight:800;
-  color:#fff;
-  margin-bottom:18px;
-  text-transform:uppercase;
+#collectPopup .modal-winner{
+  font-size:42px !important;
+  font-weight:800 !important;
+  color:#fff !important;
+  margin-bottom:18px !important;
+  text-transform:uppercase !important;
+  line-height:1.18 !important;
 }
 
-.modal-info{
-  font-size:22px;
-  font-weight:600;
-  color:#ffffff;
-  margin-bottom:8px;
+#collectPopup .modal-info{
+  font-size:22px !important;
+  font-weight:600 !important;
+  color:#ffffff !important;
+  margin-bottom:8px !important;
+  line-height:1.35 !important;
 }
 
-.modal-image{
-  width:100%;
-  max-width:430px;
-
-  margin:25px auto 18px;
+#collectPopup .modal-image{
+  width:100% !important;
+  max-width:430px !important;
+  margin:25px auto 18px !important;
   display:block;
-
-  border-radius:18px;
-
-  background:#fff;
-  padding:10px;
-
-  box-shadow:
-  0 0 25px rgba(255,255,255,.25);
+  border-radius:18px !important;
+  background:#fff !important;
+  padding:10px !important;
+  box-shadow:0 0 25px rgba(255,255,255,.25) !important;
 }
 
-.modal-prize{
-  font-size:34px;
-  font-weight:800;
-  color:#ffd875;
-
-  line-height:1.25;
-
-  margin-top:10px;
-  margin-bottom:18px;
-
-  text-transform:uppercase;
-
-  text-shadow:
-  0 0 18px rgba(255,216,117,.25);
+#collectPopup .modal-prize{
+  font-size:34px !important;
+  font-weight:800 !important;
+  color:#ffd875 !important;
+  line-height:1.25 !important;
+  margin-top:10px !important;
+  margin-bottom:18px !important;
+  text-transform:uppercase !important;
+  text-shadow:0 0 18px rgba(255,216,117,.25) !important;
 }
 
-.modal-note{
-  font-size:16px;
-  line-height:1.6;
-  color:rgba(255,255,255,.8);
-  margin-bottom:25px;
+#collectPopup .modal-note{
+  font-size:16px !important;
+  line-height:1.6 !important;
+  color:rgba(255,255,255,.8) !important;
+  margin-bottom:25px !important;
 }
 
-.collect-action-btn{
+#collectPopup .collect-action-btn{
   width:100% !important;
   height:60px !important;
-
-  border:none;
-  border-radius:16px;
+  border:none !important;
+  border-radius:16px !important;
 
   font-size:22px !important;
-  font-weight:700;
+  font-weight:700 !important;
 
-  background:
-  linear-gradient(
-    135deg,
-    #2d7cff,
-    #0e56d7
-  );
+  background:linear-gradient(135deg,#2d7cff,#0e56d7) !important;
+  color:#fff !important;
 
-  color:#fff;
-
-  cursor:pointer;
+  cursor:pointer !important;
+  margin-top:0 !important;
 }
 
-.collect-action-btn:disabled{
+#collectPopup .collect-action-btn:disabled{
   background:#6f7b95 !important;
   color:#fff !important;
-  cursor:not-allowed;
+  cursor:not-allowed !important;
 }
 
-/* ========================================
-   MOBILE
-======================================== */
-
+/* MOBILE */
 @media(max-width:768px){
 
-  .collect-modal-box{
-    max-width:95%;
-    padding:20px;
-    border-radius:28px;
+  #collectPopup.winner-modal{
+    padding:14px !important;
+    align-items:center !important;
   }
 
-  .modal-place{
-    font-size:42px;
+  #collectPopup .collect-modal-box{
+    max-width:95% !important;
+    max-height:90vh !important;
+    padding:20px !important;
+    border-radius:28px !important;
   }
 
-  .modal-winner{
-    font-size:28px;
-    line-height:1.25;
+  #collectPopup .modal-place{
+    font-size:42px !important;
   }
 
-  .modal-info{
-    font-size:16px;
+  #collectPopup .modal-winner{
+    font-size:28px !important;
+    line-height:1.25 !important;
   }
 
-  .modal-image{
-    max-width:100%;
-    margin-top:18px;
+  #collectPopup .modal-info{
+    font-size:16px !important;
   }
 
-  .modal-prize{
-    font-size:24px;
+  #collectPopup .modal-image{
+    max-width:100% !important;
+    margin-top:18px !important;
   }
 
-  .modal-note{
-    font-size:14px;
+  #collectPopup .modal-prize{
+    font-size:24px !important;
   }
 
-  .collect-action-btn{
+  #collectPopup .modal-note{
+    font-size:14px !important;
+  }
+
+  #collectPopup .collect-action-btn{
     height:54px !important;
     font-size:18px !important;
   }
 
-  .modal-close{
-    width:42px;
-    height:42px;
-    font-size:24px;
+  #collectPopup .modal-close{
+    width:42px !important;
+    height:42px !important;
+    font-size:24px !important;
+    line-height:42px !important;
   }
 }
