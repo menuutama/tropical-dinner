@@ -6,16 +6,20 @@
 
 <title>Report Attendance</title>
 
-<link rel="stylesheet" href="report.css"> 
+<link rel="stylesheet" href="report.css">
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+
+</head>
 <body>
 
 <div class="report-toolbar">
-  <div class="control-group">
+
+  <div class="control-panel">
+
     <select id="companyFilter" onchange="applyFilterAndSort()">
       <option value="ALL">All Company</option>
     </select>
@@ -36,14 +40,16 @@
       <option value="az">A - Z</option>
       <option value="za">Z - A</option>
     </select>
+
   </div>
 
-  <div class="control-group">
+  <div class="button-panel">
     <button onclick="downloadExcel()">Excel</button>
     <button onclick="downloadPDF()">PDF</button>
     <button onclick="downloadWord()">Document</button>
     <button onclick="window.print()">Print</button>
   </div>
+
 </div>
 
 <div class="preview-wrapper">
@@ -55,7 +61,7 @@
       <h2>REPORT ATTENDANCE</h2>
     </div>
 
-    <table class="report-table" id="attendanceTable">
+    <table class="report-table">
       <thead>
         <tr>
           <th>No.</th>
@@ -73,7 +79,7 @@
 
     <h3 class="summary-title">Attendance Summary</h3>
 
-    <table class="summary-table" id="summaryTable">
+    <table class="summary-table">
       <thead>
         <tr>
           <th>Company</th>
