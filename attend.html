@@ -9,7 +9,16 @@
 </head>
 
 <body>
+<div id="menuContainer"></div>
 
+<script>
+fetch("menu.html")
+.then(res => res.text())
+.then(data=>{
+  document.getElementById("menuContainer").innerHTML = data;
+});
+</script>
+  
 <header class="hero-header">
   <h1>TROPICAL DINNER 2026</h1>
   <h2>Attendance System</h2>
