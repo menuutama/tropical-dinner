@@ -554,3 +554,104 @@ table button:nth-child(2){
   background:rgba(255,51,68,.12) !important;
   border-color:rgba(255,51,68,.35) !important;
 }
+
+/* =========================
+   MOBILE / TABLET TABLE FIX
+   No left-right scroll
+========================= */
+
+@media screen and (max-width: 900px){
+
+  .container{
+    padding:10px;
+  }
+
+  .table-wrapper{
+    width:100%;
+    padding:8px;
+    overflow-x:hidden !important;
+  }
+
+  table{
+    width:100% !important;
+    min-width:0 !important;
+    table-layout:fixed;
+    border-spacing:0 7px;
+  }
+
+  th,
+  td{
+    white-space:normal !important;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+    padding:10px 6px;
+    font-size:12px;
+    line-height:1.35;
+  }
+
+  th{
+    font-size:10px;
+    letter-spacing:.3px;
+  }
+
+  /* Column size */
+  th:nth-child(1),
+  td:nth-child(1){
+    width:24%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2){
+    width:40%;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3){
+    width:36%;
+  }
+
+  .hero-header{
+    padding:28px 10px 6px;
+  }
+
+  .hero-header h1{
+    font-size:18px;
+    letter-spacing:2px;
+  }
+
+  .hero-header h2{
+    font-size:24px;
+  }
+
+  .attend-filter-box{
+    width:100%;
+    max-width:100%;
+    padding:0;
+  }
+}
+
+@media screen and (max-width: 600px){
+
+  .table-wrapper{
+    border-radius:14px;
+  }
+
+  th,
+  td{
+    padding:9px 5px;
+    font-size:11px;
+  }
+
+  th{
+    font-size:9px;
+  }
+
+  .input-box{
+    width:100%;
+  }
+
+  .attend-filter-box select,
+  .input-container input{
+    font-size:13px;
+  }
+}
