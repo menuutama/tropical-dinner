@@ -8,9 +8,13 @@
 
 <link rel="stylesheet" href="report.css">
 
+<!-- EXCEL -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+<!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+
 </head>
 
 <body>
@@ -43,10 +47,10 @@
   </div>
 
   <div class="button-panel">
-    <button onclick="downloadExcel()">Excel</button>
-    <button onclick="downloadPDF()">PDF</button>
-    <button onclick="downloadWord()">Document</button>
-    <button onclick="window.print()">Print</button>
+    <button type="button" onclick="downloadExcel()">Excel</button>
+    <button type="button" onclick="downloadPDF()">PDF</button>
+    <button type="button" onclick="downloadWord()">Document</button>
+    <button type="button" onclick="window.print()">Print</button>
   </div>
 
 </div>
