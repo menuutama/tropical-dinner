@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyxQjtzyKoxWmMFkIbvHgiLMZRuROWvSN8vxE1BAApoGp-2FxV6qTa6gT5-Cb-2385s/exec";
+Fconst API_URL = "https://script.google.com/macros/s/AKfycbyxQjtzyKoxWmMFkIbvHgiLMZRuROWvSN8vxE1BAApoGp-2FxV6qTa6gT5-Cb-2385s/exec";
 
 let allData = [];
 let filteredData = [];
@@ -7,7 +7,7 @@ let summaryData = [];
 async function loadAttendanceReport() {
   try {
     const res = await fetch(API_URL);
-    allData = await res.json();
+    allData = await res.json()
 
     loadCompanyDropdown();
     applyFilterAndSort();
@@ -380,6 +380,7 @@ function downloadPDF() {
 /* =====================================================
    EXCEL - 3 SHEETS
    FONT SIZE: 24 / 16 / 11
+   UPDATED EXCEL ONLY
 ===================================================== */
 
 function downloadExcel() {
@@ -436,25 +437,16 @@ function buildAllReportSheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!merges"] = [
-    {
-      s: { r: 0, c: 0 },
-      e: { r: 0, c: 3 }
-    },
-    {
-      s: { r: 1, c: 0 },
-      e: { r: 1, c: 3 }
-    },
-    {
-      s: { r: summaryTitleRow - 1, c: 0 },
-      e: { r: summaryTitleRow - 1, c: 2 }
-    }
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
+    { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 2 } }
   ];
 
   ws["!cols"] = [
-    { wch: 6 },
-    { wch: 46 },
-    { wch: 10 },
-    { wch: 12 }
+    { wch: 8 },
+    { wch: 48 },
+    { wch: 18 },
+    { wch: 14 }
   ];
 
   applyExcelStyle(ws, data.length);
@@ -468,20 +460,7 @@ function buildAllReportSheet() {
 
   const summaryTitleCell = "A" + summaryTitleRow;
   if (ws[summaryTitleCell]) {
-    ws[summaryTitleCell].s = {
-      font: {
-        name: "Arial",
-        sz: 11,
-        bold: false,
-        color: { rgb: "000000" }
-      },
-      alignment: {
-        horizontal: "center",
-        vertical: "center",
-        wrapText: true
-      },
-      border: excelBorder()
-    };
+    ws[summaryTitleCell].s = excelSummaryTitleStyle();
   }
 
   ["A", "B", "C"].forEach(col => {
@@ -489,7 +468,7 @@ function buildAllReportSheet() {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
-  applyAttendanceExcelStyle(ws, data.length, 4);
+  applyAttendanceExcelStyle(ws, data.length);
 
   return ws;
 }
@@ -511,10 +490,10 @@ function buildListSheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!cols"] = [
-    { wch: 6 },
-    { wch: 46 },
-    { wch: 10 },
-    { wch: 12 }
+    { wch: 8 },
+    { wch: 48 },
+    { wch: 18 },
+    { wch: 14 }
   ];
 
   applyExcelStyle(ws, data.length);
@@ -523,7 +502,7 @@ function buildListSheet() {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
-  applyAttendanceExcelStyle(ws, data.length, 4);
+  applyAttendanceExcelStyle(ws, data.length);
 
   return ws;
 }
@@ -550,9 +529,9 @@ function buildSummarySheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!cols"] = [
-    { wch: 16 },
-    { wch: 16 },
-    { wch: 18 }
+    { wch: 18 },
+    { wch: 18 },
+    { wch: 20 }
   ];
 
   applyExcelStyle(ws, data.length);
@@ -577,21 +556,22 @@ function applyExcelStyle(ws, rowCount) {
       alignment: {
         horizontal: "center",
         vertical: "center",
-        wrapText: true
+        wrapText: false
       },
       border: excelBorder()
     };
   });
 
   ws["!rows"] = [];
+
   for (let r = 0; r < rowCount; r++) {
     ws["!rows"][r] = {
-      hpt: 22
+      hpt: 26
     };
   }
 }
 
-function applyAttendanceExcelStyle(ws, rowCount, attendanceColNumber) {
+function applyAttendanceExcelStyle(ws, rowCount) {
   for (let r = 1; r <= rowCount; r++) {
     const cell = "D" + r;
 
@@ -606,7 +586,7 @@ function applyAttendanceExcelStyle(ws, rowCount, attendanceColNumber) {
         alignment: {
           horizontal: "center",
           vertical: "center",
-          wrapText: true
+          wrapText: false
         },
         border: excelBorder()
       };
@@ -624,8 +604,10 @@ function excelTitleStyle() {
     },
     alignment: {
       horizontal: "center",
-      vertical: "center"
-    }
+      vertical: "center",
+      wrapText: false
+    },
+    border: excelBorder()
   };
 }
 
@@ -639,8 +621,10 @@ function excelSubtitleStyle() {
     },
     alignment: {
       horizontal: "center",
-      vertical: "center"
-    }
+      vertical: "center",
+      wrapText: false
+    },
+    border: excelBorder()
   };
 }
 
@@ -653,12 +637,30 @@ function excelHeaderStyle() {
       color: { rgb: "000000" }
     },
     fill: {
-      fgColor: { rgb: "E8E8E8" }
+      patternType: "solid",
+      fgColor: { rgb: "D9D9D9" }
     },
     alignment: {
       horizontal: "center",
       vertical: "center",
-      wrapText: true
+      wrapText: false
+    },
+    border: excelBorder()
+  };
+}
+
+function excelSummaryTitleStyle() {
+  return {
+    font: {
+      name: "Arial",
+      sz: 11,
+      bold: false,
+      color: { rgb: "000000" }
+    },
+    alignment: {
+      horizontal: "center",
+      vertical: "center",
+      wrapText: false
     },
     border: excelBorder()
   };
