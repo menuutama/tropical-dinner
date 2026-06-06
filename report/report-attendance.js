@@ -196,6 +196,8 @@ function renderSummaryTable() {
    PDF DIRECT DOWNLOAD
    A4 PORTRAIT + MARGIN 1 INCH
    FONT SIZE: 24 / 16 / 11
+   FIX COMPANY FULL WORD
+   FIX ✓ × BY DRAWING SYMBOL
 ===================================================== */
 
 function downloadPDF() {
@@ -220,14 +222,13 @@ function downloadPDF() {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  const margin = 72;
+  const margin = 72; // 1 inch
   const contentWidth = pageWidth - margin * 2;
 
   const noWidth = 35;
-  const companyWidth = 70;
-  const attendanceWidth = 80;
-  const employeeWidth =
-    contentWidth - noWidth - companyWidth - attendanceWidth;
+  const companyWidth = 105;
+  const attendanceWidth = 75;
+  const employeeWidth = contentWidth - noWidth - companyWidth - attendanceWidth;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(24);
@@ -247,7 +248,7 @@ function downloadPDF() {
     index + 1,
     item.employeeName || "",
     item.company || "",
-    getAttendIcon(item.attendance)
+    ""
   ]);
 
   doc.autoTable({
@@ -274,7 +275,7 @@ function downloadPDF() {
       lineWidth: 0.5,
       minCellHeight: 22,
       valign: "middle",
-      overflow: "ellipsize"
+      overflow: "hidden"
     },
 
     headStyles: {
@@ -300,8 +301,29 @@ function downloadPDF() {
       },
       3: {
         cellWidth: attendanceWidth,
-        halign: "center",
-        fontStyle: "bold"
+        halign: "center"
+      }
+    },
+
+    didDrawCell: function (data) {
+      if (data.section === "body" && data.column.index === 3) {
+        const item = filteredData[data.row.index];
+
+        const x = data.cell.x + data.cell.width / 2;
+        const y = data.cell.y + data.cell.height / 2;
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.5);
+
+        if (isAttend(item.attendance)) {
+          // draw ✓
+          doc.line(x - 6, y, x - 2, y + 5);
+          doc.line(x - 2, y + 5, x + 8, y - 7);
+        } else {
+          // draw ×
+          doc.line(x - 5, y - 5, x + 5, y + 5);
+          doc.line(x + 5, y - 5, x - 5, y + 5);
+        }
       }
     }
   });
@@ -342,7 +364,7 @@ function downloadPDF() {
       left: margin
     },
 
-    tableWidth: contentWidth * 0.75,
+    tableWidth: contentWidth * 0.85,
     theme: "grid",
 
     styles: {
@@ -354,7 +376,7 @@ function downloadPDF() {
       lineWidth: 0.5,
       minCellHeight: 22,
       valign: "middle",
-      overflow: "ellipsize"
+      overflow: "hidden"
     },
 
     headStyles: {
@@ -367,7 +389,7 @@ function downloadPDF() {
 
     columnStyles: {
       0: {
-        cellWidth: 160,
+        cellWidth: 190,
         halign: "left"
       },
       1: {
