@@ -455,178 +455,195 @@ tbody tr:hover{
 }
 
 /* =========================
-   WINNER MODAL
+   WINNER MODAL - SMALL LAPTOP SIZE
 ========================= */
 
 .winner-modal{
-  position:fixed;
-  inset:0;
-
-  background:
-  rgba(0,0,0,.72);
-
-  backdrop-filter:blur(10px);
-
-  z-index:9999;
-
-  display:none;
-  align-items:center;
-  justify-content:center;
-
-  padding:18px;
+  position:fixed !important;
+  inset:0 !important;
+  background:rgba(0,0,0,.72) !important;
+  backdrop-filter:blur(8px);
+  z-index:99999 !important;
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:12px !important;
+  overflow:hidden !important;
 }
 
 .winner-modal.show{
-  display:flex;
+  display:flex !important;
 }
 
 .winner-modal-box{
-  position:relative;
+  position:relative !important;
 
-  width:min(760px,96vw);
-  max-height:92vh;
-  overflow-y:auto;
+  width:100% !important;
+  max-width:360px !important;
+  height:auto !important;
+  max-height:none !important;
+  overflow:hidden !important;
 
-  padding:28px 24px;
-
-  text-align:center;
-
-  border-radius:26px;
+  padding:20px 22px !important;
+  text-align:center !important;
+  border-radius:18px !important;
 
   background:
   linear-gradient(
     135deg,
     rgba(5,20,55,.98),
     rgba(0,5,30,.98)
-  );
+  ) !important;
 
-  border:
-  1px solid rgba(255,216,111,.45);
+  border:1px solid rgba(255,216,111,.45) !important;
 
   box-shadow:
-  0 0 50px rgba(0,157,255,.45),
-  0 0 25px rgba(255,216,111,.22);
+  0 0 25px rgba(0,157,255,.35),
+  0 0 15px rgba(255,216,111,.18) !important;
 }
 
 .modal-close{
-  position:absolute;
-  top:14px;
-  right:16px;
+  position:absolute !important;
+  top:10px !important;
+  right:14px !important;
 
-  width:40px;
-  height:40px;
+  width:32px !important;
+  height:32px !important;
 
-  border:none;
-  border-radius:50%;
+  border:none !important;
+  border-radius:50% !important;
 
-  cursor:pointer;
+  cursor:pointer !important;
 
-  font-size:26px;
-  font-weight:800;
-  line-height:40px;
+  font-size:22px !important;
+  font-weight:800 !important;
+  line-height:32px !important;
 
-  color:#081329;
+  color:#081329 !important;
 
   background:
   linear-gradient(
     135deg,
     #ffd86f,
     #b8860b
-  );
+  ) !important;
 
-  box-shadow:
-  0 0 15px rgba(255,216,111,.45);
-}
-
-.modal-close:hover{
-  transform:scale(1.08);
+  box-shadow:0 0 12px rgba(255,216,111,.45) !important;
 }
 
 .modal-place{
-  font-size:clamp(30px,5vw,64px);
-  font-weight:800;
-  color:#ffd86f;
+  font-size:30px !important;
+  font-weight:800 !important;
+  color:#ffd86f !important;
 
   text-shadow:
-  0 0 15px rgba(255,216,111,.75),
-  0 0 35px rgba(0,157,255,.45);
+  0 0 12px rgba(255,216,111,.65),
+  0 0 20px rgba(0,157,255,.35) !important;
 
-  margin-bottom:12px;
+  margin:0 0 8px !important;
+  line-height:1 !important;
 }
 
 .modal-winner{
-  font-size:clamp(24px,4vw,46px);
-  font-weight:800;
-
-  color:white;
-
-  margin-bottom:18px;
-
-  text-transform:uppercase;
+  font-size:19px !important;
+  font-weight:800 !important;
+  color:white !important;
+  margin:0 0 12px !important;
+  text-transform:uppercase !important;
+  line-height:1.18 !important;
 }
 
 .modal-info{
-  font-size:clamp(17px,2.2vw,26px);
-  font-weight:700;
-
-  color:#fff;
-
-  margin:8px 0;
+  font-size:13px !important;
+  font-weight:700 !important;
+  color:#fff !important;
+  margin:0 0 6px !important;
+  line-height:1.25 !important;
 }
 
-/* GAMBAR HADIAH - AMBIL DARI COLUMN G */
 .modal-image{
-  display:block;
+  display:block !important;
+  width:100% !important;
+  max-width:285px !important;
+  height:auto !important;
+  max-height:155px !important;
+  object-fit:contain !important;
 
-  width:auto;
-  max-width:100%;
+  margin:13px auto 10px !important;
+  padding:6px !important;
 
-  height:auto;
-  max-height:320px;
-
-  object-fit:contain;
-
-  margin:25px auto 16px;
-
-  padding:12px;
-
-  border-radius:18px;
-
-  background:white;
+  border-radius:10px !important;
+  background:white !important;
 
   box-shadow:
-  0 0 25px rgba(255,216,111,.30),
-  0 0 25px rgba(0,157,255,.25);
+  0 0 15px rgba(255,216,111,.25),
+  0 0 12px rgba(0,157,255,.22) !important;
 }
 
-/* NAMA HADIAH SAHAJA - TANPA PERKATAAN PRIZE */
 .modal-prize{
-  margin-top:8px;
-  margin-bottom:8px;
+  margin:0 0 10px !important;
 
-  font-size:clamp(22px,3vw,36px);
-  font-weight:800;
+  font-size:19px !important;
+  font-weight:800 !important;
 
-  color:#ffd86f;
+  color:#ffd86f !important;
+  text-align:center !important;
+  text-transform:uppercase !important;
+  line-height:1.18 !important;
 
-  text-align:center;
-  text-transform:uppercase;
-
-  text-shadow:
-  0 0 10px rgba(255,216,111,.35);
+  text-shadow:0 0 10px rgba(255,216,111,.35) !important;
 }
 
 .prize-label{
-  display:none;
+  display:none !important;
 }
 
 .modal-note{
-  margin-top:14px;
+  margin:0 !important;
+  color:rgba(255,255,255,.75) !important;
+  font-size:10.5px !important;
+  line-height:1.3 !important;
+}
 
-  color:rgba(255,255,255,.75);
+/* PHONE */
+@media(max-width:768px){
 
-  font-size:13px;
-  line-height:1.5;
+  .winner-modal-box{
+    max-width:92vw !important;
+    padding:18px !important;
+  }
+
+  .modal-place{
+    font-size:28px !important;
+  }
+
+  .modal-winner{
+    font-size:18px !important;
+  }
+
+  .modal-info{
+    font-size:13px !important;
+  }
+
+  .modal-image{
+    max-width:100% !important;
+    max-height:150px !important;
+  }
+
+  .modal-prize{
+    font-size:18px !important;
+  }
+
+  .modal-note{
+    font-size:10px !important;
+  }
+
+  .modal-close{
+    width:32px !important;
+    height:32px !important;
+    font-size:22px !important;
+    line-height:32px !important;
+  }
 }
 
 /* =========================
