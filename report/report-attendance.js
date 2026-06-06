@@ -691,6 +691,9 @@ function excelBorder() {
 
 /* =====================================================
    DOCUMENT / WORD
+   A4 PORTRAIT + MARGIN 1 INCH
+   FONT SIZE: 24 / 16 / 11
+   FIX EMPLOYEE NAME 1 LINE
 ===================================================== */
 
 function downloadWord() {
@@ -774,9 +777,10 @@ function downloadWord() {
           color: #000;
           line-height: 1.2;
           height: 22px;
+          vertical-align: middle;
           white-space: nowrap;
           overflow: hidden;
-          vertical-align: middle;
+          text-overflow: clip;
         }
 
         th {
@@ -786,23 +790,26 @@ function downloadWord() {
         }
 
         .col-no {
-          width: 40px;
+          width: 35px;
           text-align: center;
         }
 
         .col-name {
-          width: auto;
+          width: 420px;
           text-align: left;
+          white-space: nowrap;
         }
 
         .col-company {
-          width: 90px;
+          width: 65px;
           text-align: center;
+          white-space: nowrap;
         }
 
         .col-attendance {
-          width: 90px;
+          width: 55px;
           text-align: center;
+          white-space: nowrap;
           font-size: 11px;
           font-weight: bold;
         }
@@ -817,15 +824,26 @@ function downloadWord() {
 
         .summary-table {
           width: 70%;
+          table-layout: fixed;
+        }
+
+        .summary-table th,
+        .summary-table td {
+          font-size: 11px;
+          height: 22px;
+          white-space: nowrap;
+          overflow: hidden;
         }
 
         .summary-table td:first-child {
           text-align: left;
+          width: 180px;
         }
 
         .summary-table td:nth-child(2),
         .summary-table td:nth-child(3) {
           text-align: center;
+          width: 100px;
         }
 
         .grand-total td {
@@ -899,5 +917,3 @@ function downloadWord() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-loadAttendanceReport();
