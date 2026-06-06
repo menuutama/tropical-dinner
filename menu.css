@@ -93,6 +93,107 @@
   }
 }
 
+/* PASSWORD MODAL */
+
+.report-password-modal{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  z-index:999999;
+
+  background:rgba(0,0,0,.45);
+
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+
+  justify-content:center;
+  align-items:center;
+}
+
+.report-password-modal.show{
+  display:flex;
+}
+
+.report-password-box{
+  width:330px;
+
+  padding:25px;
+
+  border-radius:18px;
+
+  background:rgba(0,10,40,.88);
+
+  border:1px solid rgba(255,255,255,.18);
+
+  box-shadow:0 15px 45px rgba(0,0,0,.45);
+}
+
+.report-password-box h3{
+  margin-bottom:18px;
+
+  text-align:center;
+
+  color:#fff;
+  font-size:20px;
+}
+
+.report-password-box input{
+  width:100%;
+
+  padding:13px 14px;
+
+  border:none;
+  border-radius:10px;
+
+  outline:none;
+
+  font-size:15px;
+}
+
+#reportPasswordError{
+  min-height:20px;
+
+  margin-top:10px;
+
+  color:#ff6b6b;
+
+  font-size:13px;
+  text-align:center;
+  font-weight:600;
+}
+
+.report-password-actions{
+  display:flex;
+  gap:10px;
+
+  margin-top:12px;
+}
+
+.report-password-actions button{
+  flex:1;
+
+  padding:11px;
+
+  border:none;
+  border-radius:10px;
+
+  cursor:pointer;
+
+  font-weight:700;
+}
+
+#reportLoginBtn{
+  background:#b80000;
+  color:#fff;
+}
+
+#reportCancelBtn{
+  background:rgba(255,255,255,.18);
+  color:#fff;
+}
+
 /* hidden dekat phone & tablet */
 @media (max-width:1024px){
   .report-menu-bar{
