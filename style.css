@@ -72,7 +72,13 @@ body::before{
   letter-spacing:4px;
   font-weight:700;
 
-  background:linear-gradient(to bottom,#8b0000 0%,#ff3b3b 50%,#5c0000 100%);
+  background:linear-gradient(
+    to bottom,
+    #8b0000 0%,
+    #ff3b3b 50%,
+    #5c0000 100%
+  );
+
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -103,6 +109,7 @@ body::before{
   gap:10px;
 
   padding:10px 22px;
+
   border-radius:999px;
 
   background:rgba(255,255,255,.08);
@@ -114,8 +121,10 @@ body::before{
 .dot{
   width:12px;
   height:12px;
+
   border-radius:50%;
   background:red;
+
   animation:redBlink 1s infinite;
 }
 
@@ -172,7 +181,11 @@ body::before{
   font-family:'Poppins',sans-serif;
 
   background:
-    linear-gradient(135deg,rgba(0,157,255,.18),rgba(255,216,111,.08)),
+    linear-gradient(
+      135deg,
+      rgba(0,157,255,.18),
+      rgba(255,216,111,.08)
+    ),
     rgba(255,255,255,.08);
 
   backdrop-filter:blur(16px);
@@ -216,7 +229,12 @@ body::before{
   font-size:20px;
   line-height:36px;
 
-  background:linear-gradient(135deg,#ffd86f,#b8860b);
+  background:
+  linear-gradient(
+    135deg,
+    #ffd86f,
+    #b8860b
+  );
 
   box-shadow:
   0 0 12px rgba(255,216,111,.55);
@@ -556,43 +574,50 @@ tbody tr:hover{
   margin:8px 0;
 }
 
-/* GAMBAR HADIAH */
+/* GAMBAR HADIAH - AMBIL DARI COLUMN G */
 .modal-image{
   display:block;
 
-  max-width:100%;
   width:auto;
-  height:auto;
+  max-width:100%;
 
+  height:auto;
   max-height:320px;
 
   object-fit:contain;
 
-  margin:20px auto 14px;
+  margin:25px auto 16px;
+
+  padding:12px;
 
   border-radius:18px;
 
   background:white;
-  padding:10px;
 
   box-shadow:
-  0 0 22px rgba(0,157,255,.25),
-  0 0 18px rgba(255,216,111,.25);
+  0 0 25px rgba(255,216,111,.30),
+  0 0 25px rgba(0,157,255,.25);
 }
 
-/* PRIZE TEXT */
+/* NAMA HADIAH SAHAJA - TANPA PERKATAAN PRIZE */
 .modal-prize{
-  font-size:clamp(18px,2.4vw,28px);
+  margin-top:8px;
+  margin-bottom:8px;
+
+  font-size:clamp(22px,3vw,36px);
   font-weight:800;
 
   color:#ffd86f;
 
-  margin-top:12px;
-  margin-bottom:8px;
+  text-align:center;
+  text-transform:uppercase;
+
+  text-shadow:
+  0 0 10px rgba(255,216,111,.35);
 }
 
 .prize-label{
-  color:#fff;
+  display:none;
 }
 
 .modal-note{
@@ -684,6 +709,10 @@ body.fullscreen-active .place-badge{
 
   .modal-image{
     max-height:250px;
+  }
+
+  .modal-prize{
+    font-size:clamp(18px,6vw,28px);
   }
 
   .modal-close{
