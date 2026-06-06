@@ -296,116 +296,6 @@ table button:nth-child(2){
   cursor:not-allowed;
 }
 
-@media screen and (max-width:600px){
-  .input-box{
-    flex-direction:column;
-    align-items:stretch;
-    gap:10px;
-  }
-
-  .input-container{
-    width:100%;
-  }
-
-  .input-box button:not(.clear-btn){
-    width:100%;
-    height:46px;
-  }
-}
-
-/* =========================
-   ATTENDANCE SYSTEM EXTRA
-========================= */
-
-.attend-row{
-  cursor:pointer;
-}
-
-.status-attend{
-  color:#7CFFB2;
-  font-weight:700;
-}
-
-.attended-row td{
-  opacity:.65;
-}
-
-.popup-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.68);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  padding:20px;
-}
-
-.popup-overlay.show{
-  display:flex;
-}
-
-.popup-box{
-  position:relative;
-  width:100%;
-  max-width:430px;
-  background:rgba(16,40,79,.95);
-  border:1px solid rgba(77,163,255,.35);
-  border-radius:20px;
-  padding:28px;
-  box-shadow:0 20px 45px rgba(0,0,0,.55);
-}
-
-.popup-box h2{
-  margin:0 0 22px;
-  text-align:center;
-  font-size:24px;
-  background:linear-gradient(135deg,#7ad3ff 0%,#1d6fff 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.popup-box p{
-  font-size:15px;
-  color:#e0e9f5;
-  margin:12px 0;
-}
-
-.popup-close{
-  position:absolute;
-  top:12px;
-  right:16px;
-  background:transparent;
-  border:none;
-  color:rgba(255,255,255,.65);
-  font-size:28px;
-  cursor:pointer;
-}
-
-.popup-close:hover{
-  color:#ff3344;
-}
-
-.attend-btn{
-  width:100%;
-  margin-top:22px;
-  padding:13px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,#1d6fff 0%,#004ecc 100%);
-  color:#fff;
-  font-weight:700;
-  font-size:15px;
-  cursor:pointer;
-  box-shadow:0 4px 15px rgba(29,111,255,.4);
-}
-
-.attend-btn:disabled{
-  background:#6d7890;
-  cursor:not-allowed;
-  box-shadow:none;
-}
-
 /* =========================
    ATTENDANCE SYSTEM EXTRA
 ========================= */
@@ -442,6 +332,15 @@ table button:nth-child(2){
 
 .attend-row{
   cursor:pointer;
+}
+
+.status-attend{
+  color:#7CFFB2;
+  font-weight:700;
+}
+
+.attended-row td{
+  opacity:.65;
 }
 
 .attended-row-green td{
@@ -526,12 +425,6 @@ table button:nth-child(2){
   box-shadow:none;
 }
 
-@media screen and (max-width:600px){
-  .attend-filter-box select{
-    width:100%;
-  }
-}
-
 /* =========================
    COLLECTION SYSTEM EXTRA
 ========================= */
@@ -556,20 +449,56 @@ table button:nth-child(2){
 }
 
 /* =========================
-   MOBILE / TABLET TABLE FIX
-   No left-right scroll
+   PHONE / TABLET TABLE FIX
+   No horizontal scroll
 ========================= */
 
-@media screen and (max-width: 900px){
+@media screen and (max-width:900px){
+
+  body{
+    overflow-x:hidden;
+  }
 
   .container{
+    width:100%;
+    max-width:100%;
     padding:10px;
+  }
+
+  .hero-header{
+    padding:28px 10px 6px;
+  }
+
+  .hero-header h1{
+    font-size:18px;
+    letter-spacing:2px;
+  }
+
+  .hero-header h2{
+    font-size:24px;
+  }
+
+  .input-box{
+    width:100%;
+    max-width:100%;
+    padding:0;
+  }
+
+  .attend-filter-box{
+    width:100%;
+    max-width:100%;
+  }
+
+  .main-content{
+    width:100%;
   }
 
   .table-wrapper{
     width:100%;
+    max-width:100%;
     padding:8px;
     overflow-x:hidden !important;
+    border-radius:16px;
   }
 
   table{
@@ -594,7 +523,6 @@ table button:nth-child(2){
     letter-spacing:.3px;
   }
 
-  /* Column size */
   th:nth-child(1),
   td:nth-child(1){
     width:24%;
@@ -609,30 +537,31 @@ table button:nth-child(2){
   td:nth-child(3){
     width:36%;
   }
-
-  .hero-header{
-    padding:28px 10px 6px;
-  }
-
-  .hero-header h1{
-    font-size:18px;
-    letter-spacing:2px;
-  }
-
-  .hero-header h2{
-    font-size:24px;
-  }
-
-  .attend-filter-box{
-    width:100%;
-    max-width:100%;
-    padding:0;
-  }
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width:600px){
+
+  .input-box{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+
+  .input-container{
+    width:100%;
+  }
+
+  .input-box button:not(.clear-btn){
+    width:100%;
+    height:46px;
+  }
+
+  .attend-filter-box select{
+    width:100%;
+  }
 
   .table-wrapper{
+    padding:6px;
     border-radius:14px;
   }
 
@@ -646,12 +575,12 @@ table button:nth-child(2){
     font-size:9px;
   }
 
-  .input-box{
-    width:100%;
-  }
-
   .attend-filter-box select,
   .input-container input{
     font-size:13px;
+  }
+
+  .popup-box{
+    padding:24px 18px;
   }
 }
