@@ -32,7 +32,7 @@ body {
   border-radius: 6px;
   font-weight: bold;
   background: #fff;
-  min-width: 220px;
+  min-width: 200px;
 }
 
 .button-area {
@@ -134,7 +134,8 @@ body {
 .attendance-icon {
   color: #000 !important;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 17px;
+  font-family: Arial, sans-serif;
 }
 
 .summary-title {
@@ -153,6 +154,41 @@ body {
 
 .summary-table tfoot th {
   background: #d9d9d9;
+}
+
+.pdf-mode {
+  width: 190mm !important;
+  max-width: 190mm !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+}
+
+.pdf-mode .letter-head h1 {
+  font-size: 22px !important;
+}
+
+.pdf-mode .letter-head h2 {
+  font-size: 16px !important;
+}
+
+.pdf-mode .main-table,
+.pdf-mode .summary-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.pdf-mode .main-table th,
+.pdf-mode .main-table td,
+.pdf-mode .summary-table th,
+.pdf-mode .summary-table td {
+  font-size: 9px !important;
+  padding: 4px !important;
+  color: #000 !important;
+}
+
+.pdf-mode .attendance-icon {
+  color: #000 !important;
+  font-size: 12px !important;
 }
 
 @media print {
