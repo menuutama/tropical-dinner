@@ -60,6 +60,118 @@ function applyFilterAndSort() {
   const selectedAttendance = document.getElementById("attendanceFilter").value;
 
   filteredData = allData.filter(item => {
+    const companyMatch = selectedCompany === "ALL" || item.company === selectedCompany;
+
+    let attendanceMatch = true;
+
+    if (selectedAttendance === "ATTEND") {
+      attendanceMatch = isAttend(item.attendance);
+    }
+
+    if (selectedAttendance === "NOT_ATTEND") {
+      attendanceMatch = !isAttend(item.attendance);
+    }
+
+    return companyMatch && attendanceMatch;
+  });
+
+  sortReportData();
+  renderAttendanceTable();
+  renderSummaryTable();
+}
+
+function sortReportData() {
+  const sortField = document.getElementById("sortField").value;
+  const sortOrder = document.getElementById("sortOrder").value;
+
+  filteredData.sort((a, b) => {
+    const nameCompare = cleanText(a.employeeName).localeCompare(cleanText(b.employeeName));
+    let compare = 0;
+
+    if (sortField === "name") {
+      compare = nameCompare;
+      return sortOrder === "za" ? compare * -1 : compare;
+    }
+
+    if (sortField === "company") {
+      compare = cleanText(a.company).localeCompare(cleanText(b.company));
+      if (compare !== 0) return compare;
+      return sortOrder === "za" ? nameCompare * -1 : nameCompare;
+    }
+
+    if (sortField === "attendance") {
+      compare = getAttendanceText(a.attendance).localeCompare(getAttendanceText(b.attendance));
+      if (compare !== 0) return compare;
+      return sortOrder === "za" ? nameCompare * -1 : nameCompare;
+    }
+
+    return compare;
+  });
+}
+
+function renderAttendanceTable() {
+  const tbody = document.getElementById("attendanceBody");
+  tbody.innerHTML = "";
+
+  if (filteredData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4">No data found</td></tr>`;
+    return;
+  }
+
+  filteredData.forEach((item, index) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${item.employeeName || ""}</td>
+        <td>${item.company || ""}</td>
+        <td class="attendance-icon">${getAttendIcon(item.attendance)}</td>
+      </tr>
+    `;
+  });
+}
+
+function renderSummaryTable() {
+  const summary = {};
+  let grandAttend = 0;
+  let grandNotAttend = 0;
+
+  filteredData.forEach(item => {
+    const company = item.company || "Unknown Company";
+
+    if (!summary[company]) {
+      summary[company] = {
+        company: company,
+        attend: 0,
+        notAttend: 0
+      };
+    }
+
+    if (isAttend(item.attendance)) {function cleanText(value) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function loadCompanyDropdown() {
+  const companyFilter = document.getElementById("companyFilter");
+
+  const companies = [...new Set(
+    allData
+      .map(item => item.company || "")
+      .filter(company => company.trim() !== "")
+  )].sort((a, b) => a.localeCompare(b));
+
+  companies.forEach(company => {
+    const option = document.createElement("option");
+    option.value = company;
+    option.textContent = company;
+    companyFilter.appendChild(option);
+  });
+}
+
+function applyFilterAndSort() {
+  const selectedCompany = document.getElementById("companyFilter").value;
+  const selectedAttendance = document.getElementById("attendanceFilter").value;
+
+  filteredData = allData.filter(item => {
     const companyMatch =
       selectedCompany === "ALL" || item.company === selectedCompany;
 
