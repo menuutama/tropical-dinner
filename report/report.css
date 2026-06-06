@@ -28,14 +28,15 @@ body {
   z-index: 99;
 }
 
-.control-group {
+.control-panel,
+.button-panel {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.control-group select,
-.control-group button {
+.control-panel select,
+.button-panel button {
   height: 36px;
   border: 1px solid #b60000;
   border-radius: 6px;
@@ -45,25 +46,25 @@ body {
   outline: none;
 }
 
-.control-group select {
+.control-panel select {
   background: #fff;
   color: #b60000;
   min-width: 165px;
 }
 
-.control-group button {
+.button-panel button {
   background: #b60000;
   color: #fff;
   cursor: pointer;
   min-width: 90px;
 }
 
-.control-group button:hover {
+.button-panel button:hover {
   background: #850000;
 }
 
 /* =========================
-   A4 PREVIEW
+   A4 PAPER PREVIEW
 ========================= */
 
 .preview-wrapper {
@@ -191,13 +192,13 @@ body {
 }
 
 /* =========================
-   PRINT + PDF
+   PRINT A4 PORTRAIT
 ========================= */
 
 @media print {
   @page {
     size: A4 portrait;
-    margin: 0;
+    margin: 1in;
   }
 
   body {
@@ -205,25 +206,58 @@ body {
   }
 
   .report-toolbar {
-    display: none;
+    display: none !important;
   }
 
   .preview-wrapper {
-    padding: 0;
-    display: block;
+    padding: 0 !important;
+    display: block !important;
   }
 
   .a4-paper {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 25.4mm;
-    box-shadow: none;
+    width: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .letter-head {
+    margin-bottom: 14px;
   }
 
   .letter-head h1 {
     color: red !important;
+    font-size: 22px !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .letter-head h2 {
+    font-size: 15px !important;
+  }
+
+  .report-table,
+  .summary-table {
+    width: 100% !important;
+    page-break-inside: auto;
+  }
+
+  .report-table tr,
+  .summary-table tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  .report-table th,
+  .report-table td,
+  .summary-table th,
+  .summary-table td {
+    font-size: 9px !important;
+    padding: 3px 5px !important;
+    height: 16px !important;
+    line-height: 1.1 !important;
+    color: #000 !important;
   }
 
   .report-table th,
@@ -232,6 +266,15 @@ body {
     background: #e8e8e8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .summary-title {
+    font-size: 12px !important;
+    margin-top: 14px !important;
+  }
+
+  .summary-table {
+    width: 70% !important;
   }
 }
 
@@ -254,9 +297,10 @@ body {
     position: static;
   }
 
-  .control-group,
-  .control-group select,
-  .control-group button {
+  .control-panel,
+  .button-panel,
+  .control-panel select,
+  .button-panel button {
     width: 100%;
   }
 }
