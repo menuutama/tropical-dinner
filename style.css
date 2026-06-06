@@ -34,7 +34,10 @@ body::before{
   position:fixed;
   inset:0;
   pointer-events:none;
-  background:radial-gradient(circle,#1b7fff55 1px,transparent 1px);
+
+  background:
+  radial-gradient(circle,#1b7fff55 1px,transparent 1px);
+
   background-size:40px 40px;
   animation:floatDots 20s linear infinite;
   opacity:.3;
@@ -84,8 +87,8 @@ body::before{
   color:white;
 
   text-shadow:
-    0 0 20px #009dff,
-    0 0 40px #009dff;
+  0 0 20px #009dff,
+  0 0 40px #009dff;
 }
 
 /* =========================
@@ -94,6 +97,7 @@ body::before{
 
 .live-box{
   margin:20px auto 10px;
+
   display:inline-flex;
   align-items:center;
   gap:10px;
@@ -103,6 +107,7 @@ body::before{
 
   background:rgba(255,255,255,.08);
   backdrop-filter:blur(15px);
+
   border:1px solid rgba(255,255,255,.15);
 }
 
@@ -117,17 +122,25 @@ body::before{
 @keyframes redBlink{
   0%{
     opacity:1;
-    box-shadow:0 0 10px red,0 0 20px red;
+    box-shadow:
+    0 0 10px red,
+    0 0 20px red;
   }
-  50%{ opacity:.2; }
+
+  50%{
+    opacity:.2;
+  }
+
   100%{
     opacity:1;
-    box-shadow:0 0 10px red,0 0 20px red;
+    box-shadow:
+    0 0 10px red,
+    0 0 20px red;
   }
 }
 
 /* =========================
-   SEARCH SEMUA DEVICE
+   SEARCH
 ========================= */
 
 .search-wrapper{
@@ -135,6 +148,7 @@ body::before{
   flex-direction:column;
   align-items:center;
   justify-content:center;
+
   margin:18px auto 22px;
 }
 
@@ -147,6 +161,7 @@ body::before{
 .search-box input{
   width:100%;
   height:52px;
+
   padding:14px 52px 14px 22px;
 
   border-radius:999px;
@@ -185,6 +200,7 @@ body::before{
   position:absolute;
   right:8px;
   top:50%;
+
   transform:translateY(-50%);
 
   width:36px;
@@ -197,10 +213,13 @@ body::before{
 
   color:#081329;
   font-weight:800;
-  font-size:17px;
+  font-size:20px;
+  line-height:36px;
 
   background:linear-gradient(135deg,#ffd86f,#b8860b);
-  box-shadow:0 0 12px rgba(255,216,111,.55);
+
+  box-shadow:
+  0 0 12px rgba(255,216,111,.55);
 
   display:none;
 }
@@ -222,14 +241,18 @@ body::before{
 
 .table-wrapper{
   overflow:hidden;
+
   border-radius:24px;
 
-  background:rgba(255,255,255,.05);
+  background:
+  rgba(255,255,255,.05);
+
   backdrop-filter:blur(18px);
 
   border:1px solid rgba(255,255,255,.12);
 
-  box-shadow:0 0 40px rgba(0,140,255,.18);
+  box-shadow:
+  0 0 40px rgba(0,140,255,.18);
 }
 
 table{
@@ -238,7 +261,8 @@ table{
   table-layout:fixed;
 }
 
-/* TABLE COLUMN WIDTH - PRIZE DAH BUANG */
+/* TABLE COLUMN WIDTH */
+
 th:nth-child(1),
 td:nth-child(1){
   width:18%;
@@ -284,7 +308,9 @@ thead th{
 tbody td{
   padding:18px;
   text-align:center;
-  border-bottom:1px solid rgba(255,255,255,.08);
+
+  border-bottom:
+  1px solid rgba(255,255,255,.08);
 }
 
 tbody tr{
@@ -293,16 +319,20 @@ tbody tr{
 }
 
 tbody tr:nth-child(even){
-  background:rgba(255,255,255,.03);
+  background:
+  rgba(255,255,255,.03);
 }
 
 tbody tr:hover{
-  background:rgba(0,140,255,.15);
+  background:
+  rgba(0,140,255,.15);
+
   transform:scale(1.005);
 }
 
 .place-badge{
   display:inline-block;
+
   padding:8px 15px;
 
   border-radius:999px;
@@ -319,6 +349,12 @@ tbody tr:hover{
 }
 
 .winner-name{
+  color:#ffd86f;
+  font-weight:700;
+}
+
+.no-data{
+  padding:30px !important;
   color:#ffd86f;
   font-weight:700;
 }
@@ -341,13 +377,18 @@ tbody tr:hover{
 .pagination button,
 .control-buttons button{
   cursor:pointer;
+
   border:none;
+
   color:white;
 
   padding:12px 18px;
+
   border-radius:12px;
 
-  background:rgba(255,255,255,.08);
+  background:
+  rgba(255,255,255,.08);
+
   backdrop-filter:blur(10px);
 
   transition:.3s;
@@ -356,7 +397,9 @@ tbody tr:hover{
 .pagination button:hover,
 .control-buttons button:hover{
   transform:translateY(-2px);
-  box-shadow:0 0 15px #009dff;
+
+  box-shadow:
+  0 0 15px #009dff;
 }
 
 .pagination button.active{
@@ -377,6 +420,7 @@ tbody tr:hover{
 
 .control-buttons{
   margin-top:20px;
+
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
@@ -386,19 +430,23 @@ tbody tr:hover{
 .notice{
   margin-top:25px;
   text-align:center;
+
   color:#ffcb56;
+
   font-size:14px;
 }
 
 /* =========================
-   WINNER POPUP MODAL
+   WINNER MODAL
 ========================= */
 
 .winner-modal{
   position:fixed;
   inset:0;
 
-  background:rgba(0,0,0,.72);
+  background:
+  rgba(0,0,0,.72);
+
   backdrop-filter:blur(10px);
 
   z-index:9999;
@@ -428,13 +476,18 @@ tbody tr:hover{
   border-radius:26px;
 
   background:
-    linear-gradient(135deg,rgba(5,20,55,.98),rgba(0,5,30,.98));
+  linear-gradient(
+    135deg,
+    rgba(5,20,55,.98),
+    rgba(0,5,30,.98)
+  );
 
-  border:1px solid rgba(255,216,111,.45);
+  border:
+  1px solid rgba(255,216,111,.45);
 
   box-shadow:
-    0 0 50px rgba(0,157,255,.45),
-    0 0 25px rgba(255,216,111,.22);
+  0 0 50px rgba(0,157,255,.45),
+  0 0 25px rgba(255,216,111,.22);
 }
 
 .modal-close{
@@ -452,11 +505,19 @@ tbody tr:hover{
 
   font-size:26px;
   font-weight:800;
+  line-height:40px;
 
   color:#081329;
 
-  background:linear-gradient(135deg,#ffd86f,#b8860b);
-  box-shadow:0 0 15px rgba(255,216,111,.45);
+  background:
+  linear-gradient(
+    135deg,
+    #ffd86f,
+    #b8860b
+  );
+
+  box-shadow:
+  0 0 15px rgba(255,216,111,.45);
 }
 
 .modal-close:hover{
@@ -469,8 +530,8 @@ tbody tr:hover{
   color:#ffd86f;
 
   text-shadow:
-    0 0 15px rgba(255,216,111,.75),
-    0 0 35px rgba(0,157,255,.45);
+  0 0 15px rgba(255,216,111,.75),
+  0 0 35px rgba(0,157,255,.45);
 
   margin-bottom:12px;
 }
@@ -478,42 +539,60 @@ tbody tr:hover{
 .modal-winner{
   font-size:clamp(24px,4vw,46px);
   font-weight:800;
+
   color:white;
 
   margin-bottom:18px;
+
   text-transform:uppercase;
 }
 
-.modal-info,
-.modal-prize{
+.modal-info{
   font-size:clamp(17px,2.2vw,26px);
   font-weight:700;
+
   color:#fff;
 
   margin:8px 0;
 }
 
-.modal-prize{
-  color:#ffd86f;
-  margin-top:18px;
-}
-
+/* GAMBAR HADIAH */
 .modal-image{
   display:block;
 
   max-width:100%;
-  max-height:360px;
+  width:auto;
+  height:auto;
+
+  max-height:320px;
 
   object-fit:contain;
 
-  margin:20px auto 10px;
+  margin:20px auto 14px;
 
-  border-radius:20px;
+  border-radius:18px;
 
-  background:rgba(255,255,255,.06);
+  background:white;
+  padding:10px;
 
   box-shadow:
-    0 0 22px rgba(0,157,255,.25);
+  0 0 22px rgba(0,157,255,.25),
+  0 0 18px rgba(255,216,111,.25);
+}
+
+/* PRIZE TEXT */
+.modal-prize{
+  font-size:clamp(18px,2.4vw,28px);
+  font-weight:800;
+
+  color:#ffd86f;
+
+  margin-top:12px;
+  margin-bottom:8px;
+}
+
+.prize-label{
+  color:#fff;
 }
 
 .modal-note{
@@ -604,13 +683,14 @@ body.fullscreen-active .place-badge{
   }
 
   .modal-image{
-    max-height:260px;
+    max-height:250px;
   }
 
   .modal-close{
     width:36px;
     height:36px;
     font-size:23px;
+    line-height:36px;
   }
 }
 
@@ -629,18 +709,7 @@ body.fullscreen-active .place-badge{
   }
 
   .modal-image{
-    max-height:320px;
-  }
-}
-
-/* =========================
-   DESKTOP
-========================= */
-
-@media(min-width:1025px){
-
-  .search-wrapper{
-    display:flex;
+    max-height:300px;
   }
 }
 
@@ -677,6 +746,10 @@ body.fullscreen-active .place-badge{
 
   .click-note{
     font-size:18px;
+  }
+
+  .modal-image{
+    max-height:360px;
   }
 }
 
