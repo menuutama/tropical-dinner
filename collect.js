@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzQkx9tCL1pfsFB8jWbfdSXLjQOChG9boIY9Ko_XwWVU1SyOSJP9UQvga96bjf6rRfD/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxVV1y2G7WHYMUMDJEexju4p_lO-Kfblx5he4RLw54RQ9Mlq17YGEK2wv0Y6yWGrXTL/exec";
 
 let allData = [];
 let selectedRow = null;
@@ -11,9 +11,12 @@ const popup = document.getElementById("collectPopup");
 const closePopupBtn = document.getElementById("closePopupBtn");
 const collectBtn = document.getElementById("collectBtn");
 
+const popupPlace = document.getElementById("popupPlace");
 const popupLuckyNo = document.getElementById("popupLuckyNo");
 const popupEmployee = document.getElementById("popupEmployee");
 const popupCompany = document.getElementById("popupCompany");
+const popupPrize = document.getElementById("popupPrize");
+const popupImage = document.getElementById("popupImage");
 
 document.addEventListener("DOMContentLoaded", () => {
   loadData();
@@ -43,6 +46,12 @@ popup.addEventListener("click", function(e){
   }
 });
 
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closePopup();
+  }
+});
+
 collectBtn.addEventListener("click", collectPrize);
 
 function loadData(showLoading = true){
@@ -54,7 +63,9 @@ function loadData(showLoading = true){
     `;
   }
 
-  fetch(`${API_URL}?action=getCollectionData&t=${Date.now()}`)
+  fetch(`${API_URL}?action=getCollectionData&t=${Date.now()}`, {
+    cache: "no-store"
+  })
     .then(res => res.json())
     .then(data => {
       allData = data || [];
@@ -79,11 +90,11 @@ function renderTable(){
     if(luckyNo === "") return false;
 
     return (
-      String(item.place).toLowerCase().includes(keyword) ||
-      String(item.luckyNo).toLowerCase().includes(keyword) ||
-      String(item.employeeName).toLowerCase().includes(keyword) ||
-      String(item.companyName).toLowerCase().includes(keyword) ||
-      String(item.prize).toLowerCase().includes(keyword)
+      String(item.place || "").toLowerCase().includes(keyword) ||
+      String(item.luckyNo || "").toLowerCase().includes(keyword) ||
+      String(item.employeeName || item.winner || "").toLowerCase().includes(keyword) ||
+      String(item.companyName || item.company || "").toLowerCase().includes(keyword) ||
+      String(item.prize || "").toLowerCase().includes(keyword)
     );
   });
 
@@ -101,18 +112,18 @@ function renderTable(){
   }
 
   tableBody.innerHTML = filtered.map(item => {
-    const isCollected = String(item.status).toUpperCase() === "COLLECT";
+    const isCollected = String(item.status || "").toUpperCase() === "COLLECT";
 
     return `
       <tr 
         class="collect-row ${isCollected ? "collected-row-red" : ""}"
-        onclick="openPopup(${item.row})"
+        onclick="openPopup(${Number(item.row || 0)})"
       >
-        <td>${escapeHTML(item.place)}</td>
-        <td>${escapeHTML(item.luckyNo)}</td>
-        <td>${escapeHTML(item.employeeName)}</td>
-        <td>${escapeHTML(item.companyName)}</td>
-        <td>${escapeHTML(item.prize)}</td>
+        <td>${escapeHTML(item.place || "")}</td>
+        <td>${escapeHTML(item.luckyNo || "")}</td>
+        <td>${escapeHTML(item.employeeName || item.winner || "")}</td>
+        <td>${escapeHTML(item.companyName || item.company || "")}</td>
+        <td>${escapeHTML(item.prize || "")}</td>
       </tr>
     `;
   }).join("");
@@ -128,11 +139,23 @@ function openPopup(row){
 
   if(!selectedRow) return;
 
-  popupLuckyNo.textContent = selectedRow.luckyNo;
-  popupEmployee.textContent = selectedRow.employeeName;
-  popupCompany.textContent = selectedRow.companyName;
+  popupPlace.textContent = selectedRow.place || "";
+  popupLuckyNo.textContent = selectedRow.luckyNo || "";
+  popupEmployee.textContent = selectedRow.employeeName || selectedRow.winner || "";
+  popupCompany.textContent = selectedRow.companyName || selectedRow.company || "";
+  popupPrize.textContent = selectedRow.prize || "";
 
-  const isCollected = String(selectedRow.status).toUpperCase() === "COLLECT";
+  const imageUrl = String(selectedRow.imageUrl || selectedRow.image || "").trim();
+
+  if(imageUrl !== ""){
+    popupImage.src = imageUrl;
+    popupImage.style.display = "block";
+  }else{
+    popupImage.src = "";
+    popupImage.style.display = "none";
+  }
+
+  const isCollected = String(selectedRow.status || "").toUpperCase() === "COLLECT";
 
   if(isCollected){
     collectBtn.textContent = "Already Collect";
@@ -148,6 +171,10 @@ function openPopup(row){
 function closePopup(){
   popup.classList.remove("show");
   selectedRow = null;
+
+  if(popupImage){
+    popupImage.src = "";
+  }
 }
 
 function collectPrize(){
@@ -156,7 +183,9 @@ function collectPrize(){
   collectBtn.disabled = true;
   collectBtn.textContent = "Saving...";
 
-  fetch(`${API_URL}?action=collectPrize&row=${selectedRow.row}&t=${Date.now()}`)
+  fetch(`${API_URL}?action=collectPrize&row=${selectedRow.row}&t=${Date.now()}`, {
+    cache: "no-store"
+  })
     .then(res => res.json())
     .then(result => {
       if(result.status === "success"){
