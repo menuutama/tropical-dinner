@@ -6,9 +6,9 @@
 
 <title>Report Attendance</title>
 
-<link rel="stylesheet" href="report.css">
+<link rel="stylesheet" href="report-attendance.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </head>
@@ -17,15 +17,28 @@
 <div class="page">
 
   <div class="filter-area">
-    <select id="companyFilter" onchange="applyFilter()">
+
+    <select id="companyFilter" onchange="applyFilterAndSort()">
       <option value="ALL">All Company</option>
     </select>
 
-    <select id="attendanceFilter" onchange="applyFilter()">
+    <select id="attendanceFilter" onchange="applyFilterAndSort()">
       <option value="ALL">All Attendance</option>
       <option value="ATTEND">Attend</option>
       <option value="NOT_ATTEND">Not Attend</option>
     </select>
+
+    <select id="sortField" onchange="applyFilterAndSort()">
+      <option value="name">Sort By Name</option>
+      <option value="company">Sort By Company</option>
+      <option value="attendance">Sort By Attendance</option>
+    </select>
+
+    <select id="sortOrder" onchange="applyFilterAndSort()">
+      <option value="az">A - Z</option>
+      <option value="za">Z - A</option>
+    </select>
+
   </div>
 
   <div class="button-area">
