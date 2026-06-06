@@ -546,3 +546,227 @@ table button:nth-child(2){
     font-size:9px;
   }
 }
+
+/* ========================================
+   COLLECT POPUP STYLE
+======================================== */
+
+.winner-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(6px);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:99999;
+  padding:20px;
+}
+
+.winner-modal.show{
+  display:flex;
+}
+
+.collect-modal-box{
+  position:relative;
+  width:100%;
+  max-width:540px;
+
+  background:
+  linear-gradient(
+    180deg,
+    #071c57 0%,
+    #03133d 100%
+  );
+
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:35px;
+
+  padding:28px;
+
+  text-align:center;
+
+  box-shadow:
+  0 0 25px rgba(0,120,255,.35),
+  0 20px 60px rgba(0,0,0,.6);
+}
+
+.modal-close{
+  position:absolute;
+  top:18px;
+  right:18px;
+
+  width:50px;
+  height:50px;
+
+  border:none;
+  border-radius:50%;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ffe58a,
+    #d8a500
+  );
+
+  color:#111;
+  font-size:28px;
+  font-weight:700;
+  cursor:pointer;
+
+  box-shadow:
+  0 0 20px rgba(255,215,0,.45);
+}
+
+.modal-close:hover{
+  transform:scale(1.08);
+}
+
+.modal-place{
+  font-size:58px;
+  font-weight:800;
+
+  background:
+  linear-gradient(
+    180deg,
+    #fff2a3,
+    #f5bf32
+  );
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  margin-bottom:10px;
+}
+
+.modal-winner{
+  font-size:42px;
+  font-weight:800;
+  color:#fff;
+  margin-bottom:18px;
+  text-transform:uppercase;
+}
+
+.modal-info{
+  font-size:22px;
+  font-weight:600;
+  color:#ffffff;
+  margin-bottom:8px;
+}
+
+.modal-image{
+  width:100%;
+  max-width:430px;
+
+  margin:25px auto 18px;
+  display:block;
+
+  border-radius:18px;
+
+  background:#fff;
+  padding:10px;
+
+  box-shadow:
+  0 0 25px rgba(255,255,255,.25);
+}
+
+.modal-prize{
+  font-size:34px;
+  font-weight:800;
+  color:#ffd875;
+
+  line-height:1.25;
+
+  margin-top:10px;
+  margin-bottom:18px;
+
+  text-transform:uppercase;
+
+  text-shadow:
+  0 0 18px rgba(255,216,117,.25);
+}
+
+.modal-note{
+  font-size:16px;
+  line-height:1.6;
+  color:rgba(255,255,255,.8);
+  margin-bottom:25px;
+}
+
+.collect-action-btn{
+  width:100% !important;
+  height:60px !important;
+
+  border:none;
+  border-radius:16px;
+
+  font-size:22px !important;
+  font-weight:700;
+
+  background:
+  linear-gradient(
+    135deg,
+    #2d7cff,
+    #0e56d7
+  );
+
+  color:#fff;
+
+  cursor:pointer;
+}
+
+.collect-action-btn:disabled{
+  background:#6f7b95 !important;
+  color:#fff !important;
+  cursor:not-allowed;
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media(max-width:768px){
+
+  .collect-modal-box{
+    max-width:95%;
+    padding:20px;
+    border-radius:28px;
+  }
+
+  .modal-place{
+    font-size:42px;
+  }
+
+  .modal-winner{
+    font-size:28px;
+    line-height:1.25;
+  }
+
+  .modal-info{
+    font-size:16px;
+  }
+
+  .modal-image{
+    max-width:100%;
+    margin-top:18px;
+  }
+
+  .modal-prize{
+    font-size:24px;
+  }
+
+  .modal-note{
+    font-size:14px;
+  }
+
+  .collect-action-btn{
+    height:54px !important;
+    font-size:18px !important;
+  }
+
+  .modal-close{
+    width:42px;
+    height:42px;
+    font-size:24px;
+  }
+}
