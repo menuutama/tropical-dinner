@@ -736,13 +736,34 @@ function excelBorder() {
 
 /* =====================================================
    DOCUMENT / WORD
+   A4 PORTRAIT + MARGIN 1 INCH
    FONT SIZE: 24 / 16 / 11
 ===================================================== */
 
 function downloadWord() {
-  const reportHTML = document.getElementById("reportArea").innerHTML;
+  const rowsHTML = filteredData.map((item, index) => {
+    return `
+      <tr>
+        <td class="col-no">${index + 1}</td>
+        <td class="col-name">${item.employeeName || ""}</td>
+        <td class="col-company">${item.company || ""}</td>
+        <td class="col-attendance">${getAttendIcon(item.attendance)}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const summaryRowsHTML = summaryData.map(item => {
+    return `
+      <tr>
+        <td>${item.company || ""}</td>
+        <td>${item.attend}</td>
+        <td>${item.notAttend}</td>
+      </tr>
+    `;
+  }).join("");
 
   const content = `
+    <!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8">
@@ -756,19 +777,30 @@ function downloadWord() {
         body {
           font-family: Arial, sans-serif;
           color: #000;
+          margin: 0;
+          padding: 0;
+        }
+
+        .letter-head {
+          text-align: center;
+          margin-bottom: 18px;
         }
 
         h1 {
           color: red;
           text-align: center;
+          font-family: Arial, sans-serif;
           font-size: 24px;
+          font-weight: bold;
           margin: 0;
           line-height: 1.1;
         }
 
         h2 {
           text-align: center;
+          font-family: Arial, sans-serif;
           font-size: 16px;
+          font-weight: bold;
           margin: 6px 0 18px;
           line-height: 1.1;
         }
@@ -777,69 +809,123 @@ function downloadWord() {
           width: 100%;
           border-collapse: collapse;
           table-layout: fixed;
+          font-family: Arial, sans-serif;
         }
 
         th,
         td {
           border: 1px solid #000;
           padding: 4px 6px;
+          font-family: Arial, sans-serif;
           font-size: 11px;
           color: #000;
           line-height: 1.2;
           height: 22px;
+          white-space: nowrap;
+          overflow: hidden;
+          vertical-align: middle;
         }
 
         th {
-          background: #e8e8e8;
+          background: #d9d9d9;
           font-weight: bold;
           text-align: center;
         }
 
-        td:nth-child(1),
-        th:nth-child(1) {
+        .col-no {
           width: 40px;
           text-align: center;
         }
 
-        td:nth-child(2),
-        th:nth-child(2) {
+        .col-name {
           width: auto;
           text-align: left;
         }
 
-        td:nth-child(3),
-        th:nth-child(3) {
-          width: 80px;
-          text-align: center;
-        }
-
-        td:nth-child(4),
-        th:nth-child(4) {
+        .col-company {
           width: 90px;
           text-align: center;
-          font-size: 16px;
-          font-weight: bold;
         }
 
-        .letter-head {
+        .col-attendance {
+          width: 90px;
           text-align: center;
-          margin-bottom: 18px;
+          font-size: 11px;
+          font-weight: bold;
         }
 
         .summary-title {
           margin-top: 18px;
           margin-bottom: 6px;
+          font-family: Arial, sans-serif;
           font-size: 11px;
+          font-weight: bold;
         }
 
         .summary-table {
           width: 70%;
         }
+
+        .summary-table td:first-child {
+          text-align: left;
+        }
+
+        .summary-table td:nth-child(2),
+        .summary-table td:nth-child(3) {
+          text-align: center;
+        }
+
+        .grand-total td {
+          font-weight: bold;
+          background: #d9d9d9;
+        }
       </style>
     </head>
 
     <body>
-      ${reportHTML}
+
+      <div class="letter-head">
+        <h1>TROPICAL DINNER 2026</h1>
+        <h2>REPORT ATTENDANCE</h2>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="col-no">No.</th>
+            <th class="col-name">Employee Name</th>
+            <th class="col-company">Company</th>
+            <th class="col-attendance">Attendance</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${rowsHTML}
+        </tbody>
+      </table>
+
+      <div class="summary-title">Attendance Summary</div>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Total Attend</th>
+            <th>Total Not Attend</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${summaryRowsHTML}
+
+          <tr class="grand-total">
+            <td>GRAND TOTAL</td>
+            <td>${document.getElementById("grandAttend").textContent}</td>
+            <td>${document.getElementById("grandNotAttend").textContent}</td>
+          </tr>
+        </tbody>
+      </table>
+
     </body>
     </html>
   `;
@@ -860,5 +946,3 @@ function downloadWord() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-
-loadAttendanceReport();
