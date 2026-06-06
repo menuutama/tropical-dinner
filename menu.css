@@ -1,7 +1,7 @@
 .report-menu-bar{
   position:fixed;
-  top:15px;
-  right:15px;
+  top:18px;
+  left:18px;
   z-index:99999;
   background:transparent;
 }
@@ -11,60 +11,51 @@
 }
 
 .report-btn{
-  width:48px;
-  height:48px;
+  width:42px;
+  height:42px;
 
   border:none;
-  border-radius:12px;
+  background:transparent;
 
   cursor:pointer;
+
+  color:#fff;
+  font-size:34px;
+  font-weight:700;
+  line-height:1;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  color:#fff;
-  font-size:26px;
-  font-weight:700;
-  line-height:1;
-
-  background:linear-gradient(135deg,#0d6efd,#ff4fd8);
-
-  box-shadow:0 0 15px rgba(13,110,253,.45);
-
-  transition:.25s ease;
+  padding:0;
+  box-shadow:none;
 }
 
 .report-btn:hover{
   transform:scale(1.08);
-  box-shadow:0 0 25px rgba(255,79,216,.55);
-}
-
-.report-btn:active{
-  transform:scale(.95);
 }
 
 .report-submenu{
   display:none;
 
   position:absolute;
-  top:58px;
-  right:0;
+  top:50px;
+  left:0;
 
   width:320px;
 
   overflow:hidden;
-
   border-radius:18px;
 
-  background:rgba(0,10,40,.95);
+  background:rgba(0,10,40,.55);
 
-  backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 
-  border:1px solid rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.18);
 
-  box-shadow:0 10px 35px rgba(0,0,0,.45);
+  box-shadow:0 10px 35px rgba(0,0,0,.35);
 
   animation:reportMenuFade .22s ease;
 }
@@ -79,7 +70,6 @@
   padding:15px 18px;
 
   color:#fff;
-
   text-decoration:none;
 
   font-size:14px;
@@ -89,7 +79,7 @@
 }
 
 .report-submenu a:hover{
-  background:linear-gradient(90deg,#0d6efd,#ff4fd8);
+  background:rgba(255,255,255,.15);
   padding-left:28px;
 }
 
