@@ -6,6 +6,7 @@
 
 <title>Attendance System</title>
 <link rel="stylesheet" href="style2.css">
+  <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
@@ -14,8 +15,12 @@
 <script>
 fetch("menu.html")
 .then(res => res.text())
-.then(data=>{
-  document.getElementById("menuContainer").innerHTML = data;
+.then(html => {
+  document.getElementById("menuContainer").innerHTML = html;
+
+  const script = document.createElement("script");
+  script.src = "menu.js";
+  document.body.appendChild(script);
 });
 </script>
   
