@@ -1,112 +1,29 @@
-//import { API_URL } from './api.js';
 const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
 const ROWS_PER_PAGE = 10;
 
 let allData = [];
-// Tambah ini di bahagian atas bersama global variables yang lain
-let slideInterval = null; 
+let slideInterval = null;
 let currentPage = 1;
 let lastDataHash = "";
 
-/* =========================
-   SEARCH HTML INJECT
-========================= */
-
-const searchHTML = `
-<div class="mobile-search-wrapper">
-  <div class="search-box">
-    <input 
-      type="text"
-      id="searchInput"
-      placeholder="Search Lucky No / Winner / Company"
-    />
-    <button class="clear-btn" id="clearBtn">x</button>
-  </div>
-</div>
-`;
-
 document.addEventListener("DOMContentLoaded", () => {
-
-  const liveUpdateEl = document.querySelector(".live-update-badge");
-
-  if (liveUpdateEl) {
-    liveUpdateEl.insertAdjacentHTML("afterend", searchHTML);
-  } else {
-    document.body.insertAdjacentHTML("afterbegin", searchHTML);
-  }
-
   const input = document.getElementById("searchInput");
   const clearBtn = document.getElementById("clearBtn");
 
-  if (input) {
-    input.addEventListener("input", performSearch);
-
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") performSearch();
-    });
-  }
-
-  if (clearBtn && input) {
-    clearBtn.addEventListener("click", () => {
-      input.value = "";
-      performSearch();
-      input.focus();
-    });
-  }
-
-});
-
-/* =========================
-   SEARCH FUNCTION
-========================= */
-
-function performSearch() {
-
-  const input = document.getElementById("searchInput");
-  if (!input) return;
-
-  const keyword = input.value.trim().toLowerCase();
-
-  if (keyword === "") {
-    renderPage();
-    renderPagination();
-    return;
-  }
-
-  const filtered = allData.filter(item => {
-
-    const luckyNo = (item.luckyNo || "").toString().toLowerCase();
-    const winner  = (item.winner || "").toString().toLowerCase();
-    const company = (item.company || "").toString().toLowerCase();
-
-    return (
-      luckyNo.includes(keyword) ||
-      winner.includes(keyword) ||
-      company.includes(keyword)
-    );
-
+  input.addEventListener("input", () => {
+    clearBtn.style.display = input.value.trim() ? "block" : "none";
+    performSearch();
   });
 
-  const tbody = document.getElementById("winnerTable");
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    clearBtn.style.display = "none";
+    performSearch();
+    input.focus();
+  });
 
-  if (!tbody) return;
-
-  tbody.innerHTML = filtered.map(item => `
-    <tr>
-      <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
-      <td>${escapeHTML(item.luckyNo)}</td>
-      <td>${escapeHTML(item.winner)}</td>
-      <td>${escapeHTML(item.company)}</td>
-      <td>${escapeHTML(item.prize)}</td>
-    </tr>
-  `).join("");
-
-  document.getElementById("pagination").innerHTML = "";
-} 
-
-/* =========================
-   SAFE HTML
-========================= */
+  loadData();
+});
 
 function escapeHTML(text) {
   if (text == null) return "";
@@ -115,17 +32,11 @@ function escapeHTML(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "'");
+    .replace(/'/g, "&#039;");
 }
 
-/* =========================
-   LOAD DATA
-========================= */
-
 async function loadData() {
-
   try {
-
     const response = await fetch(API_URL);
     const rawData = await response.json();
 
@@ -146,6 +57,7 @@ async function loadData() {
     currentPage = Math.min(currentPage, Math.ceil(allData.length / ROWS_PER_PAGE) || 1);
 
     const input = document.getElementById("searchInput");
+
     if (input && input.value.trim() !== "") {
       performSearch();
     } else {
@@ -158,39 +70,53 @@ async function loadData() {
   }
 }
 
-/* =========================
-   RENDER TABLE
-========================= */
+function performSearch() {
+  const input = document.getElementById("searchInput");
+  const keyword = input.value.trim().toLowerCase();
 
-function renderPage() {
+  if (keyword === "") {
+    renderPage();
+    renderPagination();
+    return;
+  }
 
-  const tbody = document.getElementById("winnerTable");
-  if (!tbody) return;
+  const filtered = allData.filter(item => {
+    return (
+      (item.luckyNo || "").toString().toLowerCase().includes(keyword) ||
+      (item.winner || "").toString().toLowerCase().includes(keyword) ||
+      (item.company || "").toString().toLowerCase().includes(keyword)
+    );
+  });
 
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-
-  const pageData = allData.slice(start, start + ROWS_PER_PAGE);
-
-  tbody.innerHTML = pageData.map(item => `
-    <tr>
-      <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
-      <td>${escapeHTML(item.luckyNo)}</td>
-      <td>${escapeHTML(item.winner)}</td>
-      <td>${escapeHTML(item.company)}</td>
-      <td>${escapeHTML(item.prize)}</td>
-    </tr>
-  `).join("");
+  renderTable(filtered);
+  document.getElementById("pagination").innerHTML = "";
 }
 
-/* =========================
-   PAGINATION
-========================= */
+function renderPage() {
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const pageData = allData.slice(start, start + ROWS_PER_PAGE);
+  renderTable(pageData);
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById("winnerTable");
+
+  tbody.innerHTML = data.map((item, index) => {
+    const realIndex = allData.indexOf(item);
+
+    return `
+      <tr onclick="openWinnerModal(${realIndex})">
+        <td><div class="place-badge">${escapeHTML(item.place)}</div></td>
+        <td>${escapeHTML(item.luckyNo)}</td>
+        <td class="winner-name">${escapeHTML(item.winner)}</td>
+        <td>${escapeHTML(item.company)}</td>
+      </tr>
+    `;
+  }).join("");
+}
 
 function renderPagination() {
-
   const pagination = document.getElementById("pagination");
-  if (!pagination) return;
-
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
   if (totalPages <= 1) {
@@ -218,10 +144,6 @@ function renderPagination() {
   pagination.innerHTML = html;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
-
 function goToPage(p) {
   currentPage = p;
   renderPage();
@@ -240,126 +162,78 @@ function lastPage() {
   renderPagination();
 }
 
-/* ====================================================================
-   FULLSCREEN MOD SLAID (SEKAT UNTUK LAPTOP, TV & PROJEKTOR)
-==================================================================== */
+function openWinnerModal(index) {
+  const item = allData[index];
+  if (!item) return;
 
-function openProjectorMode() {
-  if (window.innerWidth <= 1024) {
-    console.log("Fungsi Fullscreen Slideshow disekat untuk Phone/Tablet.");
-    return; 
-  }
+  document.getElementById("modalPlace").textContent = item.place || "";
+  document.getElementById("modalWinner").textContent = item.winner || "";
+  document.getElementById("modalLuckyNo").textContent = "Lucky No: " + (item.luckyNo || "");
+  document.getElementById("modalCompany").textContent = "Company: " + (item.company || "");
+  document.getElementById("modalPrize").textContent = "Prize: " + (item.prize || "");
 
-  const docEl = document.documentElement;
+  const img = document.getElementById("modalImage");
 
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    if (docEl.requestFullscreen) {
-      docEl.requestFullscreen().catch(console.error);
-    } else if (docEl.webkitRequestFullscreen) { 
-      docEl.webkitRequestFullscreen();
-    }
+  if (item.imageUrl && item.imageUrl.trim() !== "") {
+    img.src = item.imageUrl;
+    img.style.display = "block";
   } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
+    img.src = "";
+    img.style.display = "none";
   }
+
+  document.getElementById("winnerModal").classList.add("show");
+}
+
+function closeWinnerModal() {
+  document.getElementById("winnerModal").classList.remove("show");
+}
+
+document.getElementById("winnerModal").addEventListener("click", function(e) {
+  if (e.target === this) closeWinnerModal();
+});
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeWinnerModal();
+});
+
+function playSlide() {
+  if (slideInterval) clearInterval(slideInterval);
+
+  slideInterval = setInterval(() => {
+    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+    if (totalPages <= 1) return;
+
+    currentPage = currentPage < totalPages ? currentPage + 1 : 1;
+
+    renderPage();
+    renderPagination();
+  }, 7000);
+}
+
+function pauseSlide() {
+  if (slideInterval) {
+    clearInterval(slideInterval);
+    slideInterval = null;
+  }
+
+  currentPage = 1;
+  renderPage();
+  renderPagination();
 }
 
 function handleFullscreenChange() {
   const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
   document.body.classList.toggle("fullscreen-active", isFullscreen);
 
-  let fsHeader = document.getElementById("fullscreenHeader");
-  let fsFooter = document.getElementById("fullscreenFooter");
-  
-  // Ambil elemen panel kawalan butang
-const controlPanel = document.querySelector(".control-buttons");
-
-   const paginationPanel =
-document.getElementById("pagination");
-
-if(isFullscreen){
-
-  if(controlPanel)
-    controlPanel.style.display="none";
-
-  if(paginationPanel)
-    paginationPanel.style.display="none";
-
-}else{
-
-  if(controlPanel)
-    controlPanel.style.display="flex";
-
-  if(paginationPanel)
-    paginationPanel.style.display="flex";
-
-}
-   
   if (isFullscreen) {
-    // SEMBUNYIKAN BUTANG KAWALAN SEMASA FULLSCREEN
-    if (controlPanel) {
-      controlPanel.style.display = "none";
-    }
-
-       // MULA SLIDESHOW AUTOMATIK
     playSlide();
-
   } else {
-    // PAPARKAN SEMULA BUTANG KAWALAN SELEPAS TEKAN ESC
-    if (controlPanel) {
-      controlPanel.style.display = "block"; // atau "flex" mengikut kesesuaian css anda
-    }
-if (fsHeader) fsHeader.remove();
-if (fsFooter) fsFooter.remove();
-     // HENTIKAN SLIDESHOW AUTOMATIK
     pauseSlide();
   }
 }
 
-
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 
-/* =========================
-   START
-========================= */
-
-setInterval(loadData,3000);
-
-loadData();
-
-// Menggerakkan halaman jadual secara automatik
-function playSlide() {
-  // Padam interval lama jika ada untuk elakkan pertembungan timer
-  if (slideInterval) clearInterval(slideInterval); 
-
-  slideInterval = setInterval(() => {
-    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
-    
-    if (totalPages <= 1) return; // Tiada guna tukar page jika data sikit
-
-    if (currentPage < totalPages) {
-      currentPage++;
-    } else {
-      currentPage = 1; // Kembali ke halaman pertama selepas halaman terakhir
-    }
-    
-    renderPage();
-    renderPagination();
-  }, 7000); // 5000ms = 5 saat untuk setiap halaman. Boleh ubah ikut kesesuaian.
-}
-
-// Menghentikan pergerakan halaman automatik
-function pauseSlide() {
-  if (slideInterval) {
-    clearInterval(slideInterval);
-    slideInterval = null;
-  }
-  // Kembali ke halaman 1 apabila mod projektor ditutup
-  currentPage = 1;
-  renderPage();
-  renderPagination();
-}
+setInterval(loadData, 3000);
