@@ -120,10 +120,10 @@ body {
   color: #000 !important;
   height: 22px;
   line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  word-break: normal;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  word-break: normal !important;
 }
 
 .report-table th {
@@ -146,13 +146,13 @@ body {
 
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
-  width: 95px;
+  width: 120px;
   text-align: center;
 }
 
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
-  width: 90px;
+  width: 70px;
   text-align: center;
 }
 
@@ -189,10 +189,10 @@ body {
   color: #000 !important;
   height: 22px;
   line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-  word-break: normal;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  word-break: normal !important;
 }
 
 .summary-table th {
@@ -265,6 +265,8 @@ body {
     font-size: 11px !important;
     padding: 4px 6px !important;
     height: 22px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
   }
 
   .report-table tr,
