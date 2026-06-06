@@ -13,10 +13,8 @@
 .report-btn{
   width:42px;
   height:42px;
-
   border:none;
   background:transparent;
-
   cursor:pointer;
 
   color:#fff;
@@ -38,13 +36,11 @@
 
 .report-submenu{
   display:none;
-
   position:absolute;
   top:50px;
   left:0;
 
   width:320px;
-
   overflow:hidden;
   border-radius:18px;
 
@@ -54,7 +50,6 @@
   -webkit-backdrop-filter:blur(18px);
 
   border:1px solid rgba(255,255,255,.18);
-
   box-shadow:0 10px 35px rgba(0,0,0,.35);
 
   animation:reportMenuFade .22s ease;
@@ -66,7 +61,6 @@
 
 .report-submenu a{
   display:block;
-
   padding:15px 18px;
 
   color:#fff;
