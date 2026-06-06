@@ -1,25 +1,16 @@
 function toggleReportMenu(){
+  const menu = document.getElementById("reportSubmenu");
 
-  document
-    .getElementById("reportSubmenu")
-    .classList
-    .toggle("show");
-
+  if(menu){
+    menu.classList.toggle("show");
+  }
 }
 
 document.addEventListener("click", function(e){
+  const dropdown = document.querySelector(".report-dropdown");
+  const menu = document.getElementById("reportSubmenu");
 
-  const dropdown =
-    document.querySelector(".report-dropdown");
-
-  if(
-    dropdown &&
-    !dropdown.contains(e.target)
-  ){
-    document
-      .getElementById("reportSubmenu")
-      .classList
-      .remove("show");
+  if(dropdown && menu && !dropdown.contains(e.target)){
+    menu.classList.remove("show");
   }
-
 });
