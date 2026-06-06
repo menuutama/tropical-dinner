@@ -16,7 +16,6 @@
 <body>
 
 <div class="report-toolbar">
-
   <div class="control-panel">
     <select id="companyFilter" onchange="applyFilterAndSort()">
       <option value="ALL">All Company</option>
@@ -46,11 +45,9 @@
     <button onclick="downloadWord()">Document</button>
     <button onclick="window.print()">Print</button>
   </div>
-
 </div>
 
 <div class="preview-wrapper">
-
   <div id="reportArea" class="a4-paper">
 
     <div class="letter-head">
@@ -68,9 +65,7 @@
         </tr>
       </thead>
       <tbody id="attendanceBody">
-        <tr>
-          <td colspan="4">Loading...</td>
-        </tr>
+        <tr><td colspan="4">Loading...</td></tr>
       </tbody>
     </table>
 
@@ -95,7 +90,6 @@
     </table>
 
   </div>
-
 </div>
 
 <script src="report-attendance.js"></script>
