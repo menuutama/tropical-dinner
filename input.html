@@ -1,177 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Tropical Dinner 2026 - Live Lucky Draw</title>
-
-<link rel="stylesheet" href="style.css">
-
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Lucky Draw System</title> 
+  <link rel="stylesheet" href="style2.css">
 </head>
 
-<body>
+<body>   
 
-<div class="overlay"></div>
+  <!-- ===== PAGE TITLE ===== -->
+  <header class="hero-header">
+    <h1>TROPICAL DINNER 2026</h1>
+    <h2>Lucky Draw System</h2>
+  </header> 
+  
+  <!-- ===== MAIN CONTAINER ===== -->
+  <div class="container"> 
+    
+    <!-- INPUT AREA -->
+    <div class="input-box"> 
+      <div class="input-container">
+        <input 
+          type="text" 
+          id="luckyNo" 
+          inputmode="numeric" 
+          pattern="[0-9]*" 
+          placeholder="Enter Lucky No."
+          autocomplete="off"
+        > 
 
-<div class="container">
-
-  <div class="header">
-
-    <div class="sub-title">
-      TROPICAL DINNER 2026
-    </div>
-
-    <div class="title">
-      LUCKY DRAW WINNERS
-    </div>
-
-    <div class="live-box">
-      <div class="dot"></div>
-      LIVE UPDATING
-    </div>
-
-    <!-- SEARCH -->
-    <div class="search-wrapper">
-
-      <div class="search-box">
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search Lucky No / Winner / Company"
-        >
-
-        <button
+        <button 
+          type="button" 
+          id="clearInputBtn" 
           class="clear-btn"
-          id="clearBtn">
-          ×
+        >
+          X
         </button>
-
       </div>
 
-      <div class="click-note">
-        Click on your name to view your Lucky Draw prize.
+      <button id="addBtn">Add</button> 
+    </div> 
+    
+    <!-- TABLE AREA --> 
+    <div class="main-content"> 
+      <div class="table-wrapper">
+        <table> 
+          <thead>
+            <tr> 
+              <th>PLACE</th> 
+              <th>LUCKY NO.</th>
+              <th>WINNER</th>
+              <th>COMPANY</th> 
+              <th>PRIZE</th>
+              <th>ACTION</th>
+            </tr> 
+          </thead> 
+
+          <tbody id="winnerTable">
+            <!-- Diisi secara dinamik melalui JavaScript -->
+          </tbody> 
+        </table> 
+        
+        <!-- PAGINATION BUTTONS -->
+        <div id="pagination" class="pagination-container"></div>
       </div>
-
-    </div>
-
-  </div>
-
-  <!-- TABLE -->
-  <div class="table-wrapper">
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>PLACE</th>
-          <th>LUCKY NO.</th>
-          <th>WINNER</th>
-          <th>COMPANY</th>
-        </tr>
-      </thead>
-
-      <tbody id="winnerTable"></tbody>
-
-    </table>
+    </div> 
 
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-
-    <div
-      class="pagination"
-      id="pagination">
-    </div>
-
-    <div class="control-buttons">
-
-      <button onclick="playSlide()">
-        ▶ Play
-      </button>
-
-      <button onclick="pauseSlide()">
-        ⏸ Pause
-      </button>
-
-    </div>
-
-  </div>
-
-  <div class="notice">
-    Kindly collect your lucky draw prize at the Lucky Draw Counter behind the stage before leaving the event.
-  </div>
-
-</div>
-
-<!-- ===================================================
-     WINNER POPUP
-=================================================== -->
-
-<div
-  id="winnerModal"
-  class="winner-modal">
-
-  <div class="winner-modal-box">
-
-    <button
-      class="modal-close"
-      onclick="closeWinnerModal()">
-      ×
-    </button>
-
-    <!-- PLACE -->
-    <div
-      class="modal-place"
-      id="modalPlace">
-    </div>
-
-    <!-- WINNER -->
-    <div
-      class="modal-winner"
-      id="modalWinner">
-    </div>
-
-    <!-- LUCKY NO -->
-    <div
-      class="modal-info"
-      id="modalLuckyNo">
-    </div>
-
-    <!-- COMPANY -->
-    <div
-      class="modal-info"
-      id="modalCompany">
-    </div>
-
-    <!-- IMAGE -->
-    <img
-      id="modalImage"
-      class="modal-image"
-      src=""
-      alt="Prize Image"
-    >
-
-    <!-- PRIZE -->
-    <div
-      class="modal-prize"
-      id="modalPrize">
-    </div>
-
-    <!-- NOTE -->
-    <div class="modal-note">
-      **Image for display purposes only.<br>
-      (Gambar untuk tujuan paparan sahaja)
-    </div>
-
-  </div>
-
-</div>
-
-<script src="script.js"></script>
+  <script src="input.js"></script>
 
 </body>
 </html>
