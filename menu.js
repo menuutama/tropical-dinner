@@ -2,34 +2,41 @@ const REPORT_PASSWORD = "Admin-123";
 
 let reportUnlocked = false;
 
-function toggleReportMenu(){
+function initReportMenu(){
 
+  const btn = document.getElementById("reportBtn");
   const menu = document.getElementById("reportSubmenu");
+  const dropdown = document.querySelector(".report-dropdown");
 
-  if(!menu) return;
+  if(!btn || !menu || !dropdown) return;
 
-  if(!reportUnlocked){
+  btn.addEventListener("click", function(e){
 
-    const pass = prompt("Enter Report Password:");
+    e.stopPropagation();
 
-    if(pass !== REPORT_PASSWORD){
-      alert("Wrong password!");
-      return;
+    if(!reportUnlocked){
+
+      const pass = prompt("Enter Report Password:");
+
+      if(pass !== REPORT_PASSWORD){
+        alert("Wrong password!");
+        return;
+      }
+
+      reportUnlocked = true;
     }
 
-    reportUnlocked = true;
-  }
+    menu.classList.toggle("show");
 
-  menu.classList.toggle("show");
+  });
+
+  document.addEventListener("click", function(e){
+
+    if(!dropdown.contains(e.target)){
+      menu.classList.remove("show");
+    }
+
+  });
 }
 
-document.addEventListener("click", function(e){
-
-  const dropdown = document.querySelector(".report-dropdown");
-  const menu = document.getElementById("reportSubmenu");
-
-  if(dropdown && menu && !dropdown.contains(e.target)){
-    menu.classList.remove("show");
-  }
-
-});
+initReportMenu();
