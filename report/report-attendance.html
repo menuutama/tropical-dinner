@@ -10,11 +10,23 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
 
+</head>
 <body>
 
 <div class="page">
+
+  <div class="filter-area">
+    <select id="companyFilter" onchange="applyFilter()">
+      <option value="ALL">All Company</option>
+    </select>
+
+    <select id="attendanceFilter" onchange="applyFilter()">
+      <option value="ALL">All Attendance</option>
+      <option value="ATTEND">Attend</option>
+      <option value="NOT_ATTEND">Not Attend</option>
+    </select>
+  </div>
 
   <div class="button-area">
     <button onclick="downloadExcel()">Download Excel</button>
@@ -48,7 +60,7 @@
 
     <h3 class="summary-title">Attendance Summary</h3>
 
-    <table class="summary-table">
+    <table class="summary-table" id="summaryTable">
       <thead>
         <tr>
           <th>Company</th>
