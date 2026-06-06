@@ -88,7 +88,7 @@ function renderTable(){
   });
 
   filtered.sort((a, b) => {
-    return Number(a.place) - Number(b.place);
+    return getPlaceNumber(a.place) - getPlaceNumber(b.place);
   });
 
   if(filtered.length === 0){
@@ -116,6 +116,11 @@ function renderTable(){
       </tr>
     `;
   }).join("");
+}
+
+function getPlaceNumber(place){
+  const match = String(place || "").match(/\d+/);
+  return match ? Number(match[0]) : 999999;
 }
 
 function openPopup(row){
