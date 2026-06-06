@@ -30,6 +30,25 @@ function initReportMenu(){
 
   });
 
+  const links = menu.querySelectorAll("a[data-url]");
+
+  links.forEach(link => {
+
+    link.addEventListener("click", function(e){
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const url = this.getAttribute("data-url");
+
+      openReportWindow(url);
+
+      menu.classList.remove("show");
+
+    });
+
+  });
+
   document.addEventListener("click", function(e){
 
     if(!dropdown.contains(e.target)){
@@ -37,6 +56,20 @@ function initReportMenu(){
     }
 
   });
+
+}
+
+function openReportWindow(url){
+
+  const w = screen.availWidth - 100;
+  const h = screen.availHeight - 100;
+
+  window.open(
+    url,
+    "ReportPopup",
+    `width=${w},height=${h},left=50,top=20,resizable=yes,scrollbars=yes`
+  );
+
 }
 
 initReportMenu();
