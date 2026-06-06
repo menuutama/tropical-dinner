@@ -1,13 +1,17 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyxQjtzyKoxWmMFkIbvHgiLMZRuROWvSN8vxE1BAApoGp-2FxV6qTa6gT5-Cb-2385s/exec";
 
-let reportData = [];
+let allData = [];
+let filteredData = [];
 let summaryData = [];
 
 async function loadAttendanceReport() {
   try {
     const res = await fetch(API_URL);
-    reportData = await res.json();
+    allData = await res.json();
 
+    filteredData = [...allData];
+
+    loadCompanyDropdown();
     renderAttendanceTable();
     renderSummaryTable();
 
@@ -25,11 +29,53 @@ function isAttend(value) {
   return String(value || "").trim().toLowerCase() === "attend";
 }
 
+function loadCompanyDropdown() {
+  const companyFilter = document.getElementById("companyFilter");
+
+  const companies = [...new Set(
+    allData
+      .map(item => item.company || "")
+      .filter(company => company.trim() !== "")
+  )].sort();
+
+  companies.forEach(company => {
+    const option = document.createElement("option");
+    option.value = company;
+    option.textContent = company;
+    companyFilter.appendChild(option);
+  });
+}
+
+function applyFilter() {
+  const selectedCompany = document.getElementById("companyFilter").value;
+  const selectedAttendance = document.getElementById("attendanceFilter").value;
+
+  filteredData = allData.filter(item => {
+    const companyMatch =
+      selectedCompany === "ALL" || item.company === selectedCompany;
+
+    let attendanceMatch = true;
+
+    if (selectedAttendance === "ATTEND") {
+      attendanceMatch = isAttend(item.attendance);
+    }
+
+    if (selectedAttendance === "NOT_ATTEND") {
+      attendanceMatch = !isAttend(item.attendance);
+    }
+
+    return companyMatch && attendanceMatch;
+  });
+
+  renderAttendanceTable();
+  renderSummaryTable();
+}
+
 function renderAttendanceTable() {
   const tbody = document.getElementById("attendanceBody");
   tbody.innerHTML = "";
 
-  if (reportData.length === 0) {
+  if (filteredData.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="4">No data found</td>
@@ -38,7 +84,7 @@ function renderAttendanceTable() {
     return;
   }
 
-  reportData.forEach((item, index) => {
+  filteredData.forEach((item, index) => {
     const attendIcon = isAttend(item.attendance) ? "✔️" : "✖️";
 
     tbody.innerHTML += `
@@ -46,9 +92,7 @@ function renderAttendanceTable() {
         <td>${index + 1}</td>
         <td>${item.employeeName || ""}</td>
         <td>${item.company || ""}</td>
-        <td class="${isAttend(item.attendance) ? "attend" : "not-attend"}">
-          ${attendIcon}
-        </td>
+        <td class="attendance-icon">${attendIcon}</td>
       </tr>
     `;
   });
@@ -59,7 +103,7 @@ function renderSummaryTable() {
   let grandAttend = 0;
   let grandNotAttend = 0;
 
-  reportData.forEach(item => {
+  filteredData.forEach(item => {
     const company = item.company || "Unknown Company";
 
     if (!summary[company]) {
@@ -99,33 +143,57 @@ function renderSummaryTable() {
 }
 
 function downloadExcel() {
-  const mainSheet = reportData.map((item, index) => ({
-    "No.": index + 1,
-    "Employee Name": item.employeeName || "",
-    "Company": item.company || "",
-    "Attendance": isAttend(item.attendance) ? "✔️" : "✖️"
-  }));
-
-  const summarySheet = summaryData.map(item => ({
-    "Company": item.company,
-    "Total Attend": item.attend,
-    "Total Not Attend": item.notAttend
-  }));
-
-  summarySheet.push({
-    "Company": "GRAND TOTAL",
-    "Total Attend": document.getElementById("grandAttend").textContent,
-    "Total Not Attend": document.getElementById("grandNotAttend").textContent
-  });
-
   const wb = XLSX.utils.book_new();
 
-  const ws1 = XLSX.utils.json_to_sheet(mainSheet);
-  const ws2 = XLSX.utils.json_to_sheet(summarySheet);
+  const sheetData = [];
 
-  XLSX.utils.book_append_sheet(wb, ws1, "Attendance Report");
-  XLSX.utils.book_append_sheet(wb, ws2, "Summary");
+  sheetData.push(["TROPICAL DINNER 2026"]);
+  sheetData.push(["REPORT ATTENDANCE"]);
+  sheetData.push([]);
+  sheetData.push(["No.", "Employee Name", "Company", "Attendance"]);
 
+  filteredData.forEach((item, index) => {
+    sheetData.push([
+      index + 1,
+      item.employeeName || "",
+      item.company || "",
+      isAttend(item.attendance) ? "✔️" : "✖️"
+    ]);
+  });
+
+  sheetData.push([]);
+  sheetData.push(["Attendance Summary"]);
+  sheetData.push(["Company", "Total Attend", "Total Not Attend"]);
+
+  summaryData.forEach(item => {
+    sheetData.push([
+      item.company,
+      item.attend,
+      item.notAttend
+    ]);
+  });
+
+  sheetData.push([
+    "GRAND TOTAL",
+    document.getElementById("grandAttend").textContent,
+    document.getElementById("grandNotAttend").textContent
+  ]);
+
+  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+  ws["!merges"] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
+    { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }
+  ];
+
+  ws["!cols"] = [
+    { wch: 8 },
+    { wch: 35 },
+    { wch: 30 },
+    { wch: 15 }
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, "Attendance Report");
   XLSX.writeFile(wb, "Report_Attendance_Tropical_Dinner_2026.xlsx");
 }
 
@@ -133,11 +201,23 @@ function downloadPDF() {
   const element = document.getElementById("reportArea");
 
   const opt = {
-    margin: 0.4,
+    margin: [0.35, 0.35, 0.35, 0.35],
     filename: "Report_Attendance_Tropical_Dinner_2026.pdf",
     image: { type: "jpeg", quality: 1 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollX: 0,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: "in",
+      format: "a4",
+      orientation: "portrait"
+    },
+    pagebreak: {
+      mode: ["avoid-all", "css", "legacy"]
+    }
   };
 
   html2pdf().set(opt).from(element).save();
@@ -151,12 +231,14 @@ function downloadWord() {
     <head>
       <meta charset="UTF-8">
       <style>
-        body { font-family: Arial, sans-serif; }
+        @page { size: A4; margin: 15mm; }
+        body { font-family: Arial, sans-serif; color:#000; }
         h1 { color: red; text-align: center; }
         h2 { text-align: center; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+        th, td { border: 1px solid #000; padding: 7px; text-align: center; font-size: 12px; }
         th { background: #eee; }
+        td:nth-child(2), td:nth-child(3) { text-align: left; }
       </style>
     </head>
     <body>${reportHTML}</body>
