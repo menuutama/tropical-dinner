@@ -380,7 +380,6 @@ function downloadPDF() {
 /* =====================================================
    EXCEL - 3 SHEETS
    FONT SIZE: 24 / 16 / 11
-   UPDATED EXCEL ONLY
 ===================================================== */
 
 function downloadExcel() {
@@ -419,12 +418,7 @@ function buildAllReportSheet() {
   data.push(["Company", "Total Attend", "Total Not Attend", ""]);
 
   summaryData.forEach(item => {
-    data.push([
-      item.company,
-      item.attend,
-      item.notAttend,
-      ""
-    ]);
+    data.push([item.company, item.attend, item.notAttend, ""]);
   });
 
   data.push([
@@ -459,16 +453,14 @@ function buildAllReportSheet() {
   });
 
   const summaryTitleCell = "A" + summaryTitleRow;
-  if (ws[summaryTitleCell]) {
-    ws[summaryTitleCell].s = excelSummaryTitleStyle();
-  }
+  if (ws[summaryTitleCell]) ws[summaryTitleCell].s = excelSummaryTitleStyle();
 
   ["A", "B", "C"].forEach(col => {
     const cell = col + summaryHeaderRow;
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
-  applyAttendanceExcelStyle(ws, data.length);
+  applyAttendanceExcelStyle(ws, 5, 4 + filteredData.length - 1);
 
   return ws;
 }
@@ -502,7 +494,7 @@ function buildListSheet() {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
-  applyAttendanceExcelStyle(ws, data.length);
+  applyAttendanceExcelStyle(ws, 2, data.length);
 
   return ws;
 }
@@ -513,11 +505,7 @@ function buildSummarySheet() {
   data.push(["Company", "Total Attend", "Total Not Attend"]);
 
   summaryData.forEach(item => {
-    data.push([
-      item.company,
-      item.attend,
-      item.notAttend
-    ]);
+    data.push([item.company, item.attend, item.notAttend]);
   });
 
   data.push([
@@ -565,14 +553,12 @@ function applyExcelStyle(ws, rowCount) {
   ws["!rows"] = [];
 
   for (let r = 0; r < rowCount; r++) {
-    ws["!rows"][r] = {
-      hpt: 26
-    };
+    ws["!rows"][r] = { hpt: 26 };
   }
 }
 
-function applyAttendanceExcelStyle(ws, rowCount) {
-  for (let r = 1; r <= rowCount; r++) {
+function applyAttendanceExcelStyle(ws, startRow, endRow) {
+  for (let r = startRow; r <= endRow; r++) {
     const cell = "D" + r;
 
     if (ws[cell]) {
@@ -668,22 +654,10 @@ function excelSummaryTitleStyle() {
 
 function excelBorder() {
   return {
-    top: {
-      style: "thin",
-      color: { rgb: "000000" }
-    },
-    bottom: {
-      style: "thin",
-      color: { rgb: "000000" }
-    },
-    left: {
-      style: "thin",
-      color: { rgb: "000000" }
-    },
-    right: {
-      style: "thin",
-      color: { rgb: "000000" }
-    }
+    top: { style: "thin", color: { rgb: "000000" } },
+    bottom: { style: "thin", color: { rgb: "000000" } },
+    left: { style: "thin", color: { rgb: "000000" } },
+    right: { style: "thin", color: { rgb: "000000" } }
   };
 }
 
