@@ -1,5 +1,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxVV1y2G7WHYMUMDJEexju4p_lO-Kfblx5he4RLw54RQ9Mlq17YGEK2wv0Y6yWGrXTL/exec";
 //const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
+//const API_URL = "https://script.google.com/macros/s/AKfycbwyHlDqGumNenEhW6w5iAcA2984E1AbnXOfemzaxPOgk8pqXKD-pg6zw4Rw6U3sk-tY/exec";
 
 const ROWS_PER_PAGE = 10;
 
@@ -14,41 +15,65 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearBtn = document.getElementById("clearBtn");
   const modal = document.getElementById("winnerModal");
 
-  if (input) {
+  if(input){
+
     input.addEventListener("input", () => {
-      clearBtn.style.display = input.value.trim() ? "block" : "none";
+
+      if(clearBtn){
+        clearBtn.style.display = input.value.trim() ? "block" : "none";
+      }
+
       performSearch();
+
     });
+
   }
 
-  if (clearBtn && input) {
+  if(clearBtn && input){
+
     clearBtn.addEventListener("click", () => {
+
       input.value = "";
       clearBtn.style.display = "none";
+
       performSearch();
       input.focus();
+
     });
+
   }
 
-  if (modal) {
-    modal.addEventListener("click", function(e) {
-      if (e.target === modal) {
+  if(modal){
+
+    modal.addEventListener("click", function(e){
+
+      if(e.target === modal){
         closeWinnerModal();
       }
+
     });
+
   }
 
-  document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") {
+  document.addEventListener("keydown", function(e){
+
+    if(e.key === "Escape"){
       closeWinnerModal();
     }
+
   });
 
   loadData();
+
 });
 
-function escapeHTML(text) {
-  if (text == null) return "";
+/* =========================
+   SAFE HTML
+========================= */
+
+function escapeHTML(text){
+
+  if(text == null) return "";
 
   return text.toString()
     .replace(/&/g, "&amp;")
@@ -56,11 +81,16 @@ function escapeHTML(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
 
-async function loadData() {
+/* =========================
+   LOAD DATA
+========================= */
 
-  try {
+async function loadData(){
+
+  try{
 
     const response = await fetch(API_URL + "?time=" + Date.now(), {
       cache: "no-store"
@@ -71,14 +101,22 @@ async function loadData() {
     const filteredData = rawData
       .filter(item => (item.luckyNo || "").toString().trim() !== "")
       .sort((a, b) => {
-        const numA = parseInt((a.place || "").toString().match(/\d+/)?.[0] || 999);
-        const numB = parseInt((b.place || "").toString().match(/\d+/)?.[0] || 999);
+
+        const numA = parseInt(
+          (a.place || "").toString().match(/\d+/)?.[0] || 999
+        );
+
+        const numB = parseInt(
+          (b.place || "").toString().match(/\d+/)?.[0] || 999
+        );
+
         return numA - numB;
+
       });
 
     const newHash = JSON.stringify(filteredData);
 
-    if (newHash === lastDataHash) return;
+    if(newHash === lastDataHash) return;
 
     lastDataHash = newHash;
     allData = filteredData;
@@ -90,27 +128,33 @@ async function loadData() {
 
     const input = document.getElementById("searchInput");
 
-    if (input && input.value.trim() !== "") {
+    if(input && input.value.trim() !== ""){
       performSearch();
-    } else {
+    }else{
       renderPage();
       renderPagination();
     }
 
-  } catch (err) {
+  }catch(err){
+
     console.error("FETCH ERROR:", err);
+
   }
 
 }
 
-function performSearch() {
+/* =========================
+   SEARCH FUNCTION
+========================= */
+
+function performSearch(){
 
   const input = document.getElementById("searchInput");
-  if (!input) return;
+  if(!input) return;
 
   const keyword = input.value.trim().toLowerCase();
 
-  if (keyword === "") {
+  if(keyword === ""){
     renderPage();
     renderPagination();
     return;
@@ -133,23 +177,42 @@ function performSearch() {
   renderTable(filtered);
 
   const pagination = document.getElementById("pagination");
-  if (pagination) pagination.innerHTML = "";
+
+  if(pagination){
+    pagination.innerHTML = "";
+  }
+
 }
 
-function renderPage() {
+/* =========================
+   RENDER PAGE
+========================= */
+
+function renderPage(){
 
   const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const pageData = allData.slice(start, start + ROWS_PER_PAGE);
+
+  const pageData = allData.slice(
+    start,
+    start + ROWS_PER_PAGE
+  );
 
   renderTable(pageData);
+
 }
 
-function renderTable(data) {
+/* =========================
+   RENDER TABLE
+========================= */
+
+function renderTable(data){
 
   const tbody = document.getElementById("winnerTable");
-  if (!tbody) return;
 
-  if (!data || data.length === 0) {
+  if(!tbody) return;
+
+  if(!data || data.length === 0){
+
     tbody.innerHTML = `
       <tr>
         <td colspan="4" class="no-data">
@@ -157,7 +220,9 @@ function renderTable(data) {
         </td>
       </tr>
     `;
+
     return;
+
   }
 
   tbody.innerHTML = data.map(item => {
@@ -166,6 +231,7 @@ function renderTable(data) {
 
     return `
       <tr onclick="openWinnerModal(${index})">
+
         <td>
           <div class="place-badge">
             ${escapeHTML(item.place)}
@@ -183,20 +249,27 @@ function renderTable(data) {
         <td>
           ${escapeHTML(item.company)}
         </td>
+
       </tr>
     `;
 
   }).join("");
+
 }
 
-function renderPagination() {
+/* =========================
+   PAGINATION
+========================= */
+
+function renderPagination(){
 
   const pagination = document.getElementById("pagination");
-  if (!pagination) return;
+
+  if(!pagination) return;
 
   const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
-  if (totalPages <= 1) {
+  if(totalPages <= 1){
     pagination.innerHTML = "";
     return;
   }
@@ -214,11 +287,12 @@ function renderPagination() {
   let startPage = Math.max(currentPage - 1, 1);
   let endPage = Math.min(startPage + 2, totalPages);
 
-  if (endPage - startPage < 2 && startPage > 1) {
+  if(endPage - startPage < 2 && startPage > 1){
     startPage = Math.max(endPage - 2, 1);
   }
 
-  for (let i = startPage; i <= endPage; i++) {
+  for(let i = startPage; i <= endPage; i++){
+
     html += `
       <button
         class="${i === currentPage ? "active" : ""}"
@@ -226,6 +300,7 @@ function renderPagination() {
         ${i}
       </button>
     `;
+
   }
 
   html += `
@@ -237,30 +312,49 @@ function renderPagination() {
   `;
 
   pagination.innerHTML = html;
+
 }
 
-function goToPage(page) {
+/* =========================
+   PAGE BUTTON FUNCTION
+========================= */
+
+function goToPage(page){
+
   currentPage = page;
+
   renderPage();
   renderPagination();
+
 }
 
-function firstPage() {
+function firstPage(){
+
   currentPage = 1;
+
   renderPage();
   renderPagination();
+
 }
 
-function lastPage() {
+function lastPage(){
+
   currentPage = Math.ceil(allData.length / ROWS_PER_PAGE) || 1;
+
   renderPage();
   renderPagination();
+
 }
 
-function openWinnerModal(index) {
+/* =========================
+   WINNER MODAL POPUP
+========================= */
+
+function openWinnerModal(index){
 
   const item = allData[index];
-  if (!item) return;
+
+  if(!item) return;
 
   const modalPlace = document.getElementById("modalPlace");
   const modalWinner = document.getElementById("modalWinner");
@@ -269,54 +363,90 @@ function openWinnerModal(index) {
   const modalPrize = document.getElementById("modalPrize");
   const modalImage = document.getElementById("modalImage");
 
-  modalPlace.textContent = item.place || "";
-  modalWinner.textContent = item.winner || "";
-  modalLuckyNo.textContent = "Lucky No : " + (item.luckyNo || "");
-  modalCompany.textContent = "Company : " + (item.company || "");
-
-  modalPrize.innerHTML =
-    `<span class="prize-label">Prize :</span> ${escapeHTML(item.prize || "")}`;
-
-  if (item.imageUrl && item.imageUrl.toString().trim() !== "") {
-    modalImage.src = item.imageUrl;
-    modalImage.style.display = "block";
-  } else {
-    modalImage.src = "";
-    modalImage.style.display = "none";
+  if(modalPlace){
+    modalPlace.textContent = item.place || "";
   }
 
-  document.getElementById("winnerModal").classList.add("show");
+  if(modalWinner){
+    modalWinner.textContent = item.winner || "";
+  }
+
+  if(modalLuckyNo){
+    modalLuckyNo.textContent = "Lucky No : " + (item.luckyNo || "");
+  }
+
+  if(modalCompany){
+    modalCompany.textContent = "Company : " + (item.company || "");
+  }
+
+  /* BAHAGIAN PRIZE - BUANG PERKATAAN "Prize :" */
+  if(modalPrize){
+    modalPrize.textContent = item.prize || "";
+  }
+
+  /* GAMBAR DARI COLUMN G SHEETS */
+  if(modalImage){
+
+    if(item.imageUrl && item.imageUrl.toString().trim() !== ""){
+
+      modalImage.src = item.imageUrl;
+      modalImage.style.display = "block";
+
+    }else{
+
+      modalImage.src = "";
+      modalImage.style.display = "none";
+
+    }
+
+  }
+
+  const modal = document.getElementById("winnerModal");
+
+  if(modal){
+    modal.classList.add("show");
+  }
+
 }
 
-function closeWinnerModal() {
+function closeWinnerModal(){
 
   const modal = document.getElementById("winnerModal");
   const img = document.getElementById("modalImage");
 
-  if (modal) modal.classList.remove("show");
+  if(modal){
+    modal.classList.remove("show");
+  }
 
-  if (img) {
+  if(img){
     img.src = "";
   }
+
 }
 
-function playSlide() {
+/* =========================
+   SLIDESHOW
+========================= */
 
-  if (slideInterval) clearInterval(slideInterval);
+function playSlide(){
+
+  if(slideInterval){
+    clearInterval(slideInterval);
+  }
 
   slideInterval = setInterval(() => {
 
     const input = document.getElementById("searchInput");
 
-    if (input && input.value.trim() !== "") return;
+    if(input && input.value.trim() !== "") return;
 
     const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
 
-    if (totalPages <= 1) return;
+    if(totalPages <= 1) return;
 
-    if (currentPage < totalPages) {
+    if(currentPage < totalPages){
       currentPage++;
-    } else {
+    }else{
       currentPage = 1;
     }
 
@@ -324,63 +454,79 @@ function playSlide() {
     renderPagination();
 
   }, 7000);
+
 }
 
-function pauseSlide() {
+function pauseSlide(){
 
-  if (slideInterval) {
+  if(slideInterval){
     clearInterval(slideInterval);
     slideInterval = null;
   }
 
   currentPage = 1;
+
   renderPage();
   renderPagination();
+
 }
 
-function openProjectorMode() {
+/* =========================
+   FULLSCREEN / PROJECTOR
+========================= */
 
-  if (window.innerWidth <= 1024) {
+function openProjectorMode(){
+
+  if(window.innerWidth <= 1024){
     console.log("Fullscreen blocked for phone/tablet.");
     return;
   }
 
   const docEl = document.documentElement;
 
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+  if(!document.fullscreenElement && !document.webkitFullscreenElement){
 
-    if (docEl.requestFullscreen) {
+    if(docEl.requestFullscreen){
       docEl.requestFullscreen().catch(console.error);
-    } else if (docEl.webkitRequestFullscreen) {
+    }else if(docEl.webkitRequestFullscreen){
       docEl.webkitRequestFullscreen();
     }
 
-  } else {
+  }else{
 
-    if (document.exitFullscreen) {
+    if(document.exitFullscreen){
       document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
+    }else if(document.webkitExitFullscreen){
       document.webkitExitFullscreen();
     }
 
   }
+
 }
 
-function handleFullscreenChange() {
+function handleFullscreenChange(){
 
   const isFullscreen =
     !!(document.fullscreenElement || document.webkitFullscreenElement);
 
-  document.body.classList.toggle("fullscreen-active", isFullscreen);
+  document.body.classList.toggle(
+    "fullscreen-active",
+    isFullscreen
+  );
 
-  if (isFullscreen) {
+  if(isFullscreen){
     playSlide();
-  } else {
+  }else{
     pauseSlide();
   }
+
 }
 
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
+/* =========================
+   AUTO REFRESH
+========================= */
 
 setInterval(loadData, 3000);
