@@ -40,7 +40,8 @@ async function getAttendData(){
 function loadCompanyDropdown(){
   const companyFilter = document.getElementById("companyFilter");
 
-  const currentValue = localStorage.getItem("attendanceCompanyFilter") || "ALL";
+  const currentValue =
+    localStorage.getItem("attendanceCompanyFilter") || "ALL";
 
   companyFilter.innerHTML = `<option value="ALL">All Company</option>`;
 
@@ -57,12 +58,18 @@ function loadCompanyDropdown(){
     companyFilter.appendChild(option);
   });
 
-  companyFilter.value = companies.includes(currentValue) ? currentValue : "ALL";
+  companyFilter.value =
+    companies.includes(currentValue)
+      ? currentValue
+      : "ALL";
 }
 
 function restoreCompanyFilter(){
-  const savedCompany = localStorage.getItem("attendanceCompanyFilter");
-  const companyFilter = document.getElementById("companyFilter");
+  const savedCompany =
+    localStorage.getItem("attendanceCompanyFilter");
+
+  const companyFilter =
+    document.getElementById("companyFilter");
 
   if(savedCompany){
     companyFilter.value = savedCompany;
@@ -74,21 +81,40 @@ function restoreCompanyFilter(){
 ========================= */
 
 function filterAttendData(){
-  const input = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("clearSearchBtn");
-  const companyFilter = document.getElementById("companyFilter");
 
-  const keyword = input.value.toLowerCase().trim();
-  const selectedCompany = companyFilter.value;
+  const input =
+    document.getElementById("searchInput");
 
-  localStorage.setItem("attendanceCompanyFilter", selectedCompany);
+  const clearBtn =
+    document.getElementById("clearSearchBtn");
 
-  clearBtn.style.display = keyword ? "block" : "none";
+  const companyFilter =
+    document.getElementById("companyFilter");
+
+  const keyword =
+    input.value.toLowerCase().trim();
+
+  const selectedCompany =
+    companyFilter.value;
+
+  localStorage.setItem(
+    "attendanceCompanyFilter",
+    selectedCompany
+  );
+
+  clearBtn.style.display =
+    keyword ? "block" : "none";
 
   const filtered = allAttendData.filter(item => {
-    const luckyNo = String(item.luckyNo || "").toLowerCase();
-    const employeeName = String(item.employeeName || "").toLowerCase();
-    const companyName = String(item.companyName || "").toLowerCase();
+
+    const luckyNo =
+      String(item.luckyNo || "").toLowerCase();
+
+    const employeeName =
+      String(item.employeeName || "").toLowerCase();
+
+    const companyName =
+      String(item.companyName || "").toLowerCase();
 
     const matchSearch =
       luckyNo.includes(keyword) ||
@@ -106,8 +132,12 @@ function filterAttendData(){
 }
 
 function clearSearch(){
-  const input = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("clearSearchBtn");
+
+  const input =
+    document.getElementById("searchInput");
+
+  const clearBtn =
+    document.getElementById("clearSearchBtn");
 
   input.value = "";
   clearBtn.style.display = "none";
@@ -121,19 +151,25 @@ function clearSearch(){
 ========================= */
 
 function displayAttendData(data){
-  const tbody = document.getElementById("attendTableBody");
+
+  const tbody =
+    document.getElementById("attendTableBody");
+
   tbody.innerHTML = "";
 
   if(!data || data.length === 0){
+
     tbody.innerHTML = `
       <tr>
         <td colspan="3">No data found</td>
       </tr>
     `;
+
     return;
   }
 
   data.forEach(item => {
+
     const tr = document.createElement("tr");
 
     tr.classList.add("attend-row");
@@ -159,46 +195,74 @@ function displayAttendData(data){
 ========================= */
 
 function openPopup(item){
+
   selectedRow = item;
 
-  document.getElementById("popupLuckyNo").innerText = item.luckyNo || "";
-  document.getElementById("popupEmployee").innerText = item.employeeName || "";
-  document.getElementById("popupCompany").innerText = item.companyName || "";
+  document.getElementById("popupLuckyNo").innerText =
+    item.luckyNo || "";
 
-  const attendBtn = document.getElementById("attendBtn");
+  document.getElementById("popupEmployee").innerText =
+    item.employeeName || "";
+
+  document.getElementById("popupCompany").innerText =
+    item.companyName || "";
+
+  const attendBtn =
+    document.getElementById("attendBtn");
 
   if(item.status === "ATTEND"){
-    attendBtn.innerText = "Edit Attendance";
+
+    attendBtn.innerText = "Cancel Attendance";
     attendBtn.disabled = false;
+
+    attendBtn.classList.add("cancel-btn");
+
   }else{
+
     attendBtn.innerText = "Attend";
     attendBtn.disabled = false;
+
+    attendBtn.classList.remove("cancel-btn");
   }
 
-  document.getElementById("attendPopup").classList.add("show");
+  document
+    .getElementById("attendPopup")
+    .classList.add("show");
 }
 
 function closePopup(){
-  document.getElementById("attendPopup").classList.remove("show");
+
+  document
+    .getElementById("attendPopup")
+    .classList.remove("show");
+
   selectedRow = null;
 }
 
 /* =========================
-   ATTEND / EDIT ATTEND
+   ATTEND / CANCEL ATTEND
 ========================= */
 
 async function markAttend(){
+
   if(!selectedRow) return;
 
   if(selectedRow.status === "ATTEND"){
-    const pass = prompt("Enter password to edit attendance:");
+
+    const pass = prompt(
+      "Enter password to cancel attendance:"
+    );
 
     if(pass !== "abc123" && pass !== "ABC123"){
+
       alert("Wrong password.");
       return;
     }
 
-    const confirmEdit = confirm("Remove ATTEND status for this person?");
+    const confirmEdit = confirm(
+      "Cancel attendance for this person?"
+    );
+
     if(!confirmEdit) return;
 
     await updateAttendance("");
@@ -209,22 +273,32 @@ async function markAttend(){
 }
 
 async function updateAttendance(status){
-  const attendBtn = document.getElementById("attendBtn");
+
+  const attendBtn =
+    document.getElementById("attendBtn");
 
   attendBtn.disabled = true;
   attendBtn.innerText = "Saving...";
 
   try{
-    const res = await fetch(apiUrl(
-      `action=updateAttend&row=${selectedRow.row}&status=${encodeURIComponent(status)}`
-    ));
+
+    const res = await fetch(
+      apiUrl(
+        `action=updateAttend&row=${selectedRow.row}&status=${encodeURIComponent(status)}`
+      )
+    );
 
     const result = await res.json();
 
     if(result.status === "success"){
+
       selectedRow.status = status;
 
-      const target = allAttendData.find(x => x.row === selectedRow.row);
+      const target =
+        allAttendData.find(
+          x => x.row === selectedRow.row
+        );
+
       if(target){
         target.status = status;
       }
@@ -233,15 +307,56 @@ async function updateAttendance(status){
       filterAttendData();
 
     }else{
+
       alert("Failed to update attendance.");
+
       attendBtn.disabled = false;
-      attendBtn.innerText = selectedRow.status === "ATTEND" ? "Edit Attendance" : "Attend";
+
+      if(selectedRow.status === "ATTEND"){
+
+        attendBtn.innerText =
+          "Cancel Attendance";
+
+        attendBtn.classList.add(
+          "cancel-btn"
+        );
+
+      }else{
+
+        attendBtn.innerText =
+          "Attend";
+
+        attendBtn.classList.remove(
+          "cancel-btn"
+        );
+      }
     }
 
   }catch(err){
+
     console.error(err);
+
     alert("Error update attendance.");
+
     attendBtn.disabled = false;
-    attendBtn.innerText = selectedRow.status === "ATTEND" ? "Edit Attendance" : "Attend";
+
+    if(selectedRow.status === "ATTEND"){
+
+      attendBtn.innerText =
+        "Cancel Attendance";
+
+      attendBtn.classList.add(
+        "cancel-btn"
+      );
+
+    }else{
+
+      attendBtn.innerText =
+        "Attend";
+
+      attendBtn.classList.remove(
+        "cancel-btn"
+      );
+    }
   }
 }
