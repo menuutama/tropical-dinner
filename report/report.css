@@ -10,10 +10,6 @@ body {
   color: #000;
 }
 
-/* =========================
-   TOOLBAR
-========================= */
-
 .report-toolbar {
   width: 100%;
   background: #fff;
@@ -59,14 +55,6 @@ body {
   min-width: 90px;
 }
 
-.button-panel button:hover {
-  background: #850000;
-}
-
-/* =========================
-   A4 PAPER PREVIEW
-========================= */
-
 .preview-wrapper {
   width: 100%;
   padding: 30px 0;
@@ -80,12 +68,7 @@ body {
   background: #fff;
   padding: 25.4mm;
   box-shadow: 0 0 10px rgba(0,0,0,.25);
-  overflow: visible;
 }
-
-/* =========================
-   LETTER HEAD
-========================= */
 
 .letter-head {
   text-align: center;
@@ -96,19 +79,12 @@ body {
   color: red;
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: 1px;
-  line-height: 1.1;
 }
 
 .letter-head h2 {
   font-size: 16px;
   margin-top: 6px;
-  line-height: 1.1;
 }
-
-/* =========================
-   TABLE
-========================= */
 
 .report-table,
 .summary-table {
@@ -165,7 +141,6 @@ body {
   color: #000 !important;
   font-size: 12px;
   font-weight: bold;
-  font-family: Arial, sans-serif;
 }
 
 .summary-title {
@@ -191,18 +166,17 @@ body {
   background: #d9d9d9;
 }
 
-/* =========================
-   PRINT A4 PORTRAIT
-========================= */
-
 @media print {
   @page {
     size: A4 portrait;
     margin: 1in;
   }
 
+  html,
   body {
-    background: #fff;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .report-toolbar {
@@ -215,92 +189,43 @@ body {
   }
 
   .a4-paper {
-    width: auto !important;
+    width: 100% !important;
     min-height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
   }
 
-  .letter-head {
-    margin-bottom: 14px;
-  }
-
   .letter-head h1 {
     color: red !important;
-    font-size: 22px !important;
+    font-size: 24px !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .letter-head h2 {
-    font-size: 15px !important;
-  }
-
-  .report-table,
-  .summary-table {
-    width: 100% !important;
-    page-break-inside: auto;
-  }
-
-  .report-table tr,
-  .summary-table tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
+    font-size: 16px !important;
   }
 
   .report-table th,
   .report-table td,
   .summary-table th,
   .summary-table td {
-    font-size: 9px !important;
-    padding: 3px 5px !important;
-    height: 16px !important;
-    line-height: 1.1 !important;
-    color: #000 !important;
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+    height: 20px !important;
+  }
+
+  .report-table tr,
+  .summary-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .report-table th,
-  .summary-table th,
-  .summary-table tfoot th {
+  .summary-table th {
     background: #e8e8e8 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-  }
-
-  .summary-title {
-    font-size: 12px !important;
-    margin-top: 14px !important;
-  }
-
-  .summary-table {
-    width: 70% !important;
-  }
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 900px) {
-  .preview-wrapper {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 20px;
-  }
-
-  .a4-paper {
-    min-width: 210mm;
-  }
-
-  .report-toolbar {
-    position: static;
-  }
-
-  .control-panel,
-  .button-panel,
-  .control-panel select,
-  .button-panel button {
-    width: 100%;
   }
 }
