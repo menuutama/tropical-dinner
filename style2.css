@@ -392,6 +392,16 @@ table button:nth-child(2){
   box-shadow:0 4px 15px rgba(29,111,255,.4);
 }
 
+/* CANCEL ATTENDANCE BUTTON */
+.attend-btn.cancel-btn{
+  background:linear-gradient(135deg,#ff4d4d 0%, #c70000 100%) !important;
+  box-shadow:0 4px 15px rgba(255,0,0,.4) !important;
+}
+
+.attend-btn.cancel-btn:hover{
+  background:linear-gradient(135deg,#ff6666 0%, #d90000 100%) !important;
+}
+
 .attend-btn:disabled{
   background:#6d7890;
   cursor:not-allowed;
