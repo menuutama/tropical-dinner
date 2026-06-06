@@ -2,11 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
   background: #d9d9d9;
-  font-family: Arial, sans-serif;
   color: #000;
 }
 
@@ -35,6 +35,231 @@ body {
 .button-panel button {
   height: 36px;
   border: 1px solid #b60000;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+}
+
+.control-panel select {
+  background: #fff;
+  color: #b60000;
+  min-width: 165px;
+}
+
+.button-panel button {
+  background: #b60000;
+  color: #fff;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.button-panel button:hover {
+  background: #850000;
+}
+
+.preview-wrapper {
+  width: 100%;
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.a4-paper {
+  width: 210mm;
+  min-height: 297mm;
+  background: #fff;
+  padding: 25.4mm;
+  box-shadow: 0 0 10px rgba(0,0,0,.25);
+}
+
+.letter-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.letter-head h1 {
+  color: red;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.letter-head h2 {
+  font-size: 18px;
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+.report-table,
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.report-table th,
+.report-table td,
+.summary-table th,
+.summary-table td {
+  border: 1px solid #000;
+  padding: 5px 7px;
+  font-size: 12px;
+  color: #000 !important;
+  line-height: 1.2;
+  height: 24px;
+  word-break: break-word;
+}
+
+.report-table th,
+.summary-table th {
+  background: #e8e8e8;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+}
+
+.report-table th:nth-child(1),
+.report-table td:nth-child(1) {
+  width: 8%;
+  text-align: center;
+}
+
+.report-table th:nth-child(2),
+.report-table td:nth-child(2) {
+  width: 40%;
+  text-align: left;
+}
+
+.report-table th:nth-child(3),
+.report-table td:nth-child(3) {
+  width: 34%;
+  text-align: left;
+}
+
+.report-table th:nth-child(4),
+.report-table td:nth-child(4) {
+  width: 18%;
+  text-align: center;
+}
+
+.attendance-icon {
+  color: #000 !important;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.summary-title {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.summary-table {
+  width: 70%;
+}
+
+.summary-table td:first-child {
+  text-align: left;
+}
+
+.summary-table td:nth-child(2),
+.summary-table td:nth-child(3) {
+  text-align: center;
+}
+
+.summary-table tfoot th {
+  background: #d9d9d9;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1in;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .report-toolbar {
+    display: none !important;
+  }
+
+  .preview-wrapper {
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .a4-paper {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .letter-head h1 {
+    color: red !important;
+    font-size: 26px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .letter-head h2 {
+    font-size: 18px !important;
+  }
+
+  .report-table th,
+  .report-table td,
+  .summary-table th,
+  .summary-table td {
+    font-size: 12px !important;
+    padding: 5px 7px !important;
+    height: 24px !important;
+  }
+
+  .report-table tr,
+  .summary-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .report-table th,
+  .summary-table th {
+    background: #e8e8e8 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@media (max-width: 900px) {
+  .preview-wrapper {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 20px;
+  }
+
+  .a4-paper {
+    min-width: 210mm;
+  }
+
+  .report-toolbar {
+    position: static;
+  }
+
+  .control-panel,
+  .button-panel,
+  .control-panel select,
+  .button-panel button {
+    width: 100%;
+  }
+}  border: 1px solid #b60000;
   border-radius: 6px;
   padding: 0 12px;
   font-size: 13px;
