@@ -917,3 +917,5 @@ function downloadWord() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+loadAttendanceReport();
