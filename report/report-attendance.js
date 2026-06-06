@@ -146,125 +146,6 @@ function renderSummaryTable() {
       };
     }
 
-    if (isAttend(item.attendance)) {function cleanText(value) {
-  return String(value || "").trim().toUpperCase();
-}
-
-function loadCompanyDropdown() {
-  const companyFilter = document.getElementById("companyFilter");
-
-  const companies = [...new Set(
-    allData
-      .map(item => item.company || "")
-      .filter(company => company.trim() !== "")
-  )].sort((a, b) => a.localeCompare(b));
-
-  companies.forEach(company => {
-    const option = document.createElement("option");
-    option.value = company;
-    option.textContent = company;
-    companyFilter.appendChild(option);
-  });
-}
-
-function applyFilterAndSort() {
-  const selectedCompany = document.getElementById("companyFilter").value;
-  const selectedAttendance = document.getElementById("attendanceFilter").value;
-
-  filteredData = allData.filter(item => {
-    const companyMatch =
-      selectedCompany === "ALL" || item.company === selectedCompany;
-
-    let attendanceMatch = true;
-
-    if (selectedAttendance === "ATTEND") {
-      attendanceMatch = isAttend(item.attendance);
-    }
-
-    if (selectedAttendance === "NOT_ATTEND") {
-      attendanceMatch = !isAttend(item.attendance);
-    }
-
-    return companyMatch && attendanceMatch;
-  });
-
-  sortReportData();
-  renderAttendanceTable();
-  renderSummaryTable();
-}
-
-function sortReportData() {
-  const sortField = document.getElementById("sortField").value;
-  const sortOrder = document.getElementById("sortOrder").value;
-
-  filteredData.sort((a, b) => {
-    const nameCompare =
-      cleanText(a.employeeName).localeCompare(cleanText(b.employeeName));
-
-    let compare = 0;
-
-    if (sortField === "name") {
-      compare = nameCompare;
-      return sortOrder === "za" ? compare * -1 : compare;
-    }
-
-    if (sortField === "company") {
-      compare = cleanText(a.company).localeCompare(cleanText(b.company));
-      if (compare !== 0) return compare;
-      return sortOrder === "za" ? nameCompare * -1 : nameCompare;
-    }
-
-    if (sortField === "attendance") {
-      compare = getAttendanceText(a.attendance).localeCompare(getAttendanceText(b.attendance));
-      if (compare !== 0) return compare;
-      return sortOrder === "za" ? nameCompare * -1 : nameCompare;
-    }
-
-    return compare;
-  });
-}
-
-function renderAttendanceTable() {
-  const tbody = document.getElementById("attendanceBody");
-  tbody.innerHTML = "";
-
-  if (filteredData.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="4">No data found</td>
-      </tr>
-    `;
-    return;
-  }
-
-  filteredData.forEach((item, index) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${item.employeeName || ""}</td>
-        <td>${item.company || ""}</td>
-        <td class="attendance-icon">${getAttendIcon(item.attendance)}</td>
-      </tr>
-    `;
-  });
-}
-
-function renderSummaryTable() {
-  const summary = {};
-  let grandAttend = 0;
-  let grandNotAttend = 0;
-
-  filteredData.forEach(item => {
-    const company = item.company || "Unknown Company";
-
-    if (!summary[company]) {
-      summary[company] = {
-        company: company,
-        attend: 0,
-        notAttend: 0
-      };
-    }
-
     if (isAttend(item.attendance)) {
       summary[company].attend++;
       grandAttend++;
@@ -307,18 +188,17 @@ function downloadPDF() {
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 72;
   const contentWidth = pageWidth - margin * 2;
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
+  doc.setFontSize(26);
   doc.setTextColor(255, 0, 0);
   doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin, { align: "center" });
 
-  doc.setFontSize(12);
+  doc.setFontSize(18);
   doc.setTextColor(0, 0, 0);
-  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 18, { align: "center" });
+  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 26, { align: "center" });
 
   const tableBody = filteredData.map((item, index) => [
     index + 1,
@@ -328,7 +208,7 @@ function downloadPDF() {
   ]);
 
   doc.autoTable({
-    startY: margin + 42,
+    startY: margin + 55,
     head: [["No.", "Employee Name", "Company", "Attendance"]],
     body: tableBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
@@ -336,17 +216,20 @@ function downloadPDF() {
     theme: "grid",
     styles: {
       font: "helvetica",
-      fontSize: 7,
-      cellPadding: 3,
+      fontSize: 12,
+      cellPadding: 4,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
-      minCellHeight: 12
+      minCellHeight: 18,
+      valign: "middle",
+      overflow: "linebreak"
     },
     headStyles: {
       fillColor: [232, 232, 232],
       textColor: [0, 0, 0],
-      fontStyle: "bold"
+      fontStyle: "bold",
+      halign: "center"
     },
     columnStyles: {
       0: { cellWidth: 35, halign: "center" },
@@ -356,14 +239,14 @@ function downloadPDF() {
     }
   });
 
-  let finalY = doc.lastAutoTable.finalY + 20;
+  let finalY = doc.lastAutoTable.finalY + 24;
 
-  if (finalY > pageHeight - margin - 120) {
+  if (finalY > 700) {
     doc.addPage();
     finalY = margin;
   }
 
-  doc.setFontSize(10);
+  doc.setFontSize(18);
   doc.setTextColor(0, 0, 0);
   doc.text("Attendance Summary", margin, finalY);
 
@@ -380,7 +263,7 @@ function downloadPDF() {
   ]);
 
   doc.autoTable({
-    startY: finalY + 8,
+    startY: finalY + 12,
     head: [["Company", "Total Attend", "Total Not Attend"]],
     body: summaryBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
@@ -388,8 +271,8 @@ function downloadPDF() {
     theme: "grid",
     styles: {
       font: "helvetica",
-      fontSize: 8,
-      cellPadding: 4,
+      fontSize: 12,
+      cellPadding: 5,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5
@@ -467,13 +350,13 @@ function buildAllReportSheet() {
   ];
 
   ws["!cols"] = [
-    { wch: 8 },
-    { wch: 38 },
-    { wch: 30 },
-    { wch: 14 }
+    { wch: 9 },
+    { wch: 42 },
+    { wch: 34 },
+    { wch: 16 }
   ];
 
-  applyExcelStyle(ws, data.length, 4);
+  applyExcelStyle(ws, data.length);
 
   ws["A1"].s = excelTitleStyle();
   ws["A2"].s = excelSubtitleStyle();
@@ -485,7 +368,7 @@ function buildAllReportSheet() {
   const summaryTitleCell = "A" + summaryTitleRow;
   if (ws[summaryTitleCell]) {
     ws[summaryTitleCell].s = {
-      font: { name: "Arial", sz: 10, bold: false, color: { rgb: "000000" } },
+      font: { name: "Arial", sz: 18, bold: true, color: { rgb: "000000" } },
       alignment: { horizontal: "center", vertical: "center", wrapText: true },
       border: excelBorder()
     };
@@ -516,13 +399,13 @@ function buildListSheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!cols"] = [
-    { wch: 8 },
-    { wch: 38 },
-    { wch: 30 },
-    { wch: 14 }
+    { wch: 9 },
+    { wch: 42 },
+    { wch: 34 },
+    { wch: 16 }
   ];
 
-  applyExcelStyle(ws, data.length, 4);
+  applyExcelStyle(ws, data.length);
 
   ["A1", "B1", "C1", "D1"].forEach(cell => {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
@@ -549,12 +432,12 @@ function buildSummarySheet() {
   const ws = XLSX.utils.aoa_to_sheet(data);
 
   ws["!cols"] = [
-    { wch: 32 },
-    { wch: 16 },
-    { wch: 18 }
+    { wch: 36 },
+    { wch: 18 },
+    { wch: 22 }
   ];
 
-  applyExcelStyle(ws, data.length, 3);
+  applyExcelStyle(ws, data.length);
 
   ["A1", "B1", "C1"].forEach(cell => {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
@@ -563,12 +446,12 @@ function buildSummarySheet() {
   return ws;
 }
 
-function applyExcelStyle(ws, rowCount, colCount) {
+function applyExcelStyle(ws, rowCount) {
   Object.keys(ws).forEach(cell => {
     if (cell[0] === "!") return;
 
     ws[cell].s = {
-      font: { name: "Arial", sz: 10, color: { rgb: "000000" } },
+      font: { name: "Arial", sz: 12, color: { rgb: "000000" } },
       alignment: { horizontal: "center", vertical: "center", wrapText: true },
       border: excelBorder()
     };
@@ -576,27 +459,30 @@ function applyExcelStyle(ws, rowCount, colCount) {
 
   ws["!rows"] = [];
   for (let r = 0; r < rowCount; r++) {
-    ws["!rows"][r] = { hpt: 18 };
+    ws["!rows"][r] = { hpt: 24 };
   }
+
+  ws["!rows"][0] = { hpt: 32 };
+  ws["!rows"][1] = { hpt: 26 };
 }
 
 function excelTitleStyle() {
   return {
-    font: { name: "Arial", sz: 18, bold: true, color: { rgb: "FF0000" } },
+    font: { name: "Arial", sz: 26, bold: true, color: { rgb: "FF0000" } },
     alignment: { horizontal: "center", vertical: "center" }
   };
 }
 
 function excelSubtitleStyle() {
   return {
-    font: { name: "Arial", sz: 13, bold: true, color: { rgb: "000000" } },
+    font: { name: "Arial", sz: 18, bold: true, color: { rgb: "000000" } },
     alignment: { horizontal: "center", vertical: "center" }
   };
 }
 
 function excelHeaderStyle() {
   return {
-    font: { name: "Arial", sz: 10, bold: true, color: { rgb: "000000" } },
+    font: { name: "Arial", sz: 12, bold: true, color: { rgb: "000000" } },
     fill: { fgColor: { rgb: "E8E8E8" } },
     alignment: { horizontal: "center", vertical: "center", wrapText: true },
     border: excelBorder()
@@ -624,10 +510,10 @@ function downloadWord() {
       <style>
         @page { size: A4 portrait; margin: 1in; }
         body { font-family: Arial, sans-serif; color:#000; }
-        h1 { color:red; text-align:center; font-size:24px; margin:0; }
-        h2 { text-align:center; font-size:16px; margin:6px 0 18px; }
-        table { width:100%; border-collapse:collapse; table-layout:fixed; }
-        th, td { border:1px solid #000; padding:4px 6px; font-size:10px; color:#000; }
+        h1 { color:red; text-align:center; font-size:26px; margin:0; font-family:Arial,sans-serif; }
+        h2 { text-align:center; font-size:18px; margin:6px 0 18px; font-family:Arial,sans-serif; }
+        table { width:100%; border-collapse:collapse; table-layout:fixed; font-family:Arial,sans-serif; }
+        th, td { border:1px solid #000; padding:4px 6px; font-size:12px; color:#000; font-family:Arial,sans-serif; }
         th { background:#e8e8e8; font-weight:bold; text-align:center; }
       </style>
     </head>
