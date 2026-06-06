@@ -99,14 +99,12 @@ function sortReportData() {
     if (sortField === "company") {
       compare = cleanText(a.company).localeCompare(cleanText(b.company));
       if (compare !== 0) return compare;
-
       return sortOrder === "za" ? nameCompare * -1 : nameCompare;
     }
 
     if (sortField === "attendance") {
       compare = getAttendanceText(a.attendance).localeCompare(getAttendanceText(b.attendance));
       if (compare !== 0) return compare;
-
       return sortOrder === "za" ? nameCompare * -1 : nameCompare;
     }
 
@@ -185,34 +183,167 @@ function renderSummaryTable() {
   document.getElementById("grandNotAttend").textContent = grandNotAttend;
 }
 
+/* =====================================================
+   PDF DIRECT DOWNLOAD - A4 PORTRAIT + 1 INCH MARGIN
+===================================================== */
+
 function downloadPDF() {
-  const element = document.getElementById("reportArea");
+  const { jsPDF } = window.jspdf;
 
-  const opt = {
-    margin: 0,
-    filename: "Report_Attendance_Tropical_Dinner_2026.pdf",
-    image: { type: "jpeg", quality: 1 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      letterRendering: true,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: element.offsetWidth
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "pt",
+    format: "a4"
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  const margin = 72; // 1 inch
+  const contentWidth = pageWidth - margin * 2;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(255, 0, 0);
+  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin, {
+    align: "center"
+  });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text("REPORT ATTENDANCE", pageWidth / 2, margin + 18, {
+    align: "center"
+  });
+
+  const tableBody = filteredData.map((item, index) => [
+    index + 1,
+    item.employeeName || "",
+    item.company || "",
+    getAttendIcon(item.attendance)
+  ]);
+
+  doc.autoTable({
+    startY: margin + 42,
+    head: [["No.", "Employee Name", "Company", "Attendance"]],
+    body: tableBody,
+    margin: {
+      top: margin,
+      right: margin,
+      bottom: margin,
+      left: margin
     },
-    jsPDF: {
-      unit: "mm",
-      format: "a4",
-      orientation: "portrait"
+    tableWidth: contentWidth,
+    theme: "grid",
+    styles: {
+      font: "helvetica",
+      fontSize: 7,
+      cellPadding: 3,
+      textColor: [0, 0, 0],
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      minCellHeight: 12,
+      valign: "middle",
+      overflow: "linebreak"
     },
-    pagebreak: {
-      mode: ["css", "legacy"],
-      avoid: ["tr", ".letter-head", ".summary-table"]
+    headStyles: {
+      fillColor: [232, 232, 232],
+      textColor: [0, 0, 0],
+      fontStyle: "bold",
+      halign: "center"
+    },
+    columnStyles: {
+      0: { cellWidth: 35, halign: "center" },
+      1: { cellWidth: 190, halign: "left" },
+      2: { cellWidth: 150, halign: "left" },
+      3: { cellWidth: contentWidth - 35 - 190 - 150, halign: "center" }
+    },
+    didDrawPage: function () {
+      const pageNumber = doc.internal.getNumberOfPages();
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+
+      doc.text(
+        `Page ${pageNumber}`,
+        pageWidth / 2,
+        pageHeight - 30,
+        { align: "center" }
+      );
     }
-  };
+  });
 
-  html2pdf().set(opt).from(element).save();
+  let finalY = doc.lastAutoTable.finalY + 20;
+
+  if (finalY > pageHeight - margin - 100) {
+    doc.addPage();
+    finalY = margin;
+  }
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  doc.text("Attendance Summary", margin, finalY);
+
+  const summaryBody = summaryData.map(item => [
+    item.company,
+    item.attend,
+    item.notAttend
+  ]);
+
+  summaryBody.push([
+    "GRAND TOTAL",
+    document.getElementById("grandAttend").textContent,
+    document.getElementById("grandNotAttend").textContent
+  ]);
+
+  doc.autoTable({
+    startY: finalY + 8,
+    head: [["Company", "Total Attend", "Total Not Attend"]],
+    body: summaryBody,
+    margin: {
+      top: margin,
+      right: margin,
+      bottom: margin,
+      left: margin
+    },
+    tableWidth: contentWidth * 0.75,
+    theme: "grid",
+    styles: {
+      font: "helvetica",
+      fontSize: 8,
+      cellPadding: 4,
+      textColor: [0, 0, 0],
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      valign: "middle"
+    },
+    headStyles: {
+      fillColor: [232, 232, 232],
+      textColor: [0, 0, 0],
+      fontStyle: "bold",
+      halign: "center"
+    },
+    columnStyles: {
+      0: { cellWidth: 180, halign: "left" },
+      1: { cellWidth: 90, halign: "center" },
+      2: { cellWidth: 110, halign: "center" }
+    },
+    didParseCell: function (data) {
+      if (data.row.index === summaryBody.length - 1) {
+        data.cell.styles.fontStyle = "bold";
+        data.cell.styles.fillColor = [217, 217, 217];
+      }
+    }
+  });
+
+  doc.save("Report_Attendance_Tropical_Dinner_2026.pdf");
 }
+
+/* =====================================================
+   WORD
+===================================================== */
 
 function downloadWord() {
   const reportHTML = document.getElementById("reportArea").innerHTML;
@@ -255,16 +386,16 @@ function downloadWord() {
   URL.revokeObjectURL(url);
 }
 
+/* =====================================================
+   EXCEL - 3 SHEET
+===================================================== */
+
 function downloadExcel() {
   const wb = XLSX.utils.book_new();
 
-  const allSheet = buildAllReportSheet();
-  const listSheet = buildListSheet();
-  const summarySheet = buildSummarySheet();
-
-  XLSX.utils.book_append_sheet(wb, allSheet, "All Report");
-  XLSX.utils.book_append_sheet(wb, listSheet, "List Attendance");
-  XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+  XLSX.utils.book_append_sheet(wb, buildAllReportSheet(), "All Report");
+  XLSX.utils.book_append_sheet(wb, buildListSheet(), "List Attendance");
+  XLSX.utils.book_append_sheet(wb, buildSummarySheet(), "Summary");
 
   XLSX.writeFile(wb, "Report_Attendance_Tropical_Dinner_2026.xlsx");
 }
@@ -287,18 +418,17 @@ function buildAllReportSheet() {
   });
 
   data.push([]);
-  data.push(["Attendance Summary", "", "", ""]);
-  data.push(["Company", "Total Attend", "Total Not Attend", ""]);
+  data.push(["Attendance Summary", "", ""]);
+  data.push(["Company", "Total Attend", "Total Not Attend"]);
 
   summaryData.forEach(item => {
-    data.push([item.company, item.attend, item.notAttend, ""]);
+    data.push([item.company, item.attend, item.notAttend]);
   });
 
   data.push([
     "GRAND TOTAL",
     document.getElementById("grandAttend").textContent,
-    document.getElementById("grandNotAttend").textContent,
-    ""
+    document.getElementById("grandNotAttend").textContent
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
@@ -308,13 +438,13 @@ function buildAllReportSheet() {
   ws["!merges"] = [
     { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } },
     { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } },
-    { s: { r: summaryTitleRowIndex, c: 0 }, e: { r: summaryTitleRowIndex, c: 3 } }
+    { s: { r: summaryTitleRowIndex, c: 0 }, e: { r: summaryTitleRowIndex, c: 2 } }
   ];
 
   ws["!cols"] = [
     { wch: 7 },
-    { wch: 34 },
-    { wch: 28 },
+    { wch: 36 },
+    { wch: 30 },
     { wch: 14 }
   ];
 
@@ -340,8 +470,8 @@ function buildListSheet() {
 
   ws["!cols"] = [
     { wch: 7 },
-    { wch: 34 },
-    { wch: 28 },
+    { wch: 36 },
+    { wch: 30 },
     { wch: 14 }
   ];
 
@@ -391,12 +521,7 @@ function applyExcelStyle(ws, rowCount, colCount, hasLetterHead) {
         horizontal: "center",
         wrapText: true
       },
-      border: {
-        top: { style: "thin", color: { rgb: "000000" } },
-        bottom: { style: "thin", color: { rgb: "000000" } },
-        left: { style: "thin", color: { rgb: "000000" } },
-        right: { style: "thin", color: { rgb: "000000" } }
-      }
+      border: getExcelBorder()
     };
   });
 
@@ -415,11 +540,23 @@ function applyExcelStyle(ws, rowCount, colCount, hasLetterHead) {
       if (ws[cell]) ws[cell].s = getExcelHeaderStyle();
     });
 
+    const summaryTitleRow = filteredData.length + 6;
+    const summaryTitleCell = "A" + summaryTitleRow;
+
+    if (ws[summaryTitleCell]) {
+      ws[summaryTitleCell].s = {
+        font: { name: "Arial", sz: 10, bold: false, color: { rgb: "000000" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: getExcelBorder()
+      };
+    }
+
     const summaryHeaderRow = filteredData.length + 7;
     ["A", "B", "C"].forEach(col => {
       const cell = col + summaryHeaderRow;
       if (ws[cell]) ws[cell].s = getExcelHeaderStyle();
     });
+
   } else {
     const letters = ["A", "B", "C", "D"];
     for (let i = 0; i < colCount; i++) {
@@ -428,10 +565,9 @@ function applyExcelStyle(ws, rowCount, colCount, hasLetterHead) {
     }
   }
 
-  for (let r = 1; r <= rowCount; r++) {
-    const row = ws["!rows"] || [];
-    row[r - 1] = { hpt: 18 };
-    ws["!rows"] = row;
+  ws["!rows"] = [];
+  for (let r = 0; r < rowCount; r++) {
+    ws["!rows"][r] = { hpt: 18 };
   }
 }
 
@@ -440,12 +576,16 @@ function getExcelHeaderStyle() {
     font: { name: "Arial", sz: 10, bold: true, color: { rgb: "000000" } },
     fill: { fgColor: { rgb: "E8E8E8" } },
     alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: {
-      top: { style: "thin", color: { rgb: "000000" } },
-      bottom: { style: "thin", color: { rgb: "000000" } },
-      left: { style: "thin", color: { rgb: "000000" } },
-      right: { style: "thin", color: { rgb: "000000" } }
-    }
+    border: getExcelBorder()
+  };
+}
+
+function getExcelBorder() {
+  return {
+    top: { style: "thin", color: { rgb: "000000" } },
+    bottom: { style: "thin", color: { rgb: "000000" } },
+    left: { style: "thin", color: { rgb: "000000" } },
+    right: { style: "thin", color: { rgb: "000000" } }
   };
 }
 
