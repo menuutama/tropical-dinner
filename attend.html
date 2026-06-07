@@ -7,10 +7,31 @@
 <title>Attendance System</title>
 
 <link rel="stylesheet" href="style2.css">
+<link rel="stylesheet" href="menu.css">
 </head>
 
 <body class="attend-page">
 
+ <div id="menuContainer"></div>
+
+<script>
+fetch("menu.html")
+.then(res => res.text())
+.then(html => {
+  document.getElementById("menuContainer").innerHTML = html;
+
+  const oldScript = document.getElementById("menuScript");
+  if(oldScript){
+    oldScript.remove();
+  }
+
+  const script = document.createElement("script");
+  script.src = "menu.js";
+  script.id = "menuScript";
+  document.body.appendChild(script);
+});
+</script>
+  
 <header class="hero-header">
   <h1>TROPICAL DINNER 2026</h1>
   <h2>Attendance System</h2>
