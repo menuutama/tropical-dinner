@@ -551,3 +551,4 @@ document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 ========================= */
 
 setInterval(() => loadData(false), 3000);
+ 
