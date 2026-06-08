@@ -34,14 +34,15 @@
     </select>
 
     <select id="sortField" onchange="applyFilterAndSort()">
+      <option value="placeNumber">Sort By Place No.</option>
       <option value="employeeName">Sort By Employee Name</option>
       <option value="company">Sort By Company</option>
       <option value="collectionStatus">Sort By Collection Status</option>
     </select>
 
     <select id="sortOrder" onchange="applyFilterAndSort()">
-      <option value="az">A - Z</option>
-      <option value="za">Z - A</option>
+      <option value="asc">1st - 90th</option>
+      <option value="desc">90th - 1st</option>
     </select>
 
   </div>
