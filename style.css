@@ -2,7 +2,7 @@
 
 /* =========================
    TROPICAL BLUE VIBES THEME
-   Theme ikut poster: navy blue, electric blue glow, gold accent, red Tropical title
+   Theme ikut poster: navy blue, electric blue glow, very minimal warm accent, red Tropical title
 ========================= */
 
 :root{
@@ -12,8 +12,8 @@
   --blue:#0077ff;
   --blue-soft:#12a8ff;
   --blue-neon:#2f7dff;
-  --gold:#f7b733;
-  --gold-light:#ffd978;
+  --gold:#d99a25;
+  --gold-light:#ffe0a3;
   --red:#ff1f2d;
   --red-dark:#8b0008;
   --white:#ffffff;
@@ -72,8 +72,8 @@ body::after{
   z-index:-1;
   pointer-events:none;
   background:
-    linear-gradient(135deg,transparent 0 12%,rgba(247,183,51,.28) 12.3%,transparent 13%),
-    linear-gradient(315deg,transparent 0 12%,rgba(247,183,51,.18) 12.3%,transparent 13%),
+    linear-gradient(135deg,transparent 0 12%,rgba(18,168,255,.18) 12.3%,transparent 13%),
+    linear-gradient(315deg,transparent 0 12%,rgba(18,168,255,.12) 12.3%,transparent 13%),
     radial-gradient(ellipse at top,rgba(47,125,255,.14),transparent 55%),
     radial-gradient(ellipse at bottom,rgba(18,168,255,.15),transparent 55%);
   opacity:.75;
@@ -109,10 +109,10 @@ body::after{
   content:"♪";
   position:absolute;
   top:18px;
-  color:var(--gold);
+  color:var(--blue-soft);
   font-size:clamp(24px,3vw,46px);
-  opacity:.86;
-  text-shadow:0 0 14px rgba(247,183,51,.7);
+  opacity:.72;
+  text-shadow:0 0 16px rgba(18,168,255,.75);
 }
 
 .header::before{ left:8%; transform:rotate(-14deg); }
@@ -144,7 +144,7 @@ body::after{
   top:50%;
   width:88px;
   height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  background:linear-gradient(90deg,transparent,rgba(18,168,255,.75),transparent);
 }
 
 .sub-title::before{ right:calc(100% + 22px); }
@@ -177,11 +177,11 @@ body::after{
   border-radius:999px;
   background:rgba(5,18,48,.56);
   backdrop-filter:blur(16px);
-  border:1px solid rgba(247,183,51,.42);
+  border:1px solid rgba(18,168,255,.42);
   box-shadow:
     inset 0 0 18px rgba(255,255,255,.04),
     0 0 22px rgba(0,119,255,.34),
-    0 0 12px rgba(247,183,51,.16);
+    0 0 12px rgba(18,168,255,.12);
   font-weight:600;
 }
 
@@ -221,27 +221,27 @@ body::after{
   height:56px;
   padding:14px 54px 14px 24px;
   border-radius:999px;
-  border:1px solid rgba(247,183,51,.58);
+  border:1px solid rgba(18,168,255,.48);
   color:#fff;
   font-size:16px;
   font-family:'Poppins',sans-serif;
   background:
-    linear-gradient(135deg,rgba(0,119,255,.22),rgba(247,183,51,.07)),
+    linear-gradient(135deg,rgba(0,119,255,.26),rgba(18,168,255,.08)),
     rgba(4,14,38,.74);
   backdrop-filter:blur(18px);
   box-shadow:
     inset 0 0 18px rgba(255,255,255,.05),
     0 0 26px rgba(0,119,255,.28),
-    0 0 10px rgba(247,183,51,.10);
+    0 0 10px rgba(18,168,255,.12);
 }
 
 .search-box input::placeholder{ color:rgba(255,255,255,.66); }
 
 .search-box input:focus{
   outline:none;
-  border-color:var(--gold-light);
+  border-color:var(--blue-soft);
   box-shadow:
-    0 0 12px rgba(247,183,51,.78),
+    0 0 12px rgba(18,168,255,.75),
     0 0 30px rgba(18,168,255,.75),
     inset 0 0 16px rgba(255,255,255,.08);
 }
@@ -260,8 +260,8 @@ body::after{
   font-weight:900;
   font-size:21px;
   line-height:38px;
-  background:linear-gradient(135deg,#fff1a7,#f7b733 45%,#a66a00);
-  box-shadow:0 0 14px rgba(247,183,51,.62);
+  background:linear-gradient(135deg,#ffffff,#12a8ff 55%,#005bd6);
+  box-shadow:0 0 14px rgba(18,168,255,.62);
   display:none;
 }
 
@@ -270,9 +270,9 @@ body::after{
 .click-note{
   margin-top:11px;
   font-size:14px;
-  color:var(--gold-light);
+  color:#dcefff;
   text-align:center;
-  text-shadow:0 0 12px rgba(247,183,51,.45);
+  text-shadow:0 0 12px rgba(18,168,255,.45);
 }
 
 /* =========================
@@ -285,11 +285,11 @@ body::after{
   background:
     linear-gradient(135deg,rgba(5,18,48,.72),rgba(8,28,76,.58));
   backdrop-filter:blur(20px);
-  border:1px solid rgba(247,183,51,.36);
+  border:1px solid rgba(18,168,255,.36);
   box-shadow:
     0 0 45px rgba(0,119,255,.28),
     inset 0 0 25px rgba(255,255,255,.04),
-    0 0 12px rgba(247,183,51,.12);
+    0 0 12px rgba(18,168,255,.12);
 }
 
 table{
@@ -310,16 +310,16 @@ th,td{
 
 thead{
   background:
-    linear-gradient(90deg,#8f5b00 0%,#f7b733 28%,#fff1a7 50%,#f7b733 72%,#8f5b00 100%);
+    linear-gradient(90deg,#06112b 0%,#0077ff 30%,#12a8ff 50%,#0077ff 70%,#06112b 100%);
 }
 
 thead th{
-  color:#06112b;
+  color:#ffffff;
   padding:18px;
   font-size:16px;
   font-weight:800;
   letter-spacing:.8px;
-  text-shadow:0 1px 0 rgba(255,255,255,.45);
+  text-shadow:0 0 12px rgba(18,168,255,.75);
 }
 
 tbody td{
@@ -347,21 +347,21 @@ tbody tr:hover{
   display:inline-block;
   padding:8px 16px;
   border-radius:999px;
-  background:linear-gradient(135deg,#fff1a7,#f7b733 50%,#a66a00);
+  background:linear-gradient(135deg,#ffffff,#12a8ff 50%,#005bd6);
   color:#06112b;
   font-weight:800;
-  box-shadow:0 0 14px rgba(247,183,51,.45);
+  box-shadow:0 0 14px rgba(18,168,255,.48);
 }
 
 .winner-name{
-  color:var(--gold-light);
+  color:#dcefff;
   font-weight:800;
-  text-shadow:0 0 12px rgba(247,183,51,.35);
+  text-shadow:0 0 12px rgba(18,168,255,.45);
 }
 
 .no-data{
   padding:30px !important;
-  color:var(--gold-light);
+  color:#dcefff;
   font-weight:800;
 }
 
@@ -381,7 +381,7 @@ tbody tr:hover{
 .pagination button,
 .control-buttons button{
   cursor:pointer;
-  border:1px solid rgba(247,183,51,.32);
+  border:1px solid rgba(18,168,255,.34);
   color:white;
   padding:12px 18px;
   border-radius:14px;
@@ -396,11 +396,11 @@ tbody tr:hover{
 .pagination button:hover,
 .control-buttons button:hover{
   transform:translateY(-2px);
-  box-shadow:0 0 18px rgba(18,168,255,.75),0 0 10px rgba(247,183,51,.35);
+  box-shadow:0 0 18px rgba(18,168,255,.75),0 0 10px rgba(255,255,255,.12);
 }
 
 .pagination button.active{
-  background:linear-gradient(135deg,#fff1a7,#f7b733,#a66a00);
+  background:linear-gradient(135deg,#ffffff,#12a8ff,#005bd6);
   color:#06112b;
 }
 
@@ -420,9 +420,9 @@ tbody tr:hover{
 .notice{
   margin-top:25px;
   text-align:center;
-  color:var(--gold-light);
+  color:#dcefff;
   font-size:14px;
-  text-shadow:0 0 10px rgba(247,183,51,.35);
+  text-shadow:0 0 10px rgba(18,168,255,.35);
 }
 
 /* =========================
@@ -457,10 +457,10 @@ tbody tr:hover{
   background:
     radial-gradient(circle at top,rgba(0,119,255,.24),transparent 44%),
     linear-gradient(135deg,rgba(5,18,48,.98),rgba(2,7,22,.98)) !important;
-  border:1px solid rgba(247,183,51,.55) !important;
+  border:1px solid rgba(18,168,255,.52) !important;
   box-shadow:
     0 0 34px rgba(18,168,255,.45),
-    0 0 20px rgba(247,183,51,.18),
+    0 0 20px rgba(18,168,255,.16),
     inset 0 0 20px rgba(255,255,255,.04) !important;
 }
 
@@ -477,15 +477,15 @@ tbody tr:hover{
   font-weight:900 !important;
   line-height:34px !important;
   color:#06112b !important;
-  background:linear-gradient(135deg,#fff1a7,#f7b733,#a66a00) !important;
-  box-shadow:0 0 14px rgba(247,183,51,.58) !important;
+  background:linear-gradient(135deg,#ffffff,#12a8ff,#005bd6) !important;
+  box-shadow:0 0 14px rgba(18,168,255,.62) !important;
 }
 
 .modal-place{
   font-size:31px !important;
   font-weight:900 !important;
-  color:var(--gold-light) !important;
-  text-shadow:0 0 12px rgba(247,183,51,.75),0 0 22px rgba(18,168,255,.46) !important;
+  color:#dcefff !important;
+  text-shadow:0 0 12px rgba(18,168,255,.75),0 0 22px rgba(18,168,255,.46) !important;
   margin:0 0 8px !important;
   line-height:1 !important;
 }
@@ -519,18 +519,18 @@ tbody tr:hover{
   padding:6px !important;
   border-radius:12px !important;
   background:#fff !important;
-  box-shadow:0 0 18px rgba(247,183,51,.28),0 0 16px rgba(18,168,255,.32) !important;
+  box-shadow:0 0 18px rgba(255,255,255,.20),0 0 16px rgba(18,168,255,.38) !important;
 }
 
 .modal-prize{
   margin:0 0 10px !important;
   font-size:19px !important;
   font-weight:900 !important;
-  color:var(--gold-light) !important;
+  color:#dcefff !important;
   text-align:center !important;
   text-transform:uppercase !important;
   line-height:1.18 !important;
-  text-shadow:0 0 12px rgba(247,183,51,.45) !important;
+  text-shadow:0 0 12px rgba(18,168,255,.45) !important;
 }
 
 .prize-label{ display:none !important; }
@@ -589,21 +589,21 @@ body.fullscreen-active .place-badge{
   border-radius:22px;
   background:
     linear-gradient(135deg,rgba(5,18,48,.78),rgba(8,28,76,.62));
-  border:1px solid rgba(247,183,51,.48);
+  border:1px solid rgba(18,168,255,.42);
   backdrop-filter:blur(18px);
   box-shadow:
     0 0 30px rgba(18,168,255,.25),
-    0 0 14px rgba(247,183,51,.12),
+    0 0 14px rgba(18,168,255,.14),
     inset 0 0 18px rgba(255,255,255,.04);
 }
 
 .publish-title{
-  color:var(--gold-light);
+  color:#dcefff;
   font-weight:900;
   letter-spacing:2px;
   text-align:center;
   margin-bottom:12px;
-  text-shadow:0 0 12px rgba(247,183,51,.45);
+  text-shadow:0 0 12px rgba(18,168,255,.45);
 }
 
 .publish-row{
@@ -618,7 +618,7 @@ body.fullscreen-active .place-badge{
   width:170px;
   height:44px;
   border-radius:14px;
-  border:1px solid rgba(247,183,51,.56);
+  border:1px solid rgba(18,168,255,.48);
   padding:0 14px;
   color:#fff;
   background:rgba(2,7,22,.58);
@@ -632,12 +632,12 @@ body.fullscreen-active .place-badge{
 .publish-row input::placeholder{ color:rgba(255,255,255,.55); }
 
 .publish-row input:focus{
-  border-color:var(--gold-light);
-  box-shadow:0 0 16px rgba(247,183,51,.45),inset 0 0 12px rgba(0,0,0,.25);
+  border-color:var(--blue-soft);
+  box-shadow:0 0 16px rgba(18,168,255,.50),inset 0 0 12px rgba(0,0,0,.25);
 }
 
 .publish-row span{
-  color:var(--gold-light);
+  color:#dcefff;
   font-weight:900;
 }
 
@@ -651,13 +651,13 @@ body.fullscreen-active .place-badge{
   font-weight:900;
   letter-spacing:.7px;
   color:#06112b;
-  background:linear-gradient(135deg,#fff1a7,#f7b733,#a66a00);
-  box-shadow:0 0 16px rgba(247,183,51,.42);
+  background:linear-gradient(135deg,#ffffff,#12a8ff,#005bd6);
+  box-shadow:0 0 16px rgba(18,168,255,.46);
 }
 
 .publish-row button:hover{
   transform:translateY(-1px);
-  box-shadow:0 0 20px rgba(247,183,51,.65),0 0 16px rgba(18,168,255,.32);
+  box-shadow:0 0 20px rgba(18,168,255,.72),0 0 16px rgba(255,255,255,.18);
 }
 
 .publish-row button.danger{
