@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Report Winner Lucky Draw</title>
+<title>Report Lucky Draw Winner</title>
 
 <link rel="stylesheet" href="report-winner.css">
 
@@ -27,14 +27,16 @@
       <option value="ALL">All Company</option>
     </select>
 
-    <select id="statusFilter" onchange="applyFilterAndSort()">
+    <select id="collectionFilter" onchange="applyFilterAndSort()">
       <option value="ALL">All Collection Status</option>
+      <option value="COLLECT">Collect</option>
+      <option value="NOT_COLLECT">Not Collect</option>
     </select>
 
     <select id="sortField" onchange="applyFilterAndSort()">
       <option value="employeeName">Sort By Employee Name</option>
       <option value="company">Sort By Company</option>
-      <option value="status">Sort By Collection Status</option>
+      <option value="collectionStatus">Sort By Collection Status</option>
     </select>
 
     <select id="sortOrder" onchange="applyFilterAndSort()">
@@ -70,7 +72,7 @@
           <th>Employee Name</th>
           <th>Company</th>
           <th>Prize</th>
-          <th>Status Collection</th>
+          <th>Collection</th>
         </tr>
       </thead>
 
@@ -81,15 +83,14 @@
       </tbody>
     </table>
 
-    <h3 class="summary-title">Winner Summary</h3>
+    <h3 class="summary-title">Collection Summary</h3>
 
     <table class="summary-table">
       <thead>
         <tr>
           <th>Company</th>
-          <th>Total Winner</th>
-          <th>Total Collected</th>
-          <th>Total Not Collected</th>
+          <th>Total Collect</th>
+          <th>Total Not Collect</th>
         </tr>
       </thead>
 
@@ -98,9 +99,8 @@
       <tfoot>
         <tr>
           <th>GRAND TOTAL</th>
-          <th id="grandWinner">0</th>
-          <th id="grandCollected">0</th>
-          <th id="grandNotCollected">0</th>
+          <th id="grandCollect">0</th>
+          <th id="grandNotCollect">0</th>
         </tr>
       </tfoot>
     </table>
