@@ -9,7 +9,7 @@ let currentPage = 1;
 let lastDataHash = "";
 let isAdminMode = false;
 
-/* =========================
+/* ========================= 
    INIT
 ========================= */ 
 
