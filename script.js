@@ -8,6 +8,8 @@ let allData = [];
 let slideInterval = null;
 let currentPage = 1;
 let lastDataHash = "";
+let publishRange = getSavedPublishRange();
+let isAdminPublishDevice = false;
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -62,6 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   });
+
+  setupPublishPanel();
+  requestAdminAccessFromParent();
+  updatePublishStatus();
 
   loadData();
 
@@ -121,9 +127,11 @@ async function loadData(){
     lastDataHash = newHash;
     allData = filteredData;
 
+    const visibleData = getVisibleData();
+
     currentPage = Math.min(
       currentPage,
-      Math.ceil(allData.length / ROWS_PER_PAGE) || 1
+      Math.ceil(visibleData.length / ROWS_PER_PAGE) || 1
     );
 
     const input = document.getElementById("searchInput");
@@ -143,6 +151,238 @@ async function loadData(){
 
 }
 
+
+/* =========================
+   ADMIN PUBLISH RANGE
+========================= */
+
+function getPlaceNumber(item){
+
+  const rawPlace = (item?.place || "").toString();
+  const found = rawPlace.match(/\d+/);
+
+  if(!found) return null;
+
+  return parseInt(found[0], 10);
+
+}
+
+function getSavedPublishRange(){
+
+  try{
+
+    const saved = localStorage.getItem("luckyDrawPublishRange");
+
+    if(!saved) return null;
+
+    const parsed = JSON.parse(saved);
+
+    if(
+      Number.isFinite(parsed.from) &&
+      Number.isFinite(parsed.to)
+    ){
+      return parsed;
+    }
+
+  }catch(e){
+    console.warn("Publish range cannot be read", e);
+  }
+
+  return null;
+
+}
+
+function savePublishRange(from, to){
+
+  publishRange = { from, to };
+
+  localStorage.setItem(
+    "luckyDrawPublishRange",
+    JSON.stringify(publishRange)
+  );
+
+}
+
+function clearPublishRange(){
+
+  publishRange = null;
+
+  localStorage.removeItem(
+    "luckyDrawPublishRange"
+  );
+
+}
+
+function getVisibleData(){
+
+  if(!publishRange){
+    return allData;
+  }
+
+  const min = Math.min(publishRange.from, publishRange.to);
+  const max = Math.max(publishRange.from, publishRange.to);
+
+  return allData.filter(item => {
+
+    const placeNo = getPlaceNumber(item);
+
+    return (
+      placeNo !== null &&
+      placeNo >= min &&
+      placeNo <= max
+    );
+
+  });
+
+}
+
+function refreshWinnerView(){
+
+  const visibleData = getVisibleData();
+
+  currentPage = Math.min(
+    currentPage,
+    Math.ceil(visibleData.length / ROWS_PER_PAGE) || 1
+  );
+
+  const input = document.getElementById("searchInput");
+
+  if(input && input.value.trim() !== ""){
+    performSearch();
+  }else{
+    renderPage();
+    renderPagination();
+  }
+
+  updatePublishStatus();
+
+}
+
+function updatePublishStatus(){
+
+  const status = document.getElementById("publishStatus");
+  const fromInput = document.getElementById("publishFrom");
+  const toInput = document.getElementById("publishTo");
+
+  if(!status) return;
+
+  if(publishRange){
+
+    if(fromInput) fromInput.value = publishRange.from;
+    if(toInput) toInput.value = publishRange.to;
+
+    status.textContent =
+      `Public view: Showing winner ${publishRange.from} - ${publishRange.to}`;
+
+  }else{
+
+    if(fromInput) fromInput.value = "";
+    if(toInput) toInput.value = "";
+
+    status.textContent = "Public view: Showing all winners";
+
+  }
+
+}
+
+function setupPublishPanel(){
+
+  const applyBtn = document.getElementById("applyPublishBtn");
+  const resetBtn = document.getElementById("resetPublishBtn");
+
+  applyBtn?.addEventListener("click", () => {
+
+    if(!isAdminPublishDevice){
+      alert("Publish winner only can be changed from admin laptop/menu.");
+      return;
+    }
+
+    const fromValue = parseInt(
+      document.getElementById("publishFrom")?.value,
+      10
+    );
+
+    const toValue = parseInt(
+      document.getElementById("publishTo")?.value,
+      10
+    );
+
+    if(
+      !Number.isFinite(fromValue) ||
+      !Number.isFinite(toValue)
+    ){
+      alert("Please enter FROM and TO winner number.");
+      return;
+    }
+
+    savePublishRange(fromValue, toValue);
+    currentPage = 1;
+    refreshWinnerView();
+
+  });
+
+  resetBtn?.addEventListener("click", () => {
+
+    if(!isAdminPublishDevice){
+      alert("Publish winner only can be changed from admin laptop/menu.");
+      return;
+    }
+
+    clearPublishRange();
+    currentPage = 1;
+    refreshWinnerView();
+
+  });
+
+}
+
+function enableAdminPublishPanel(){
+
+  isAdminPublishDevice = true;
+
+  const panel = document.getElementById("publishPanel");
+
+  if(panel){
+    panel.classList.add("show");
+  }
+
+  updatePublishStatus();
+
+}
+
+function requestAdminAccessFromParent(){
+
+  if(sessionStorage.getItem("adminLogin") === "yes"){
+    enableAdminPublishPanel();
+  }
+
+  try{
+
+    if(window.parent && window.parent !== window){
+
+      window.parent.postMessage(
+        { type:"TROPICAL_WINNER_PAGE_READY" },
+        "*"
+      );
+
+    }
+
+  }catch(e){
+    console.warn("Cannot request admin access", e);
+  }
+
+}
+
+window.addEventListener("message", function(e){
+
+  if(!e.data || typeof e.data !== "object") return;
+
+  if(e.data.type === "TROPICAL_ADMIN_LOGIN_OK"){
+    enableAdminPublishPanel();
+  }
+
+});
+
 /* =========================
    SEARCH FUNCTION
 ========================= */
@@ -160,7 +400,9 @@ function performSearch(){
     return;
   }
 
-  const filtered = allData.filter(item => {
+  const visibleData = getVisibleData();
+
+  const filtered = visibleData.filter(item => {
 
     const luckyNo = (item.luckyNo || "").toString().toLowerCase();
     const winner = (item.winner || "").toString().toLowerCase();
@@ -192,7 +434,9 @@ function renderPage(){
 
   const start = (currentPage - 1) * ROWS_PER_PAGE;
 
-  const pageData = allData.slice(
+  const visibleData = getVisibleData();
+
+  const pageData = visibleData.slice(
     start,
     start + ROWS_PER_PAGE
   );
@@ -267,7 +511,8 @@ function renderPagination(){
 
   if(!pagination) return;
 
-  const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+  const visibleData = getVisibleData();
+  const totalPages = Math.ceil(visibleData.length / ROWS_PER_PAGE);
 
   if(totalPages <= 1){
     pagination.innerHTML = "";
@@ -339,7 +584,7 @@ function firstPage(){
 
 function lastPage(){
 
-  currentPage = Math.ceil(allData.length / ROWS_PER_PAGE) || 1;
+  currentPage = Math.ceil(getVisibleData().length / ROWS_PER_PAGE) || 1;
 
   renderPage();
   renderPagination();
@@ -440,7 +685,7 @@ function playSlide(){
 
     if(input && input.value.trim() !== "") return;
 
-    const totalPages = Math.ceil(allData.length / ROWS_PER_PAGE);
+    const totalPages = Math.ceil(getVisibleData().length / ROWS_PER_PAGE);
 
     if(totalPages <= 1) return;
 
