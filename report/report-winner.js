@@ -25,13 +25,13 @@ function cleanText(value) {
   return String(value || "").trim().toUpperCase();
 }
 
-function parsePlaceNumber(value) {
+function getPlaceNumberValue(value) {
   const match = String(value || "").match(/\d+/);
   return match ? Number(match[0]) : 999999;
 }
 
 function isCollect(value) {
-  return cleanText(value) === "COLLECT";
+  return cleanText(value) === "COLLECT" || cleanText(value) === "COLLECTED";
 }
 
 function getCollectionIcon(value) {
@@ -93,8 +93,8 @@ function sortReportData() {
   const sortOrder = document.getElementById("sortOrder").value;
 
   filteredData.sort((a, b) => {
-    const placeA = parsePlaceNumber(a.placeNumber || a.place);
-    const placeB = parsePlaceNumber(b.placeNumber || b.place);
+    const placeA = getPlaceNumberValue(a.placeNumber || a.place);
+    const placeB = getPlaceNumberValue(b.placeNumber || b.place);
     const nameA = cleanText(a.employeeName);
     const nameB = cleanText(b.employeeName);
     const companyA = cleanText(a.company || a.companyName);
@@ -106,6 +106,7 @@ function sortReportData() {
 
     if (sortField === "placeNumber") {
       compare = placeA - placeB;
+      if (compare === 0) compare = nameA.localeCompare(nameB);
     }
 
     if (sortField === "employeeName") {
@@ -123,7 +124,7 @@ function sortReportData() {
       if (compare === 0) compare = placeA - placeB;
     }
 
-    return sortOrder === "placeDesc" ? compare * -1 : compare;
+    return sortOrder === "desc" ? compare * -1 : compare;
   });
 }
 
@@ -237,94 +238,104 @@ function renderSummaryTable() {
 
 function downloadPDF() {
   try {
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("PDF library not loaded. Check jsPDF script link.");
-    return;
-  }
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert("PDF library not loaded. Check jsPDF script link.");
+      return;
+    }
 
-  const { jsPDF } = window.jspdf;
+    const { jsPDF } = window.jspdf;
 
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "pt",
-    format: "a4"
-  });
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4"
+    });
 
-  if (typeof doc.autoTable !== "function") {
-    alert("PDF table library not loaded. Check jspdf-autotable script link.");
-    return;
-  }
+    if (typeof doc.autoTable !== "function") {
+      alert("PDF table library not loaded. Check jspdf-autotable script link.");
+      return;
+    }
 
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 36;
-  const contentWidth = pageWidth - margin * 2;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 36;
+    const contentWidth = pageWidth - margin * 2;
 
-  const placeWidth = 42;
-  const luckyWidth = 48;
-  const nameWidth = 115;
-  const companyWidth = 80;
-  const collectionWidth = 58;
-  const prizeWidth = contentWidth - placeWidth - luckyWidth - nameWidth - companyWidth - collectionWidth;
+    const placeWidth = 42;
+    const luckyWidth = 48;
+    const nameWidth = 115;
+    const companyWidth = 80;
+    const collectionWidth = 58;
+    const prizeWidth = contentWidth - placeWidth - luckyWidth - nameWidth - companyWidth - collectionWidth;
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(24);
-  doc.setTextColor(255, 0, 0);
-  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin + 18, { align: "center" });
+    const pdfRows = filteredData.map(item => ({
+      placeNumber: item.placeNumber || item.place || "",
+      luckyNo: item.luckyNo || "",
+      employeeName: item.employeeName || "",
+      company: item.company || item.companyName || "",
+      prize: item.prize || "",
+      status: item.collectionStatus || item.statusCollection || ""
+    }));
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.setTextColor(0, 0, 0);
-  doc.text("REPORT LUCKY DRAW WINNER", pageWidth / 2, margin + 42, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(255, 0, 0);
+    doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin + 18, { align: "center" });
 
-  const tableBody = filteredData.map(item => [
-    item.placeNumber || item.place || "",
-    item.luckyNo || "",
-    item.employeeName || "",
-    item.company || item.companyName || "",
-    item.prize || "",
-    ""
-  ]);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text("REPORT LUCKY DRAW WINNER", pageWidth / 2, margin + 42, { align: "center" });
 
-  doc.autoTable({
-    startY: margin + 68,
-    head: [["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Collection"]],
-    body: tableBody,
-    margin: { top: margin, right: margin, bottom: margin, left: margin },
-    tableWidth: contentWidth,
-    theme: "grid",
-    styles: {
-      font: "helvetica",
-      fontSize: 8.5,
-      cellPadding: 3,
-      textColor: [0, 0, 0],
-      lineColor: [0, 0, 0],
-      lineWidth: 0.5,
-      minCellHeight: 20,
-      valign: "middle",
-      overflow: "linebreak"
-    },
-    headStyles: {
-      fillColor: [217, 217, 217],
-      textColor: [0, 0, 0],
-      fontStyle: "bold",
-      halign: "center",
-      valign: "middle"
-    },
-    columnStyles: {
-      0: { cellWidth: placeWidth, halign: "center", overflow: "hidden" },
-      1: { cellWidth: luckyWidth, halign: "center", overflow: "hidden" },
-      2: { cellWidth: nameWidth, halign: "left", overflow: "linebreak" },
-      3: { cellWidth: companyWidth, halign: "center", overflow: "hidden" },
-      4: { cellWidth: prizeWidth, halign: "left", overflow: "linebreak" },
-      5: { cellWidth: collectionWidth, halign: "center", overflow: "hidden" }
-    },
-    didDrawCell: function (data) {
-      if (data.section === "body" && data.column.index === 5) {
-        const item = filteredData[data.row.index];
-        const status = item.collectionStatus || item.statusCollection || "";
+    const tableBody = pdfRows.map(item => [
+      item.placeNumber,
+      item.luckyNo,
+      item.employeeName,
+      item.company,
+      item.prize,
+      ""
+    ]);
 
-        if (isCollect(status)) {
+    doc.autoTable({
+      startY: margin + 68,
+      head: [["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Collection"]],
+      body: tableBody,
+      margin: { top: margin, right: margin, bottom: margin, left: margin },
+      tableWidth: contentWidth,
+      theme: "grid",
+      styles: {
+        font: "helvetica",
+        fontSize: 8.5,
+        cellPadding: 3,
+        textColor: [0, 0, 0],
+        lineColor: [0, 0, 0],
+        lineWidth: 0.5,
+        minCellHeight: 20,
+        valign: "middle",
+        overflow: "linebreak"
+      },
+      headStyles: {
+        fillColor: [217, 217, 217],
+        textColor: [0, 0, 0],
+        fontStyle: "bold",
+        halign: "center",
+        valign: "middle"
+      },
+      columnStyles: {
+        0: { cellWidth: placeWidth, halign: "center", overflow: "hidden" },
+        1: { cellWidth: luckyWidth, halign: "center", overflow: "hidden" },
+        2: { cellWidth: nameWidth, halign: "left", overflow: "linebreak" },
+        3: { cellWidth: companyWidth, halign: "center", overflow: "hidden" },
+        4: { cellWidth: prizeWidth, halign: "left", overflow: "linebreak" },
+        5: { cellWidth: collectionWidth, halign: "center", overflow: "hidden" }
+      },
+      didDrawCell: function (data) {
+        if (data.section !== "body" || data.column.index !== 5) return;
+
+        const item = pdfRows[data.row.index];
+        if (!item) return;
+
+        if (isCollect(item.status)) {
           const x = data.cell.x + data.cell.width / 2;
           const y = data.cell.y + data.cell.height / 2;
 
@@ -334,75 +345,75 @@ function downloadPDF() {
           doc.line(x - 2, y + 5, x + 8, y - 7);
         }
       }
+    });
+
+    let finalY = doc.lastAutoTable.finalY + 22;
+
+    if (finalY > pageHeight - margin - 130) {
+      doc.addPage();
+      finalY = margin;
     }
-  });
 
-  let finalY = doc.lastAutoTable.finalY + 22;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text("Collection Summary", margin, finalY);
 
-  if (finalY > pageHeight - margin - 130) {
-    doc.addPage();
-    finalY = margin;
-  }
+    const summaryBody = summaryData.map(item => [
+      item.company || "",
+      item.collect,
+      item.notCollect
+    ]);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-  doc.text("Collection Summary", margin, finalY);
+    summaryBody.push([
+      "GRAND TOTAL",
+      document.getElementById("grandCollect").textContent,
+      document.getElementById("grandNotCollect").textContent
+    ]);
 
-  const summaryBody = summaryData.map(item => [
-    item.company || "",
-    item.collect,
-    item.notCollect
-  ]);
-
-  summaryBody.push([
-    "GRAND TOTAL",
-    document.getElementById("grandCollect").textContent,
-    document.getElementById("grandNotCollect").textContent
-  ]);
-
-  doc.autoTable({
-    startY: finalY + 8,
-    head: [["Company", "Total Collect", "Total Not Collect"]],
-    body: summaryBody,
-    margin: { top: margin, right: margin, bottom: margin, left: margin },
-    tableWidth: contentWidth * 0.75,
-    theme: "grid",
-    styles: {
-      font: "helvetica",
-      fontSize: 10,
-      cellPadding: 4,
-      textColor: [0, 0, 0],
-      lineColor: [0, 0, 0],
-      lineWidth: 0.5,
-      minCellHeight: 22,
-      valign: "middle",
-      overflow: "hidden"
-    },
-    headStyles: {
-      fillColor: [217, 217, 217],
-      textColor: [0, 0, 0],
-      fontStyle: "bold",
-      halign: "center",
-      valign: "middle"
-    },
-    columnStyles: {
-      0: { cellWidth: 170, halign: "left" },
-      1: { cellWidth: 100, halign: "center" },
-      2: { cellWidth: 120, halign: "center" }
-    },
-    didParseCell: function (data) {
-      if (data.section === "body" && data.row.index === summaryBody.length - 1) {
-        data.cell.styles.fontStyle = "bold";
-        data.cell.styles.fillColor = [217, 217, 217];
+    doc.autoTable({
+      startY: finalY + 8,
+      head: [["Company", "Total Collect", "Total Not Collect"]],
+      body: summaryBody,
+      margin: { top: margin, right: margin, bottom: margin, left: margin },
+      tableWidth: contentWidth * 0.75,
+      theme: "grid",
+      styles: {
+        font: "helvetica",
+        fontSize: 10,
+        cellPadding: 4,
+        textColor: [0, 0, 0],
+        lineColor: [0, 0, 0],
+        lineWidth: 0.5,
+        minCellHeight: 22,
+        valign: "middle",
+        overflow: "hidden"
+      },
+      headStyles: {
+        fillColor: [217, 217, 217],
+        textColor: [0, 0, 0],
+        fontStyle: "bold",
+        halign: "center",
+        valign: "middle"
+      },
+      columnStyles: {
+        0: { cellWidth: 170, halign: "left" },
+        1: { cellWidth: 100, halign: "center" },
+        2: { cellWidth: 120, halign: "center" }
+      },
+      didParseCell: function (data) {
+        if (data.section === "body" && data.row.index === summaryBody.length - 1) {
+          data.cell.styles.fontStyle = "bold";
+          data.cell.styles.fillColor = [217, 217, 217];
+        }
       }
-    }
-  });
+    });
 
-  doc.save("Report_Lucky_Draw_Winner_Tropical_Dinner_2026.pdf");
+    doc.save("Report_Lucky_Draw_Winner_Tropical_Dinner_2026.pdf");
+
   } catch (err) {
-    console.error("PDF download error:", err);
-    alert("PDF failed to download. Please press Ctrl + F5 and try again. Error: " + err.message);
+    console.error(err);
+    alert("PDF failed to download. Error: " + (err && err.message ? err.message : err));
   }
 }
 
