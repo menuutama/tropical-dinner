@@ -25,6 +25,11 @@ function cleanText(value) {
   return String(value || "").trim().toUpperCase();
 }
 
+function getPlaceNumberValue(value) {
+  const match = String(value || "").match(/\d+/);
+  return match ? Number(match[0]) : 999999;
+}
+
 function isCollect(value) {
   return cleanText(value) === "COLLECT";
 }
@@ -88,6 +93,8 @@ function sortReportData() {
   const sortOrder = document.getElementById("sortOrder").value;
 
   filteredData.sort((a, b) => {
+    const placeA = getPlaceNumberValue(a.placeNumber || a.place);
+    const placeB = getPlaceNumberValue(b.placeNumber || b.place);
     const nameA = cleanText(a.employeeName);
     const nameB = cleanText(b.employeeName);
     const companyA = cleanText(a.company || a.companyName);
@@ -97,21 +104,27 @@ function sortReportData() {
 
     let compare = 0;
 
+    if (sortField === "placeNumber") {
+      compare = placeA - placeB;
+      if (compare === 0) compare = nameA.localeCompare(nameB);
+    }
+
     if (sortField === "employeeName") {
       compare = nameA.localeCompare(nameB);
+      if (compare === 0) compare = placeA - placeB;
     }
 
     if (sortField === "company") {
       compare = companyA.localeCompare(companyB);
-      if (compare === 0) compare = nameA.localeCompare(nameB);
+      if (compare === 0) compare = placeA - placeB;
     }
 
     if (sortField === "collectionStatus") {
       compare = statusA.localeCompare(statusB);
-      if (compare === 0) compare = nameA.localeCompare(nameB);
+      if (compare === 0) compare = placeA - placeB;
     }
 
-    return sortOrder === "za" ? compare * -1 : compare;
+    return sortOrder === "desc" ? compare * -1 : compare;
   });
 }
 
