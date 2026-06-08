@@ -11,7 +11,7 @@ let isAdminMode = false;
 
 /* =========================
    INIT
-========================= */
+========================= */ 
 
 document.addEventListener("DOMContentLoaded", () => {
   setupSearch();
