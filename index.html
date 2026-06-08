@@ -55,6 +55,50 @@
         Click on your name to view your Lucky Draw prize.
       </div>
 
+    <!-- ADMIN ONLY: PUBLISH WINNER RANGE -->
+    <div class="publish-panel" id="publishPanel">
+
+      <div class="publish-title">
+        PUBLISH WINNER RANGE
+      </div>
+
+      <div class="publish-row">
+
+        <label>
+          FROM
+          <input
+            type="number"
+            id="publishFrom"
+            placeholder="90"
+          >
+        </label>
+
+        <label>
+          TO
+          <input
+            type="number"
+            id="publishTo"
+            placeholder="70"
+          >
+        </label>
+
+        <button id="applyPublishBtn" type="button">
+          PUBLISH
+        </button>
+
+        <button id="resetPublishBtn" type="button">
+          SHOW ALL
+        </button>
+
+      </div>
+
+      <div class="publish-status" id="publishStatus">
+        Public view: Showing all winners
+      </div>
+
+    </div>
+
+
     </div>
 
   </div>
