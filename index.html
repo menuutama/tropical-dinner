@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Tropical Dinner 2026 - Live Lucky Draw</title>
-
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
 <div class="overlay"></div>
@@ -18,96 +13,48 @@
 <div class="container">
 
   <div class="header">
-
-    <div class="sub-title">
-      TROPICAL DINNER 2026
-    </div>
-
-    <div class="title">
-      LUCKY DRAW WINNERS
-    </div>
+    <div class="sub-title">TROPICAL DINNER 2026</div>
+    <div class="title">LUCKY DRAW WINNERS</div>
 
     <div class="live-box">
       <div class="dot"></div>
       LIVE UPDATING
     </div>
 
+    <!-- ADMIN PUBLISH PANEL - MUNCUL HANYA BILA BUKA DALAM menu.html DAN LOGIN -->
+    <div class="publish-panel" id="publishPanel" style="display:none;">
+      <div class="publish-title">ADMIN PUBLISH WINNER RANGE</div>
+
+      <div class="publish-row">
+        <input type="number" id="publishFrom" placeholder="From Place: 90">
+        <span>to</span>
+        <input type="number" id="publishTo" placeholder="To Place: 70">
+
+        <button id="publishBtn">PUBLISH</button>
+        <button id="clearPublishBtn" class="danger">CLEAR RANGE</button>
+      </div>
+
+      <div class="publish-note" id="publishNote">
+        Example: 90 to 70. CLEAR RANGE will delete all PUBLISH words in column H.
+      </div>
+    </div>
+
     <!-- SEARCH -->
     <div class="search-wrapper">
-
       <div class="search-box">
-
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search Lucky No / Winner / Company"
-        >
-
-        <button
-          class="clear-btn"
-          id="clearBtn">
-          ×
-        </button>
-
+        <input type="text" id="searchInput" placeholder="Search Lucky No / Winner / Company">
+        <button class="clear-btn" id="clearBtn">×</button>
       </div>
 
       <div class="click-note">
         Click on your name to view your Lucky Draw prize.
       </div>
-
-    <!-- ADMIN ONLY: PUBLISH WINNER RANGE -->
-    <div class="publish-panel" id="publishPanel">
-
-      <div class="publish-title">
-        PUBLISH WINNER RANGE
-      </div>
-
-      <div class="publish-row">
-
-        <label>
-          FROM
-          <input
-            type="number"
-            id="publishFrom"
-            placeholder="90"
-          >
-        </label>
-
-        <label>
-          TO
-          <input
-            type="number"
-            id="publishTo"
-            placeholder="70"
-          >
-        </label>
-
-        <button id="applyPublishBtn" type="button">
-          PUBLISH
-        </button>
-
-        <button id="resetPublishBtn" type="button">
-          SHOW ALL
-        </button>
-
-      </div>
-
-      <div class="publish-status" id="publishStatus">
-        Public view: Showing all winners
-      </div>
-
     </div>
-
-
-    </div>
-
   </div>
 
   <!-- TABLE -->
   <div class="table-wrapper">
-
     <table>
-
       <thead>
         <tr>
           <th>PLACE</th>
@@ -116,33 +63,18 @@
           <th>COMPANY</th>
         </tr>
       </thead>
-
       <tbody id="winnerTable"></tbody>
-
     </table>
-
   </div>
 
   <!-- FOOTER -->
   <div class="footer">
-
-    <div
-      class="pagination"
-      id="pagination">
-    </div>
+    <div class="pagination" id="pagination"></div>
 
     <div class="control-buttons">
-
-      <button onclick="playSlide()">
-        ▶ Play
-      </button>
-
-      <button onclick="pauseSlide()">
-        ⏸ Pause
-      </button>
-
+      <button onclick="playSlide()">▶ Play</button>
+      <button onclick="pauseSlide()">⏸ Pause</button>
     </div>
-
   </div>
 
   <div class="notice">
@@ -151,71 +83,27 @@
 
 </div>
 
-<!-- ===================================================
-     WINNER POPUP
-=================================================== -->
-
-<div
-  id="winnerModal"
-  class="winner-modal">
-
+<!-- WINNER POPUP -->
+<div id="winnerModal" class="winner-modal">
   <div class="winner-modal-box">
+    <button class="modal-close" onclick="closeWinnerModal()">×</button>
 
-    <button
-      class="modal-close"
-      onclick="closeWinnerModal()">
-      ×
-    </button>
+    <div class="modal-place" id="modalPlace"></div>
+    <div class="modal-winner" id="modalWinner"></div>
+    <div class="modal-info" id="modalLuckyNo"></div>
+    <div class="modal-info" id="modalCompany"></div>
 
-    <!-- PLACE -->
-    <div
-      class="modal-place"
-      id="modalPlace">
-    </div>
+    <img id="modalImage" class="modal-image" src="" alt="Prize Image">
 
-    <!-- WINNER -->
-    <div
-      class="modal-winner"
-      id="modalWinner">
-    </div>
+    <div class="modal-prize" id="modalPrize"></div>
 
-    <!-- LUCKY NO -->
-    <div
-      class="modal-info"
-      id="modalLuckyNo">
-    </div>
-
-    <!-- COMPANY -->
-    <div
-      class="modal-info"
-      id="modalCompany">
-    </div>
-
-    <!-- IMAGE -->
-    <img
-      id="modalImage"
-      class="modal-image"
-      src=""
-      alt="Prize Image"
-    >
-
-    <!-- PRIZE -->
-    <div
-      class="modal-prize"
-      id="modalPrize">
-    </div>
-
-    <!-- NOTE -->
     <div class="modal-note">
       **Image for display purposes only.<br>
       (Gambar untuk tujuan paparan sahaja)
     </div>
-
   </div>
-
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
