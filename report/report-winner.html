@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Report Winner Lucky Draw</title>
+
+<link rel="stylesheet" href="report-winner.css">
+
+<!-- EXCEL -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="report-toolbar">
+
+  <div class="control-panel">
+
+    <select id="companyFilter" onchange="applyFilterAndSort()">
+      <option value="ALL">All Company</option>
+    </select>
+
+    <select id="statusFilter" onchange="applyFilterAndSort()">
+      <option value="ALL">All Collection Status</option>
+    </select>
+
+    <select id="sortField" onchange="applyFilterAndSort()">
+      <option value="employeeName">Sort By Employee Name</option>
+      <option value="company">Sort By Company</option>
+      <option value="status">Sort By Collection Status</option>
+    </select>
+
+    <select id="sortOrder" onchange="applyFilterAndSort()">
+      <option value="az">A - Z</option>
+      <option value="za">Z - A</option>
+    </select>
+
+  </div>
+
+  <div class="button-panel">
+    <button type="button" onclick="downloadExcel()">Excel</button>
+    <button type="button" onclick="downloadPDF()">PDF</button>
+    <button type="button" onclick="downloadWord()">Document</button>
+    <button type="button" onclick="window.print()">Print</button>
+  </div>
+
+</div>
+
+<div class="preview-wrapper">
+
+  <div id="reportArea" class="a4-paper">
+
+    <div class="letter-head">
+      <h1>TROPICAL DINNER 2026</h1>
+      <h2>REPORT LUCKY DRAW WINNER</h2>
+    </div>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Place No.</th>
+          <th>Lucky No.</th>
+          <th>Employee Name</th>
+          <th>Company</th>
+          <th>Prize</th>
+          <th>Status Collection</th>
+        </tr>
+      </thead>
+
+      <tbody id="winnerBody">
+        <tr>
+          <td colspan="6">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="summary-title">Winner Summary</h3>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Total Winner</th>
+          <th>Total Collected</th>
+          <th>Total Not Collected</th>
+        </tr>
+      </thead>
+
+      <tbody id="summaryBody"></tbody>
+
+      <tfoot>
+        <tr>
+          <th>GRAND TOTAL</th>
+          <th id="grandWinner">0</th>
+          <th id="grandCollected">0</th>
+          <th id="grandNotCollected">0</th>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+
+</div>
+
+<script src="report-winner.js"></script>
+</body>
+</html>
