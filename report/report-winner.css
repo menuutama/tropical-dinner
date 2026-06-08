@@ -220,7 +220,7 @@ body {
   text-align: center;
 }
 
-.summary-table td:first-child {
+.summary-table td:first-child { 
   text-align: left;
 }
 
