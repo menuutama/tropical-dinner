@@ -506,11 +506,47 @@ body.fullscreen-active .place-badge{ font-size:1.3vw; padding:12px 20px; }
   .search-box::after{ right:15px; font-size:22px; }
   .clear-btn{ width:30px; height:30px; line-height:30px; font-size:17px; }
   .click-note{ font-size:11px; padding:0 8px; color:#8fa8cb; }
-  .table-wrapper{ border-radius:10px; box-shadow:0 0 18px rgba(0,119,255,.58); overflow-x:auto; }
-  table{ min-width:620px; }
-  thead th{ font-size:11px; padding:12px 8px; letter-spacing:.8px; }
-  tbody td{ font-size:11px; padding:11px 8px; }
-  .place-badge{ font-size:11px; padding:4px 8px; }
+  /* MOBILE TABLE FIXED - NO LEFT/RIGHT SCROLL */
+  .table-wrapper{
+    width:100%;
+    border-radius:10px;
+    box-shadow:0 0 18px rgba(0,119,255,.58);
+    overflow:hidden;
+  }
+
+  table{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    table-layout:fixed;
+  }
+
+  th:nth-child(1),td:nth-child(1){ width:15%; }
+  th:nth-child(2),td:nth-child(2){ width:24%; }
+  th:nth-child(3),td:nth-child(3){ width:31%; }
+  th:nth-child(4),td:nth-child(4){ width:30%; }
+
+  thead th{
+    font-size:9.5px;
+    padding:10px 3px;
+    letter-spacing:.45px;
+    white-space:normal;
+  }
+
+  tbody td{
+    font-size:9.5px;
+    padding:10px 3px;
+    line-height:1.25;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  .place-badge{
+    min-width:0;
+    font-size:9.5px;
+    padding:3px 5px;
+  }
   .pagination{ gap:8px; }
   .pagination button,.control-buttons button{ padding:9px 12px; font-size:12px; border-radius:7px; box-shadow:0 0 10px rgba(0,119,255,.22); }
   .notice{ width:100%; margin-top:16px; padding:12px 12px; font-size:12px; line-height:1.45; box-shadow:0 0 17px rgba(0,119,255,.5); }
