@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyxQjtzyKoxWmMFkIbvHgiLMZRuROWvSN8vxE1BAApoGp-2FxV6qTa6gT5-Cb-2385s/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwZ-_mSRM8zU_2RaTckjXcmWJzYU8E8ehko5Mk9hqGl8EgC9DfJZbLl-0NOlNERZaXc/exec";
 
 let allData = [];
 let filteredData = [];
@@ -7,14 +7,10 @@ let summaryData = [];
 async function loadWinnerReport() {
   try {
     const res = await fetch(API_URL);
-    const json = await res.json();
-
-    allData = normalizeWinnerData(json);
+    allData = await res.json();
 
     loadCompanyDropdown();
-    loadStatusDropdown();
     applyFilterAndSort();
-
   } catch (err) {
     document.getElementById("winnerBody").innerHTML = `
       <tr>
@@ -25,41 +21,20 @@ async function loadWinnerReport() {
   }
 }
 
-function normalizeWinnerData(data) {
-  const list = Array.isArray(data) ? data : (data.winnerTable || data.winners || data.data || []);
-
-  return list.map(item => {
-    if (Array.isArray(item)) {
-      return {
-        placeNumber: item[0] || "",
-        luckyNo: item[1] || "",
-        employeeName: item[2] || "",
-        company: item[3] || "",
-        prize: item[4] || "",
-        statusCollection: item[5] || ""
-      };
-    }
-
-    return {
-      placeNumber: item.placeNumber || item.place || item.placeNo || item["Place Number"] || item["Place"] || "",
-      luckyNo: item.luckyNo || item.luckyNumber || item["Lucky No."] || item["Lucky No"] || "",
-      employeeName: item.employeeName || item.name || item["Employee Name"] || "",
-      company: item.company || item.companyName || item["Company Name"] || item["Company"] || "",
-      prize: item.prize || item["Prize"] || "",
-      statusCollection: item.statusCollection || item.collectionStatus || item.status || item["Status Collection"] || ""
-    };
-  }).filter(item => {
-    return String(item.placeNumber || item.luckyNo || item.employeeName || item.company || item.prize || item.statusCollection).trim() !== "";
-  });
-}
-
 function cleanText(value) {
   return String(value || "").trim().toUpperCase();
 }
 
-function isCollected(value) {
-  const text = cleanText(value);
-  return text === "COLLECTED" || text === "COLLECT" || text === "YES" || text === "DONE" || text === "RECEIVED";
+function isCollect(value) {
+  return cleanText(value) === "COLLECT";
+}
+
+function getCollectionIcon(value) {
+  return isCollect(value) ? "✓" : "";
+}
+
+function getCollectionText(value) {
+  return isCollect(value) ? "Collect" : "Not Collect";
 }
 
 function loadCompanyDropdown() {
@@ -68,9 +43,9 @@ function loadCompanyDropdown() {
 
   const companies = [...new Set(
     allData
-      .map(item => item.company || "")
-      .filter(company => company.trim() !== "")
-  )].sort((a, b) => a.localeCompare(b));
+      .map(item => item.company || item.companyName || "")
+      .filter(company => String(company).trim() !== "")
+  )].sort((a, b) => cleanText(a).localeCompare(cleanText(b)));
 
   companies.forEach(company => {
     const option = document.createElement("option");
@@ -80,33 +55,27 @@ function loadCompanyDropdown() {
   });
 }
 
-function loadStatusDropdown() {
-  const statusFilter = document.getElementById("statusFilter");
-  statusFilter.innerHTML = `<option value="ALL">All Collection Status</option>`;
-
-  const statuses = [...new Set(
-    allData
-      .map(item => item.statusCollection || "")
-      .filter(status => status.trim() !== "")
-  )].sort((a, b) => a.localeCompare(b));
-
-  statuses.forEach(status => {
-    const option = document.createElement("option");
-    option.value = status;
-    option.textContent = status;
-    statusFilter.appendChild(option);
-  });
-}
-
 function applyFilterAndSort() {
   const selectedCompany = document.getElementById("companyFilter").value;
-  const selectedStatus = document.getElementById("statusFilter").value;
+  const selectedCollection = document.getElementById("collectionFilter").value;
 
   filteredData = allData.filter(item => {
-    const companyMatch = selectedCompany === "ALL" || item.company === selectedCompany;
-    const statusMatch = selectedStatus === "ALL" || item.statusCollection === selectedStatus;
+    const company = item.company || item.companyName || "";
+    const status = item.collectionStatus || item.statusCollection || "";
 
-    return companyMatch && statusMatch;
+    const companyMatch = selectedCompany === "ALL" || company === selectedCompany;
+
+    let collectionMatch = true;
+
+    if (selectedCollection === "COLLECT") {
+      collectionMatch = isCollect(status);
+    }
+
+    if (selectedCollection === "NOT_COLLECT") {
+      collectionMatch = !isCollect(status);
+    }
+
+    return companyMatch && collectionMatch;
   });
 
   sortReportData();
@@ -119,21 +88,27 @@ function sortReportData() {
   const sortOrder = document.getElementById("sortOrder").value;
 
   filteredData.sort((a, b) => {
-    const nameCompare = cleanText(a.employeeName).localeCompare(cleanText(b.employeeName));
+    const nameA = cleanText(a.employeeName);
+    const nameB = cleanText(b.employeeName);
+    const companyA = cleanText(a.company || a.companyName);
+    const companyB = cleanText(b.company || b.companyName);
+    const statusA = cleanText(getCollectionText(a.collectionStatus || a.statusCollection));
+    const statusB = cleanText(getCollectionText(b.collectionStatus || b.statusCollection));
+
     let compare = 0;
 
     if (sortField === "employeeName") {
-      compare = nameCompare;
+      compare = nameA.localeCompare(nameB);
     }
 
     if (sortField === "company") {
-      compare = cleanText(a.company).localeCompare(cleanText(b.company));
-      if (compare === 0) compare = nameCompare;
+      compare = companyA.localeCompare(companyB);
+      if (compare === 0) compare = nameA.localeCompare(nameB);
     }
 
-    if (sortField === "status") {
-      compare = cleanText(a.statusCollection).localeCompare(cleanText(b.statusCollection));
-      if (compare === 0) compare = nameCompare;
+    if (sortField === "collectionStatus") {
+      compare = statusA.localeCompare(statusB);
+      if (compare === 0) compare = nameA.localeCompare(nameB);
     }
 
     return sortOrder === "za" ? compare * -1 : compare;
@@ -154,46 +129,72 @@ function renderWinnerTable() {
   }
 
   filteredData.forEach(item => {
+    const placeNumber = item.placeNumber || item.place || "";
+    const luckyNo = item.luckyNo || "";
+    const employeeName = item.employeeName || "";
+    const company = item.company || item.companyName || "";
+    const prize = item.prize || "";
+    const status = item.collectionStatus || item.statusCollection || "";
+
     tbody.innerHTML += `
       <tr>
-        <td>${item.placeNumber || ""}</td>
-        <td>${item.luckyNo || ""}</td>
-        <td>${item.employeeName || ""}</td>
-        <td>${item.company || ""}</td>
-        <td>${item.prize || ""}</td>
-        <td>${item.statusCollection || ""}</td>
+        <td>${placeNumber}</td>
+        <td>${luckyNo}</td>
+        <td>${employeeName}</td>
+        <td>${company}</td>
+        <td>${prize}</td>
+        <td class="collection-icon">${getCollectionIcon(status)}</td>
       </tr>
     `;
+  });
+
+  setTimeout(equalizeWinnerRowHeights, 50);
+}
+
+function equalizeWinnerRowHeights() {
+  const rows = [...document.querySelectorAll("#winnerBody tr")];
+  if (rows.length === 0) return;
+
+  rows.forEach(row => {
+    row.style.height = "auto";
+    [...row.children].forEach(cell => cell.style.height = "auto");
+  });
+
+  let maxHeight = 22;
+
+  rows.forEach(row => {
+    maxHeight = Math.max(maxHeight, Math.ceil(row.getBoundingClientRect().height));
+  });
+
+  rows.forEach(row => {
+    row.style.height = maxHeight + "px";
+    [...row.children].forEach(cell => cell.style.height = maxHeight + "px");
   });
 }
 
 function renderSummaryTable() {
   const summary = {};
-  let grandWinner = 0;
-  let grandCollected = 0;
-  let grandNotCollected = 0;
+  let grandCollect = 0;
+  let grandNotCollect = 0;
 
   filteredData.forEach(item => {
-    const company = item.company || "Unknown Company";
+    const company = item.company || item.companyName || "Unknown Company";
+    const status = item.collectionStatus || item.statusCollection || "";
 
     if (!summary[company]) {
       summary[company] = {
         company: company,
-        totalWinner: 0,
-        collected: 0,
-        notCollected: 0
+        collect: 0,
+        notCollect: 0
       };
     }
 
-    summary[company].totalWinner++;
-    grandWinner++;
-
-    if (isCollected(item.statusCollection)) {
-      summary[company].collected++;
-      grandCollected++;
+    if (isCollect(status)) {
+      summary[company].collect++;
+      grandCollect++;
     } else {
-      summary[company].notCollected++;
-      grandNotCollected++;
+      summary[company].notCollect++;
+      grandNotCollect++;
     }
   });
 
@@ -208,16 +209,14 @@ function renderSummaryTable() {
     tbody.innerHTML += `
       <tr>
         <td>${item.company}</td>
-        <td>${item.totalWinner}</td>
-        <td>${item.collected}</td>
-        <td>${item.notCollected}</td>
+        <td>${item.collect}</td>
+        <td>${item.notCollect}</td>
       </tr>
     `;
   });
 
-  document.getElementById("grandWinner").textContent = grandWinner;
-  document.getElementById("grandCollected").textContent = grandCollected;
-  document.getElementById("grandNotCollected").textContent = grandNotCollected;
+  document.getElementById("grandCollect").textContent = grandCollect;
+  document.getElementById("grandNotCollect").textContent = grandNotCollect;
 }
 
 /* =====================================================
@@ -233,7 +232,7 @@ function downloadPDF() {
   const { jsPDF } = window.jspdf;
 
   const doc = new jsPDF({
-    orientation: "landscape",
+    orientation: "portrait",
     unit: "pt",
     format: "a4"
   });
@@ -245,53 +244,52 @@ function downloadPDF() {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-
   const margin = 36;
   const contentWidth = pageWidth - margin * 2;
 
-  const placeWidth = 55;
-  const luckyWidth = 70;
-  const nameWidth = 170;
-  const companyWidth = 120;
-  const statusWidth = 105;
-  const prizeWidth = contentWidth - placeWidth - luckyWidth - nameWidth - companyWidth - statusWidth;
+  const placeWidth = 42;
+  const luckyWidth = 48;
+  const nameWidth = 115;
+  const companyWidth = 80;
+  const collectionWidth = 58;
+  const prizeWidth = contentWidth - placeWidth - luckyWidth - nameWidth - companyWidth - collectionWidth;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(24);
   doc.setTextColor(255, 0, 0);
-  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin + 10, { align: "center" });
+  doc.text("TROPICAL DINNER 2026", pageWidth / 2, margin + 18, { align: "center" });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
   doc.setTextColor(0, 0, 0);
-  doc.text("REPORT LUCKY DRAW WINNER", pageWidth / 2, margin + 34, { align: "center" });
+  doc.text("REPORT LUCKY DRAW WINNER", pageWidth / 2, margin + 42, { align: "center" });
 
   const tableBody = filteredData.map(item => [
-    item.placeNumber || "",
+    item.placeNumber || item.place || "",
     item.luckyNo || "",
     item.employeeName || "",
-    item.company || "",
+    item.company || item.companyName || "",
     item.prize || "",
-    item.statusCollection || ""
+    ""
   ]);
 
   doc.autoTable({
-    startY: margin + 58,
-    head: [["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Status Collection"]],
+    startY: margin + 68,
+    head: [["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Collection"]],
     body: tableBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
     tableWidth: contentWidth,
     theme: "grid",
     styles: {
       font: "helvetica",
-      fontSize: 9,
-      cellPadding: 4,
+      fontSize: 8.5,
+      cellPadding: 3,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
       minCellHeight: 20,
       valign: "middle",
-      overflow: "ellipsize"
+      overflow: "linebreak"
     },
     headStyles: {
       fillColor: [217, 217, 217],
@@ -301,12 +299,28 @@ function downloadPDF() {
       valign: "middle"
     },
     columnStyles: {
-      0: { cellWidth: placeWidth, halign: "center" },
-      1: { cellWidth: luckyWidth, halign: "center" },
-      2: { cellWidth: nameWidth, halign: "left" },
-      3: { cellWidth: companyWidth, halign: "center" },
-      4: { cellWidth: prizeWidth, halign: "left" },
-      5: { cellWidth: statusWidth, halign: "center" }
+      0: { cellWidth: placeWidth, halign: "center", overflow: "hidden" },
+      1: { cellWidth: luckyWidth, halign: "center", overflow: "hidden" },
+      2: { cellWidth: nameWidth, halign: "left", overflow: "linebreak" },
+      3: { cellWidth: companyWidth, halign: "center", overflow: "hidden" },
+      4: { cellWidth: prizeWidth, halign: "left", overflow: "linebreak" },
+      5: { cellWidth: collectionWidth, halign: "center", overflow: "hidden" }
+    },
+    didDrawCell: function (data) {
+      if (data.section === "body" && data.column.index === 5) {
+        const item = filteredData[data.row.index];
+        const status = item.collectionStatus || item.statusCollection || "";
+
+        if (isCollect(status)) {
+          const x = data.cell.x + data.cell.width / 2;
+          const y = data.cell.y + data.cell.height / 2;
+
+          doc.setDrawColor(0, 0, 0);
+          doc.setLineWidth(1.4);
+          doc.line(x - 6, y, x - 2, y + 5);
+          doc.line(x - 2, y + 5, x + 8, y - 7);
+        }
+      }
     }
   });
 
@@ -320,39 +334,37 @@ function downloadPDF() {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
-  doc.text("Winner Summary", margin, finalY);
+  doc.text("Collection Summary", margin, finalY);
 
   const summaryBody = summaryData.map(item => [
     item.company || "",
-    item.totalWinner,
-    item.collected,
-    item.notCollected
+    item.collect,
+    item.notCollect
   ]);
 
   summaryBody.push([
     "GRAND TOTAL",
-    document.getElementById("grandWinner").textContent,
-    document.getElementById("grandCollected").textContent,
-    document.getElementById("grandNotCollected").textContent
+    document.getElementById("grandCollect").textContent,
+    document.getElementById("grandNotCollect").textContent
   ]);
 
   doc.autoTable({
     startY: finalY + 8,
-    head: [["Company", "Total Winner", "Total Collected", "Total Not Collected"]],
+    head: [["Company", "Total Collect", "Total Not Collect"]],
     body: summaryBody,
     margin: { top: margin, right: margin, bottom: margin, left: margin },
-    tableWidth: contentWidth * 0.70,
+    tableWidth: contentWidth * 0.75,
     theme: "grid",
     styles: {
       font: "helvetica",
-      fontSize: 9,
+      fontSize: 10,
       cellPadding: 4,
       textColor: [0, 0, 0],
       lineColor: [0, 0, 0],
       lineWidth: 0.5,
-      minCellHeight: 20,
+      minCellHeight: 22,
       valign: "middle",
-      overflow: "ellipsize"
+      overflow: "hidden"
     },
     headStyles: {
       fillColor: [217, 217, 217],
@@ -362,10 +374,9 @@ function downloadPDF() {
       valign: "middle"
     },
     columnStyles: {
-      0: { cellWidth: 180, halign: "left" },
-      1: { cellWidth: 90, halign: "center" },
-      2: { cellWidth: 100, halign: "center" },
-      3: { cellWidth: 120, halign: "center" }
+      0: { cellWidth: 170, halign: "left" },
+      1: { cellWidth: 100, halign: "center" },
+      2: { cellWidth: 120, halign: "center" }
     },
     didParseCell: function (data) {
       if (data.section === "body" && data.row.index === summaryBody.length - 1) {
@@ -375,7 +386,7 @@ function downloadPDF() {
     }
   });
 
-  doc.save("Report_Winner_Lucky_Draw_Tropical_Dinner_2026.pdf");
+  doc.save("Report_Lucky_Draw_Winner_Tropical_Dinner_2026.pdf");
 }
 
 /* =====================================================
@@ -389,7 +400,7 @@ function downloadExcel() {
   XLSX.utils.book_append_sheet(wb, buildListSheet(), "List Winner");
   XLSX.utils.book_append_sheet(wb, buildSummarySheet(), "Summary");
 
-  XLSX.writeFile(wb, "Report_Winner_Lucky_Draw_Tropical_Dinner_2026.xlsx");
+  XLSX.writeFile(wb, "Report_Lucky_Draw_Winner_Tropical_Dinner_2026.xlsx");
 }
 
 function buildAllReportSheet() {
@@ -398,43 +409,36 @@ function buildAllReportSheet() {
   data.push(["TROPICAL DINNER 2026", "", "", "", "", ""]);
   data.push(["REPORT LUCKY DRAW WINNER", "", "", "", "", ""]);
   data.push([]);
-  data.push(["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Status Collection"]);
+  data.push(["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Collection"]);
 
   filteredData.forEach(item => {
     data.push([
-      item.placeNumber || "",
+      item.placeNumber || item.place || "",
       item.luckyNo || "",
       item.employeeName || "",
-      item.company || "",
+      item.company || item.companyName || "",
       item.prize || "",
-      item.statusCollection || ""
+      getCollectionIcon(item.collectionStatus || item.statusCollection)
     ]);
   });
 
   data.push([]);
 
   const summaryTitleRow = data.length + 1;
-  data.push(["Winner Summary", "", "", "", "", ""]);
+  data.push(["Collection Summary", "", "", "", "", ""]);
 
   const summaryHeaderRow = data.length + 1;
-  data.push(["Company", "Total Winner", "Total Collected", "Total Not Collected", "", ""]);
+  data.push(["Company", "", "Total Collect", "Total Not Collect", "", ""]);
 
   summaryData.forEach(item => {
-    data.push([
-      item.company,
-      item.totalWinner,
-      item.collected,
-      item.notCollected,
-      "",
-      ""
-    ]);
+    data.push([item.company, "", item.collect, item.notCollect, "", ""]);
   });
 
   data.push([
     "GRAND TOTAL",
-    document.getElementById("grandWinner").textContent,
-    document.getElementById("grandCollected").textContent,
-    document.getElementById("grandNotCollected").textContent,
+    "",
+    document.getElementById("grandCollect").textContent,
+    document.getElementById("grandNotCollect").textContent,
     "",
     ""
   ]);
@@ -448,16 +452,24 @@ function buildAllReportSheet() {
     { s: { r: summaryTitleRow - 1, c: 0 }, e: { r: summaryTitleRow - 1, c: 5 } }
   ];
 
+  const summaryStartRow = summaryHeaderRow;
+  const summaryEndRow = summaryHeaderRow + summaryData.length + 1;
+
+  for (let r = summaryStartRow; r <= summaryEndRow; r++) {
+    ws["!merges"].push({ s: { r: r - 1, c: 0 }, e: { r: r - 1, c: 1 } });
+    ws["!merges"].push({ s: { r: r - 1, c: 3 }, e: { r: r - 1, c: 5 } });
+  }
+
   ws["!cols"] = [
+    { wch: 10 },
     { wch: 12 },
-    { wch: 14 },
-    { wch: 42 },
-    { wch: 22 },
-    { wch: 42 },
-    { wch: 22 }
+    { wch: 30 },
+    { wch: 18 },
+    { wch: 38 },
+    { wch: 14 }
   ];
 
-  applyExcelStyle(ws, data.length);
+  applyExcelStyle(ws, data.length, true);
 
   ws["A1"].s = excelTitleStyle();
   ws["A2"].s = excelSubtitleStyle();
@@ -469,10 +481,13 @@ function buildAllReportSheet() {
   const summaryTitleCell = "A" + summaryTitleRow;
   if (ws[summaryTitleCell]) ws[summaryTitleCell].s = excelSummaryTitleStyle();
 
-  ["A", "B", "C", "D"].forEach(col => {
+  ["A", "C", "D"].forEach(col => {
     const cell = col + summaryHeaderRow;
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
+
+  applyCollectionExcelStyle(ws, 5, 4 + filteredData.length);
+  applyWrapExcelStyle(ws, 5, 4 + filteredData.length, ["C", "E"]);
 
   return ws;
 }
@@ -480,16 +495,16 @@ function buildAllReportSheet() {
 function buildListSheet() {
   const data = [];
 
-  data.push(["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Status Collection"]);
+  data.push(["Place No.", "Lucky No.", "Employee Name", "Company", "Prize", "Collection"]);
 
   filteredData.forEach(item => {
     data.push([
-      item.placeNumber || "",
+      item.placeNumber || item.place || "",
       item.luckyNo || "",
       item.employeeName || "",
-      item.company || "",
+      item.company || item.companyName || "",
       item.prize || "",
-      item.statusCollection || ""
+      getCollectionIcon(item.collectionStatus || item.statusCollection)
     ]);
   });
 
@@ -497,19 +512,22 @@ function buildListSheet() {
   ws["!ref"] = `A1:F${data.length}`;
 
   ws["!cols"] = [
+    { wch: 10 },
     { wch: 12 },
-    { wch: 14 },
-    { wch: 42 },
-    { wch: 22 },
-    { wch: 42 },
-    { wch: 22 }
+    { wch: 30 },
+    { wch: 18 },
+    { wch: 38 },
+    { wch: 14 }
   ];
 
-  applyExcelStyle(ws, data.length);
+  applyExcelStyle(ws, data.length, true);
 
   ["A1", "B1", "C1", "D1", "E1", "F1"].forEach(cell => {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
+
+  applyCollectionExcelStyle(ws, 2, data.length);
+  applyWrapExcelStyle(ws, 2, data.length, ["C", "E"]);
 
   return ws;
 }
@@ -517,44 +535,45 @@ function buildListSheet() {
 function buildSummarySheet() {
   const data = [];
 
-  data.push(["Company", "Total Winner", "Total Collected", "Total Not Collected"]);
+  data.push(["Company", "", "Total Collect", "Total Not Collect"]);
 
   summaryData.forEach(item => {
-    data.push([
-      item.company,
-      item.totalWinner,
-      item.collected,
-      item.notCollected
-    ]);
+    data.push([item.company, "", item.collect, item.notCollect]);
   });
 
   data.push([
     "GRAND TOTAL",
-    document.getElementById("grandWinner").textContent,
-    document.getElementById("grandCollected").textContent,
-    document.getElementById("grandNotCollected").textContent
+    "",
+    document.getElementById("grandCollect").textContent,
+    document.getElementById("grandNotCollect").textContent
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(data);
   ws["!ref"] = `A1:D${data.length}`;
 
+  ws["!merges"] = [];
+
+  for (let r = 1; r <= data.length; r++) {
+    ws["!merges"].push({ s: { r: r - 1, c: 0 }, e: { r: r - 1, c: 1 } });
+  }
+
   ws["!cols"] = [
-    { wch: 25 },
     { wch: 18 },
-    { wch: 20 },
-    { wch: 24 }
+    { wch: 18 },
+    { wch: 18 },
+    { wch: 20 }
   ];
 
-  applyExcelStyle(ws, data.length);
+  applyExcelStyle(ws, data.length, false);
 
-  ["A1", "B1", "C1", "D1"].forEach(cell => {
+  ["A1", "C1", "D1"].forEach(cell => {
     if (ws[cell]) ws[cell].s = excelHeaderStyle();
   });
 
   return ws;
 }
 
-function applyExcelStyle(ws, rowCount) {
+function applyExcelStyle(ws, rowCount, fixedWinnerRowHeight) {
   Object.keys(ws).forEach(cell => {
     if (cell[0] === "!") return;
 
@@ -568,7 +587,40 @@ function applyExcelStyle(ws, rowCount) {
   ws["!rows"] = [];
 
   for (let r = 0; r < rowCount; r++) {
-    ws["!rows"][r] = { hpt: 26 };
+    ws["!rows"][r] = { hpt: fixedWinnerRowHeight ? 42 : 26 };
+  }
+}
+
+function applyWrapExcelStyle(ws, startRow, endRow, columns) {
+  for (let r = startRow; r <= endRow; r++) {
+    columns.forEach(col => {
+      const cell = col + r;
+
+      if (ws[cell]) {
+        ws[cell].s = {
+          ...ws[cell].s,
+          alignment: {
+            horizontal: col === "C" || col === "E" ? "left" : "center",
+            vertical: "center",
+            wrapText: true
+          }
+        };
+      }
+    });
+  }
+}
+
+function applyCollectionExcelStyle(ws, startRow, endRow) {
+  for (let r = startRow; r <= endRow; r++) {
+    const cell = "F" + r;
+
+    if (ws[cell]) {
+      ws[cell].s = {
+        font: { name: "Arial", sz: 16, bold: true, color: { rgb: "000000" } },
+        alignment: { horizontal: "center", vertical: "center", wrapText: false },
+        border: excelBorder()
+      };
+    }
   }
 }
 
@@ -620,14 +672,16 @@ function excelBorder() {
 
 function downloadWord() {
   const rowsHTML = filteredData.map(item => {
+    const status = item.collectionStatus || item.statusCollection || "";
+
     return `
       <tr>
-        <td class="col-place">${item.placeNumber || ""}</td>
+        <td class="col-place">${item.placeNumber || item.place || ""}</td>
         <td class="col-lucky">${item.luckyNo || ""}</td>
         <td class="col-name">${item.employeeName || ""}</td>
-        <td class="col-company">${item.company || ""}</td>
+        <td class="col-company">${item.company || item.companyName || ""}</td>
         <td class="col-prize">${item.prize || ""}</td>
-        <td class="col-status">${item.statusCollection || ""}</td>
+        <td class="col-collection">${getCollectionIcon(status)}</td>
       </tr>
     `;
   }).join("");
@@ -636,9 +690,8 @@ function downloadWord() {
     return `
       <tr>
         <td>${item.company || ""}</td>
-        <td>${item.totalWinner}</td>
-        <td>${item.collected}</td>
-        <td>${item.notCollected}</td>
+        <td>${item.collect}</td>
+        <td>${item.notCollect}</td>
       </tr>
     `;
   }).join("");
@@ -651,8 +704,8 @@ function downloadWord() {
 
       <style>
         @page {
-          size: A4 landscape;
-          margin: 0.5in;
+          size: A4 portrait;
+          margin: 0.4in;
         }
 
         body {
@@ -698,28 +751,58 @@ function downloadWord() {
           border: 1px solid #000;
           padding: 4px 5px;
           font-family: Arial, sans-serif;
-          font-size: 10px;
+          font-size: 9.5px;
           color: #000;
-          line-height: 1.1;
-          height: 22px;
+          line-height: 1.15;
+          height: 42px;
           vertical-align: middle;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: clip;
         }
 
         th {
           background: #d9d9d9;
           font-weight: bold;
           text-align: center;
+          height: 22px;
         }
 
-        .col-place { width: 55px; text-align: center; }
-        .col-lucky { width: 70px; text-align: center; }
-        .col-name { width: 170px; text-align: left; }
-        .col-company { width: 115px; text-align: center; }
-        .col-prize { width: 240px; text-align: left; }
-        .col-status { width: 105px; text-align: center; }
+        .col-place {
+          width: 45px;
+          text-align: center;
+          white-space: nowrap;
+        }
+
+        .col-lucky {
+          width: 52px;
+          text-align: center;
+          white-space: nowrap;
+        }
+
+        .col-name {
+          width: 120px;
+          text-align: left;
+          white-space: normal;
+        }
+
+        .col-company {
+          width: 85px;
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .col-prize {
+          width: 170px;
+          text-align: left;
+          white-space: normal;
+        }
+
+        .col-collection {
+          width: 60px;
+          text-align: center;
+          white-space: nowrap;
+          font-size: 13px;
+          font-weight: bold;
+        }
 
         .summary-title {
           margin-top: 18px;
@@ -736,7 +819,7 @@ function downloadWord() {
 
         .summary-table th,
         .summary-table td {
-          font-size: 10px;
+          font-size: 11px;
           height: 22px;
           white-space: nowrap;
           overflow: hidden;
@@ -748,8 +831,7 @@ function downloadWord() {
         }
 
         .summary-table td:nth-child(2),
-        .summary-table td:nth-child(3),
-        .summary-table td:nth-child(4) {
+        .summary-table td:nth-child(3) {
           text-align: center;
           width: 100px;
         }
@@ -776,7 +858,7 @@ function downloadWord() {
             <th class="col-name">Employee Name</th>
             <th class="col-company">Company</th>
             <th class="col-prize">Prize</th>
-            <th class="col-status">Status Collection</th>
+            <th class="col-collection">Collection</th>
           </tr>
         </thead>
 
@@ -785,15 +867,14 @@ function downloadWord() {
         </tbody>
       </table>
 
-      <div class="summary-title">Winner Summary</div>
+      <div class="summary-title">Collection Summary</div>
 
       <table class="summary-table">
         <thead>
           <tr>
             <th>Company</th>
-            <th>Total Winner</th>
-            <th>Total Collected</th>
-            <th>Total Not Collected</th>
+            <th>Total Collect</th>
+            <th>Total Not Collect</th>
           </tr>
         </thead>
 
@@ -802,9 +883,8 @@ function downloadWord() {
 
           <tr class="grand-total">
             <td>GRAND TOTAL</td>
-            <td>${document.getElementById("grandWinner").textContent}</td>
-            <td>${document.getElementById("grandCollected").textContent}</td>
-            <td>${document.getElementById("grandNotCollected").textContent}</td>
+            <td>${document.getElementById("grandCollect").textContent}</td>
+            <td>${document.getElementById("grandNotCollect").textContent}</td>
           </tr>
         </tbody>
       </table>
@@ -818,12 +898,14 @@ function downloadWord() {
   const a = document.createElement("a");
 
   a.href = url;
-  a.download = "Report_Winner_Lucky_Draw_Tropical_Dinner_2026.doc";
+  a.download = "Report_Lucky_Draw_Winner_Tropical_Dinner_2026.doc";
 
   document.body.appendChild(a);
   a.click();
+
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
+window.addEventListener("resize", equalizeWinnerRowHeights);
 loadWinnerReport();
