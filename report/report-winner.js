@@ -25,7 +25,7 @@ function cleanText(value) {
   return String(value || "").trim().toUpperCase();
 }
 
-function getPlaceNumberValue(value) {
+function parsePlaceNumber(value) {
   const match = String(value || "").match(/\d+/);
   return match ? Number(match[0]) : 999999;
 }
@@ -93,8 +93,8 @@ function sortReportData() {
   const sortOrder = document.getElementById("sortOrder").value;
 
   filteredData.sort((a, b) => {
-    const placeA = getPlaceNumberValue(a.placeNumber || a.place);
-    const placeB = getPlaceNumberValue(b.placeNumber || b.place);
+    const placeA = parsePlaceNumber(a.placeNumber || a.place);
+    const placeB = parsePlaceNumber(b.placeNumber || b.place);
     const nameA = cleanText(a.employeeName);
     const nameB = cleanText(b.employeeName);
     const companyA = cleanText(a.company || a.companyName);
@@ -106,7 +106,6 @@ function sortReportData() {
 
     if (sortField === "placeNumber") {
       compare = placeA - placeB;
-      if (compare === 0) compare = nameA.localeCompare(nameB);
     }
 
     if (sortField === "employeeName") {
@@ -124,7 +123,7 @@ function sortReportData() {
       if (compare === 0) compare = placeA - placeB;
     }
 
-    return sortOrder === "desc" ? compare * -1 : compare;
+    return sortOrder === "placeDesc" ? compare * -1 : compare;
   });
 }
 
@@ -237,6 +236,7 @@ function renderSummaryTable() {
 ===================================================== */
 
 function downloadPDF() {
+  try {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert("PDF library not loaded. Check jsPDF script link.");
     return;
@@ -400,6 +400,10 @@ function downloadPDF() {
   });
 
   doc.save("Report_Lucky_Draw_Winner_Tropical_Dinner_2026.pdf");
+  } catch (err) {
+    console.error("PDF download error:", err);
+    alert("PDF failed to download. Please press Ctrl + F5 and try again. Error: " + err.message);
+  }
 }
 
 /* =====================================================
