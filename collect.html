@@ -107,6 +107,33 @@
       (Gambar untuk tujuan paparan sahaja)
     </div>
 
+    <!-- CAMERA / PHOTO COLLECTION -->
+    <div id="collectionPhotoBox" class="collection-photo-box">
+
+      <label for="collectionPhotoInput" class="photo-upload-btn" id="photoUploadLabel">
+        📷 Take Winner Photo
+      </label>
+
+      <input
+        type="file"
+        id="collectionPhotoInput"
+        accept="image/*"
+        capture="environment"
+      >
+
+      <img
+        id="collectionPhotoPreview"
+        class="collection-photo-preview"
+        src=""
+        alt="Winner Collection Photo"
+      >
+
+      <div id="photoStatusText" class="photo-status-text">
+        Please take photo before collect.
+      </div>
+
+    </div>
+
     <button
       class="attend-btn collect-action-btn"
       id="collectBtn">
