@@ -64,7 +64,8 @@
 
     <button
       class="modal-close"
-      id="closePopupBtn">
+      id="closePopupBtn"
+      type="button">
       ×
     </button>
 
@@ -78,14 +79,12 @@
       id="popupEmployee">
     </div>
 
-    <div
-      class="modal-info">
+    <div class="modal-info">
       Lucky No :
       <span id="popupLuckyNo"></span>
     </div>
 
-    <div
-      class="modal-info">
+    <div class="modal-info">
       Company :
       <span id="popupCompany"></span>
     </div>
@@ -107,42 +106,47 @@
       (Gambar untuk tujuan paparan sahaja)
     </div>
 
-    <!-- CAMERA / PHOTO COLLECTION -->
-    <div id="collectionPhotoBox" class="collection-photo-box">
-
-      <label for="collectionPhotoInput" class="photo-upload-btn" id="photoUploadLabel">
-        📷 Take Winner Photo
-      </label>
-
+    <!-- PHOTO COLLECTION AREA -->
+    <div class="winner-photo-box" id="winnerPhotoBox">
       <input
         type="file"
-        id="collectionPhotoInput"
+        id="winnerPhotoInput"
         accept="image/*"
         capture="environment"
+        hidden
       >
+
+      <button
+        class="photo-action-btn"
+        id="takePhotoBtn"
+        type="button">
+        📸 Take Winner Photo
+      </button>
 
       <img
-        id="collectionPhotoPreview"
-        class="collection-photo-preview"
-        src=""
-        alt="Winner Collection Photo"
+        id="winnerPhotoPreview"
+        class="winner-photo-preview"
+        alt="Winner Collection Photo Preview"
       >
 
-      <div id="photoStatusText" class="photo-status-text">
-        Please take photo before collect.
+      <div
+        class="photo-status"
+        id="photoStatus">
+        Take winner photo before collect.
       </div>
-
     </div>
 
     <button
       class="attend-btn collect-action-btn"
-      id="collectBtn">
+      id="collectBtn"
+      type="button">
       Collect
     </button>
 
   </div>
 
 </div>
+
 <script src="collect.js"></script>
 
 </body>
