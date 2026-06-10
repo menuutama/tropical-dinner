@@ -8,6 +8,60 @@
 
 <link rel="stylesheet" href="style2.css">
 <link rel="stylesheet" href="menu.css">
+<style>
+/* =========================
+   ATTENDANCE FILTER ALIGN FIX
+   Company dropdown full name + search aligned
+========================= */
+.attend-filter-box{
+  width:min(780px,92%);
+  margin:0 auto 30px;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:12px !important;
+  flex-wrap:nowrap !important;
+}
+
+#companyFilter{
+  width:380px !important;
+  min-width:380px !important;
+  height:49px !important;
+  flex:0 0 380px !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+.attend-filter-box .input-container{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+}
+
+.attend-filter-box .input-container input{
+  width:100% !important;
+}
+
+@media(max-width:768px){
+  .attend-filter-box{
+    width:94% !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:10px !important;
+  }
+
+  #companyFilter{
+    width:100% !important;
+    min-width:0 !important;
+    flex:0 0 auto !important;
+  }
+
+  .attend-filter-box .input-container{
+    width:100% !important;
+  }
+}
+</style>
+
 </head>
 
 <body class="attend-page">
