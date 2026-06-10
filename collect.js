@@ -7,7 +7,7 @@
    - Save COLLECT status + photo link in Google Sheet
 ========================================================= */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxWhCLOr_aSgsX75dkYrc-Ci4fnuvVTXMFS1CviCRoLuUfKtR99ED6SXooaWdZwtKTJ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxLpfMSprrhUZz6qCWOWv7SLyouKHls5d8wCFcOyPr5CIDQTTVz23gfpNTPdFUHORz8/exec";
 
 const PHOTO_MAX_WIDTH = 800;
 const PHOTO_JPEG_QUALITY = 0.62;
@@ -443,7 +443,12 @@ function collectPrize(){
   })
   .catch(function(err){
     console.error("SAVE ERROR:", err);
-    alert(err.message || "Connection error. Please try again.");
+    const msg = String(err && err.message ? err.message : "Connection error. Please try again.");
+    if(msg.includes("DriveApp") || msg.includes("Required permissions") || msg.includes("permission")){
+      alert("Google Drive permission belum settle. Run testDrivePermission() dalam Apps Script, tekan Allow, kemudian Deploy New Version.\n\nDetail: " + msg);
+    }else{
+      alert(msg);
+    }
 
     isSaving = false;
     collectBtn.disabled = false;
