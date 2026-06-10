@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwG5oVRt21Eu0xVENkj_OGfr27bfhRSZAP4Pkx-UufnA7G7TbWq0VlJgWquWm2QeXOn/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyEbXJBsBr5NxlSLXyBKc-mgDkoh4p3XBJL-H6cIrExcvm5ail9RGh3HjcJkMnxsijS/exec";
 
 let allData = [];
 let selectedRow = null;
