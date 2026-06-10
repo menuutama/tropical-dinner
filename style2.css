@@ -738,84 +738,109 @@ table button:nth-child(2){
   }
 }
 
-/* ========================================
-   COLLECT PHOTO CAMERA + WATERMARK PREVIEW
-   Added only for collect.html popup
-======================================== */
+/* =========================================================
+   WINNER COLLECTION PHOTO FUNCTION
+   Added only for collect.html popup. Does not disturb other pages.
+========================================================= */
 
-#collectPopup .collection-photo-box{
-  width:100% !important;
-  margin:8px 0 12px !important;
-  padding:10px !important;
-  border:1px solid rgba(77,163,255,.25) !important;
-  border-radius:13px !important;
-  background:rgba(5,13,26,.36) !important;
+#collectPopup.winner-modal{
+  overflow-y:auto !important;
+  align-items:flex-start !important;
+  padding-top:18px !important;
+  padding-bottom:18px !important;
+  -webkit-overflow-scrolling:touch !important;
 }
 
-#collectPopup #collectionPhotoInput{
-  display:none !important;
+#collectPopup .collect-modal-box{
+  max-height:none !important;
+  overflow:visible !important;
+  margin:auto !important;
 }
 
-#collectPopup .photo-upload-btn{
-  width:100% !important;
-  min-height:38px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:7px !important;
-  border-radius:10px !important;
-  border:1px solid rgba(139,196,255,.45) !important;
-  background:linear-gradient(135deg,rgba(29,111,255,.9) 0%,rgba(0,78,204,.9) 100%) !important;
-  color:#ffffff !important;
-  font-size:13px !important;
-  font-weight:700 !important;
-  cursor:pointer !important;
-  box-shadow:0 4px 13px rgba(29,111,255,.28) !important;
-  user-select:none !important;
+.winner-photo-box{
+  width:100%;
+  margin:16px 0 14px;
+  padding:12px;
+  border:1px solid rgba(77,163,255,.22);
+  border-radius:14px;
+  background:rgba(4,18,42,.28);
+  box-shadow:inset 0 0 16px rgba(77,163,255,.08);
 }
 
-#collectPopup .photo-upload-btn.disabled{
-  opacity:.55 !important;
-  pointer-events:none !important;
-  cursor:not-allowed !important;
+.photo-action-btn{
+  width:100%;
+  min-height:46px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#1d6fff 0%,#005bea 100%);
+  color:#ffffff;
+  font-size:15px;
+  font-weight:800;
+  font-family:'Poppins', Arial, sans-serif;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(29,111,255,.45);
 }
 
-#collectPopup .collection-photo-preview{
-  width:100% !important;
-  max-height:150px !important;
-  object-fit:contain !important;
-  margin:9px auto 6px !important;
+.photo-action-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+.winner-photo-preview{
   display:none;
-  border-radius:10px !important;
-  background:#000000 !important;
-  border:1px solid rgba(255,255,255,.12) !important;
+  width:100%;
+  max-height:230px;
+  object-fit:contain;
+  margin:12px auto 8px;
+  border-radius:12px;
+  background:#000000;
+  box-shadow:0 0 14px rgba(77,163,255,.22);
 }
 
-#collectPopup .photo-status-text{
-  margin-top:7px !important;
-  font-size:10.5px !important;
-  line-height:1.25 !important;
-  color:rgba(255,255,255,.72) !important;
-  text-align:center !important;
+.photo-status{
+  font-size:12px;
+  line-height:1.35;
+  color:rgba(255,255,255,.72);
+  text-align:center;
+  margin-top:8px;
+}
+
+.mini-photo-label{
+  margin-top:4px;
+  font-size:10px;
+  color:#66d98a;
+  font-weight:700;
+  line-height:1.2;
 }
 
 @media(max-width:768px){
-
-  #collectPopup .collection-photo-box{
-    padding:9px !important;
-    margin:7px 0 11px !important;
+  #collectPopup.winner-modal{
+    align-items:flex-start !important;
+    padding:10px 8px 28px !important;
   }
 
-  #collectPopup .photo-upload-btn{
-    min-height:38px !important;
-    font-size:12.5px !important;
+  #collectPopup .collect-modal-box{
+    max-width:94vw !important;
+    margin:0 auto 22px !important;
+    padding-bottom:18px !important;
   }
 
-  #collectPopup .collection-photo-preview{
-    max-height:135px !important;
+  .winner-photo-box{
+    margin-top:14px;
+    padding:10px;
   }
 
-  #collectPopup .photo-status-text{
-    font-size:10px !important;
+  .photo-action-btn{
+    min-height:44px;
+    font-size:14px;
+  }
+
+  .winner-photo-preview{
+    max-height:210px;
+  }
+
+  .photo-status{
+    font-size:11.5px;
   }
 }
