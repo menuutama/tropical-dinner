@@ -1,14 +1,23 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbyEbXJBsBr5NxlSLXyBKc-mgDkoh4p3XBJL-H6cIrExcvm5ail9RGh3HjcJkMnxsijS/exec";
+/* =========================================================
+   LUCKY DRAW PRIZE COLLECTION SYSTEM
+   - Camera photo required before collect
+   - Compress photo on phone/tablet
+   - Add watermark before upload
+   - Upload photo to Google Drive through Code.gs
+   - Save COLLECT status + photo link in Google Sheet
+========================================================= */
 
-let allData = [];
-let selectedRow = null;
-let compressedPhotoBase64 = "";
-let compressedPhotoFileName = "";
-let compressedPhotoDataUrl = "";
+const API_URL = "https://script.google.com/macros/s/AKfycbxC0dpTi6EnNUtFB1sviGCi54PK9lHq-YXRFnDB2z03cKZQhtrVlrFqV8alf6fzCpoH/exec";
 
 const PHOTO_MAX_WIDTH = 800;
 const PHOTO_JPEG_QUALITY = 0.62;
 const WATERMARK_TEXT = "LUCKY DRAW WINNER COLLECTION - TROPICAL DINNER 2026";
+
+let allData = [];
+let selectedRow = null;
+let compressedPhotoBase64 = "";
+let compressedPhotoMimeType = "image/jpeg";
+let isSaving = false;
 
 const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearchBtn");
@@ -25,65 +34,60 @@ const popupCompany = document.getElementById("popupCompany");
 const popupPrize = document.getElementById("popupPrize");
 const popupImage = document.getElementById("popupImage");
 
-const collectionPhotoInput = document.getElementById("collectionPhotoInput");
-const collectionPhotoPreview = document.getElementById("collectionPhotoPreview");
-const photoStatusText = document.getElementById("photoStatusText");
-const photoUploadLabel = document.getElementById("photoUploadLabel");
+const winnerPhotoInput = document.getElementById("winnerPhotoInput");
+const takePhotoBtn = document.getElementById("takePhotoBtn");
+const winnerPhotoPreview = document.getElementById("winnerPhotoPreview");
+const photoStatus = document.getElementById("photoStatus");
 
 document.addEventListener("DOMContentLoaded", function(){
-
   loadData(true);
 
   setInterval(function(){
-    loadData(false);
+    if(!popup.classList.contains("show") && !isSaving){
+      loadData(false);
+    }
   }, 3000);
-
 });
 
 searchInput.addEventListener("input", function(){
-
   clearSearchBtn.style.display = searchInput.value.trim() ? "block" : "none";
   renderTable();
-
 });
 
 clearSearchBtn.addEventListener("click", function(){
-
   searchInput.value = "";
   clearSearchBtn.style.display = "none";
   renderTable();
   searchInput.focus();
-
 });
 
 closePopupBtn.addEventListener("click", closePopup);
 
 popup.addEventListener("click", function(e){
-
   if(e.target === popup){
     closePopup();
   }
-
 });
 
 document.addEventListener("keydown", function(e){
-
   if(e.key === "Escape"){
     closePopup();
   }
-
 });
 
-collectBtn.addEventListener("click", collectPrize);
+takePhotoBtn.addEventListener("click", function(){
+  if(isSaving) return;
+  winnerPhotoInput.click();
+});
 
-collectionPhotoInput.addEventListener("change", handleCollectionPhoto);
+winnerPhotoInput.addEventListener("change", handleWinnerPhotoChange);
+collectBtn.addEventListener("click", collectPrize);
 
 /* =========================
    LOAD DATA
 ========================= */
 
 function loadData(showLoading){
-
   if(showLoading){
     tableBody.innerHTML = `
       <tr>
@@ -99,7 +103,6 @@ function loadData(showLoading){
     return res.json();
   })
   .then(function(data){
-
     allData = (data || [])
       .filter(function(item){
         return String(item.luckyNo || "").trim() !== "";
@@ -109,20 +112,15 @@ function loadData(showLoading){
       });
 
     renderTable();
-
   })
   .catch(function(err){
-
     console.error("FETCH ERROR:", err);
-
     tableBody.innerHTML = `
       <tr>
         <td colspan="5">Failed to load data</td>
       </tr>
     `;
-
   });
-
 }
 
 /* =========================
@@ -130,11 +128,9 @@ function loadData(showLoading){
 ========================= */
 
 function renderTable(){
-
   const keyword = searchInput.value.trim().toLowerCase();
 
   let filtered = allData.filter(function(item){
-
     return (
       String(item.place || "").toLowerCase().includes(keyword) ||
       String(item.luckyNo || "").toLowerCase().includes(keyword) ||
@@ -142,7 +138,6 @@ function renderTable(){
       String(item.company || item.companyName || "").toLowerCase().includes(keyword) ||
       String(item.prize || "").toLowerCase().includes(keyword)
     );
-
   });
 
   filtered.sort(function(a, b){
@@ -150,20 +145,17 @@ function renderTable(){
   });
 
   if(filtered.length === 0){
-
     tableBody.innerHTML = `
       <tr>
         <td colspan="5">No data found</td>
       </tr>
     `;
-
     return;
-
   }
 
   tableBody.innerHTML = filtered.map(function(item){
-
     const isCollected = String(item.status || "").toUpperCase() === "COLLECT";
+    const hasPhoto = String(item.collectPhotoUrl || item.photoUrl || "").trim() !== "";
     const index = allData.indexOf(item);
 
     return `
@@ -173,14 +165,12 @@ function renderTable(){
       >
         <td>${escapeHTML(item.place || "")}</td>
         <td>${escapeHTML(item.luckyNo || "")}</td>
-        <td>${escapeHTML(item.winner || item.employeeName || "")}</td>
+        <td>${escapeHTML(item.winner || item.employeeName || "")}${hasPhoto ? '<div class="mini-photo-label">📷 Photo Saved</div>' : ''}</td>
         <td>${escapeHTML(item.company || item.companyName || "")}</td>
         <td>${escapeHTML(item.prize || "")}</td>
       </tr>
     `;
-
   }).join("");
-
 }
 
 /* =========================
@@ -188,12 +178,10 @@ function renderTable(){
 ========================= */
 
 function openPopup(index){
-
   selectedRow = allData[index];
-
   if(!selectedRow) return;
 
-  resetPhotoCapture();
+  resetPhotoState();
 
   popupPlace.textContent = selectedRow.place || "";
   popupEmployee.textContent = selectedRow.winner || selectedRow.employeeName || "";
@@ -212,31 +200,28 @@ function openPopup(index){
   }
 
   const isCollected = String(selectedRow.status || "").toUpperCase() === "COLLECT";
-  const existingPhoto = String(selectedRow.collectPhotoUrl || selectedRow.photoUrl || "").trim();
+  const oldPhotoUrl = String(selectedRow.collectPhotoUrl || selectedRow.photoUrl || "").trim();
 
   if(isCollected){
     collectBtn.textContent = "Already Collect";
     collectBtn.disabled = true;
-    collectionPhotoInput.disabled = true;
-    photoUploadLabel.classList.add("disabled");
+    takePhotoBtn.disabled = true;
 
-    if(existingPhoto){
-      collectionPhotoPreview.src = existingPhoto;
-      collectionPhotoPreview.style.display = "block";
-      photoStatusText.textContent = "Photo already saved.";
+    if(oldPhotoUrl){
+      winnerPhotoPreview.src = oldPhotoUrl;
+      winnerPhotoPreview.style.display = "block";
+      photoStatus.textContent = "Photo already saved.";
     }else{
-      photoStatusText.textContent = "Already collect. No photo link found.";
+      photoStatus.textContent = "Already collected. No photo link found.";
     }
   }else{
     collectBtn.textContent = "Collect";
     collectBtn.disabled = true;
-    collectionPhotoInput.disabled = false;
-    photoUploadLabel.classList.remove("disabled");
-    photoStatusText.textContent = "Please take photo before collect.";
+    takePhotoBtn.disabled = false;
+    photoStatus.textContent = "Take winner photo before collect.";
   }
 
   popup.classList.add("show");
-
 }
 
 /* =========================
@@ -244,175 +229,148 @@ function openPopup(index){
 ========================= */
 
 function closePopup(){
-
+  if(isSaving) return;
   popup.classList.remove("show");
   selectedRow = null;
   popupImage.src = "";
-  resetPhotoCapture();
+  resetPhotoState();
+}
 
+function resetPhotoState(){
+  compressedPhotoBase64 = "";
+  compressedPhotoMimeType = "image/jpeg";
+  winnerPhotoInput.value = "";
+  winnerPhotoPreview.removeAttribute("src");
+  winnerPhotoPreview.style.display = "none";
+  photoStatus.textContent = "Take winner photo before collect.";
+  collectBtn.disabled = true;
+  collectBtn.textContent = "Collect";
+  takePhotoBtn.disabled = false;
 }
 
 /* =========================
    PHOTO COMPRESS + WATERMARK
 ========================= */
 
-function handleCollectionPhoto(){
-
-  const file = collectionPhotoInput.files && collectionPhotoInput.files[0];
-
-  if(!file || !selectedRow){
-    resetPhotoCapture();
-    return;
-  }
+function handleWinnerPhotoChange(e){
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
 
   if(!file.type || !file.type.startsWith("image/")){
-    alert("Please select image file only.");
-    resetPhotoCapture();
+    alert("Please choose image only.");
+    resetPhotoState();
     return;
   }
 
+  takePhotoBtn.disabled = true;
   collectBtn.disabled = true;
-  photoStatusText.textContent = "Processing photo...";
+  photoStatus.textContent = "Processing photo...";
 
-  compressAndWatermarkPhoto(file, selectedRow)
+  compressAndWatermarkPhoto(file)
     .then(function(result){
-
       compressedPhotoBase64 = result.base64;
-      compressedPhotoDataUrl = result.dataUrl;
-      compressedPhotoFileName = result.fileName;
+      compressedPhotoMimeType = result.mimeType;
 
-      collectionPhotoPreview.src = compressedPhotoDataUrl;
-      collectionPhotoPreview.style.display = "block";
+      winnerPhotoPreview.src = result.dataUrl;
+      winnerPhotoPreview.style.display = "block";
 
-      photoStatusText.textContent = "Photo ready. Size: " + formatBytes(result.sizeBytes);
+      photoStatus.textContent = "Photo ready. Press Collect to save.";
+      takePhotoBtn.disabled = false;
       collectBtn.disabled = false;
-
     })
     .catch(function(err){
-
       console.error("PHOTO ERROR:", err);
-      alert("Photo processing failed. Please retake photo.");
-      resetPhotoCapture();
-
+      alert("Photo cannot be processed. Please take photo again.");
+      resetPhotoState();
     });
-
 }
 
-function compressAndWatermarkPhoto(file, rowData){
-
+function compressAndWatermarkPhoto(file){
   return new Promise(function(resolve, reject){
-
     const reader = new FileReader();
 
-    reader.onload = function(e){
-
+    reader.onload = function(){
       const img = new Image();
 
       img.onload = function(){
+        let width = img.width;
+        let height = img.height;
 
-        try{
-          const originalWidth = img.naturalWidth || img.width;
-          const originalHeight = img.naturalHeight || img.height;
-
-          const scale = Math.min(1, PHOTO_MAX_WIDTH / originalWidth);
-          const canvasWidth = Math.round(originalWidth * scale);
-          const canvasHeight = Math.round(originalHeight * scale);
-
-          const canvas = document.createElement("canvas");
-          canvas.width = canvasWidth;
-          canvas.height = canvasHeight;
-
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-
-          drawWatermark(ctx, canvasWidth, canvasHeight, rowData);
-
-          const dataUrl = canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY);
-          const base64 = dataUrl.split(",")[1] || "";
-          const sizeBytes = Math.round((base64.length * 3) / 4);
-
-          resolve({
-            dataUrl:dataUrl,
-            base64:base64,
-            sizeBytes:sizeBytes,
-            fileName:buildPhotoFileName(rowData)
-          });
-        }catch(err){
-          reject(err);
+        if(width > PHOTO_MAX_WIDTH){
+          height = Math.round(height * (PHOTO_MAX_WIDTH / width));
+          width = PHOTO_MAX_WIDTH;
         }
 
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        addWatermark(ctx, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY);
+        const base64 = dataUrl.split(",")[1];
+
+        resolve({
+          dataUrl: dataUrl,
+          base64: base64,
+          mimeType: "image/jpeg"
+        });
       };
 
       img.onerror = reject;
-      img.src = e.target.result;
-
+      img.src = reader.result;
     };
 
     reader.onerror = reject;
     reader.readAsDataURL(file);
-
   });
-
 }
 
-function drawWatermark(ctx, width, height, rowData){
-
-  const place = String(rowData.place || "").trim();
-  const luckyNo = String(rowData.luckyNo || "").trim();
-  const nowText = formatDateTime(new Date());
-  const detailText = "Place: " + place + " | Lucky No: " + luckyNo + " | " + nowText;
-
-  const boxHeight = Math.max(78, Math.round(height * 0.16));
-  const y = height - boxHeight;
+function addWatermark(ctx, width, height){
+  const padding = Math.max(10, Math.round(width * 0.018));
+  const barHeight = Math.max(44, Math.round(height * 0.09));
+  const y = height - barHeight;
 
   ctx.save();
-  ctx.fillStyle = "rgba(0,0,0,0.62)";
-  ctx.fillRect(0, y, width, boxHeight);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.58)";
+  ctx.fillRect(0, y, width, barHeight);
+
+  const mainFontSize = Math.max(12, Math.round(width * 0.026));
+  const subFontSize = Math.max(10, Math.round(width * 0.020));
 
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  const mainFontSize = Math.max(18, Math.round(width * 0.033));
-  const detailFontSize = Math.max(14, Math.round(width * 0.024));
-
-  ctx.font = "700 " + mainFontSize + "px Arial, sans-serif";
   ctx.fillStyle = "#ffffff";
-  ctx.shadowColor = "rgba(0,0,0,0.9)";
-  ctx.shadowBlur = 5;
-  ctx.fillText(WATERMARK_TEXT, width / 2, y + boxHeight * 0.36, width - 24);
+  ctx.font = "700 " + mainFontSize + "px Arial, sans-serif";
+  ctx.fillText(WATERMARK_TEXT, width / 2, y + barHeight * 0.34, width - padding * 2);
 
-  ctx.font = "600 " + detailFontSize + "px Arial, sans-serif";
-  ctx.fillStyle = "#8bc4ff";
-  ctx.fillText(detailText, width / 2, y + boxHeight * 0.70, width - 24);
+  const details = buildWatermarkDetails();
+  ctx.fillStyle = "rgba(255,255,255,0.88)";
+  ctx.font = "500 " + subFontSize + "px Arial, sans-serif";
+  ctx.fillText(details, width / 2, y + barHeight * 0.70, width - padding * 2);
 
   ctx.restore();
-
 }
 
-function resetPhotoCapture(){
+function buildWatermarkDetails(){
+  const place = selectedRow ? String(selectedRow.place || "").trim() : "";
+  const luckyNo = selectedRow ? String(selectedRow.luckyNo || "").trim() : "";
+  const now = new Date();
+  const dateTime = now.toLocaleString("en-MY", {
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit",
+    hour:"2-digit",
+    minute:"2-digit",
+    hour12:false
+  });
 
-  compressedPhotoBase64 = "";
-  compressedPhotoDataUrl = "";
-  compressedPhotoFileName = "";
-
-  if(collectionPhotoInput){
-    collectionPhotoInput.value = "";
-    collectionPhotoInput.disabled = false;
-  }
-
-  if(collectionPhotoPreview){
-    collectionPhotoPreview.src = "";
-    collectionPhotoPreview.style.display = "none";
-  }
-
-  if(photoStatusText){
-    photoStatusText.textContent = "Please take photo before collect.";
-  }
-
-  if(photoUploadLabel){
-    photoUploadLabel.classList.remove("disabled");
-  }
-
+  return "Place: " + place + " | Lucky No: " + luckyNo + " | " + dateTime;
 }
 
 /* =========================
@@ -420,8 +378,7 @@ function resetPhotoCapture(){
 ========================= */
 
 function collectPrize(){
-
-  if(!selectedRow) return;
+  if(!selectedRow || isSaving) return;
 
   const row = selectedRow.row;
 
@@ -437,63 +394,59 @@ function collectPrize(){
     return;
   }
 
+  isSaving = true;
   collectBtn.disabled = true;
-  collectionPhotoInput.disabled = true;
-  photoUploadLabel.classList.add("disabled");
-  collectBtn.textContent = "Uploading...";
-  photoStatusText.textContent = "Uploading photo and saving collection...";
+  takePhotoBtn.disabled = true;
+  collectBtn.textContent = "Saving...";
+  photoStatus.textContent = "Uploading photo and saving collection...";
 
-  const payload = new URLSearchParams();
-  payload.append("action", "collectPrizeWithPhoto");
-  payload.append("row", row);
-  payload.append("photoBase64", compressedPhotoBase64);
-  payload.append("fileName", compressedPhotoFileName);
-  payload.append("mimeType", "image/jpeg");
+  const payload = {
+    action: "collectPrizeWithPhoto",
+    row: row,
+    place: selectedRow.place || "",
+    luckyNo: selectedRow.luckyNo || "",
+    winner: selectedRow.winner || selectedRow.employeeName || "",
+    company: selectedRow.company || selectedRow.companyName || "",
+    prize: selectedRow.prize || "",
+    photoBase64: compressedPhotoBase64,
+    photoMimeType: compressedPhotoMimeType
+  };
 
   fetch(API_URL, {
-    method:"POST",
-    body:payload,
-    cache:"no-store"
+    method: "POST",
+    body: JSON.stringify(payload),
+    cache: "no-store"
   })
   .then(function(res){
     return res.json();
   })
   .then(function(result){
-
-    if(result.status === "success"){
-
+    if(result && result.status === "success"){
       selectedRow.status = "COLLECT";
       selectedRow.collectPhotoUrl = result.photoUrl || "";
 
-      closePopup();
-      loadData(false);
-      alert("Prize collection saved with photo.");
+      photoStatus.textContent = "Saved successfully.";
+      collectBtn.textContent = "Saved";
 
+      setTimeout(function(){
+        isSaving = false;
+        closePopup();
+        loadData(false);
+      }, 650);
     }else{
-
-      alert(result.message || "Failed to save collection status.");
-      collectBtn.disabled = false;
-      collectionPhotoInput.disabled = false;
-      photoUploadLabel.classList.remove("disabled");
-      collectBtn.textContent = "Collect";
-      photoStatusText.textContent = "Photo ready. Please try collect again.";
-
+      throw new Error((result && result.message) ? result.message : "Failed to save collection.");
     }
-
   })
   .catch(function(err){
-
     console.error("SAVE ERROR:", err);
+    alert(err.message || "Connection error. Please try again.");
 
-    alert("Connection error. Please try again.");
+    isSaving = false;
     collectBtn.disabled = false;
-    collectionPhotoInput.disabled = false;
-    photoUploadLabel.classList.remove("disabled");
+    takePhotoBtn.disabled = false;
     collectBtn.textContent = "Collect";
-    photoStatusText.textContent = "Photo ready. Please try collect again.";
-
+    photoStatus.textContent = "Photo ready. Please try collect again.";
   });
-
 }
 
 /* =========================
@@ -502,75 +455,8 @@ function collectPrize(){
 ========================= */
 
 function getPlaceNumber(place){
-
   const match = String(place || "").match(/\d+/);
-
   return match ? Number(match[0]) : 999999;
-
-}
-
-/* =========================
-   HELPERS
-========================= */
-
-function buildPhotoFileName(rowData){
-
-  const place = cleanFileText(rowData.place || "PLACE");
-  const luckyNo = cleanFileText(rowData.luckyNo || "LUCKYNO");
-  const winner = cleanFileText(rowData.winner || rowData.employeeName || "WINNER");
-  const stamp = formatFileDate(new Date());
-
-  return place + "_" + luckyNo + "_" + winner + "_" + stamp + ".jpg";
-
-}
-
-function cleanFileText(value){
-
-  return String(value || "")
-    .trim()
-    .replace(/[^a-zA-Z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .substring(0, 45) || "DATA";
-
-}
-
-function formatFileDate(date){
-
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  const ss = String(date.getSeconds()).padStart(2, "0");
-
-  return y + m + d + "_" + hh + mm + ss;
-
-}
-
-function formatDateTime(date){
-
-  const d = String(date.getDate()).padStart(2, "0");
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const y = date.getFullYear();
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-
-  return d + "/" + m + "/" + y + " " + hh + ":" + mm;
-
-}
-
-function formatBytes(bytes){
-
-  if(bytes < 1024){
-    return bytes + " B";
-  }
-
-  if(bytes < 1024 * 1024){
-    return Math.round(bytes / 1024) + " KB";
-  }
-
-  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-
 }
 
 /* =========================
@@ -578,12 +464,10 @@ function formatBytes(bytes){
 ========================= */
 
 function escapeHTML(value){
-
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
 }
