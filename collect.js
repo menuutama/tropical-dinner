@@ -7,7 +7,7 @@
    - Save COLLECT status + photo link in Google Sheet
 ========================================================= */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxC0dpTi6EnNUtFB1sviGCi54PK9lHq-YXRFnDB2z03cKZQhtrVlrFqV8alf6fzCpoH/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwn7YbvEM9_2Vmr9w4-XTJgOZsW_7VwfIJ5ge5AVbIFpsoXKASGwXtQSFLfAzEwUx6g/exec";
 
 const PHOTO_MAX_WIDTH = 800;
 const PHOTO_JPEG_QUALITY = 0.62;
@@ -208,7 +208,7 @@ function openPopup(index){
     takePhotoBtn.disabled = true;
 
     if(oldPhotoUrl){
-      winnerPhotoPreview.src = oldPhotoUrl;
+      winnerPhotoPreview.src = getDriveImagePreviewUrl(oldPhotoUrl);
       winnerPhotoPreview.style.display = "block";
       photoStatus.textContent = "Photo already saved.";
     }else{
@@ -424,6 +424,10 @@ function collectPrize(){
     if(result && result.status === "success"){
       selectedRow.status = "COLLECT";
       selectedRow.collectPhotoUrl = result.photoUrl || "";
+      if(selectedRow.collectPhotoUrl){
+        winnerPhotoPreview.src = getDriveImagePreviewUrl(selectedRow.collectPhotoUrl);
+        winnerPhotoPreview.style.display = "block";
+      }
 
       photoStatus.textContent = "Saved successfully.";
       collectBtn.textContent = "Saved";
@@ -447,6 +451,41 @@ function collectPrize(){
     collectBtn.textContent = "Collect";
     photoStatus.textContent = "Photo ready. Please try collect again.";
   });
+}
+
+
+/* =========================
+   GOOGLE DRIVE IMAGE PREVIEW FIX
+   Convert normal Drive link to image link that works in <img>.
+========================= */
+
+function getDriveImagePreviewUrl(url){
+  const raw = String(url || "").trim();
+  if(!raw) return "";
+
+  if(raw.includes("drive.google.com/thumbnail")){
+    return raw;
+  }
+
+  let fileId = "";
+
+  let match = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(match && match[1]){
+    fileId = match[1];
+  }
+
+  if(!fileId){
+    match = raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if(match && match[1]){
+      fileId = match[1];
+    }
+  }
+
+  if(fileId){
+    return "https://drive.google.com/thumbnail?id=" + fileId + "&sz=w1000";
+  }
+
+  return raw;
 }
 
 /* =========================
