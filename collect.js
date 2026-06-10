@@ -7,7 +7,7 @@
    - Save COLLECT status + photo link in Google Sheet
 ========================================================= */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwn7YbvEM9_2Vmr9w4-XTJgOZsW_7VwfIJ5ge5AVbIFpsoXKASGwXtQSFLfAzEwUx6g/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbx7_k8I8iPLoDpcGWIM6XvQq5StM6Q-O55dUCHEbTZERDLWewSz1wn6qTfhMn0Rs0DO/exec";
 
 const PHOTO_MAX_WIDTH = 800;
 const PHOTO_JPEG_QUALITY = 0.62;
