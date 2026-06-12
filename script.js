@@ -1,10 +1,22 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwh2yJfQRzpp24vNW_O1MrDDYIHuX5sUtlI1ogmwChiQZFZ-YWM22M2ZYNveQmSM3Ys/exec";
+/* =====================================================
+   TROPICAL DINNER 2026 - WINNER DISPLAY UPGRADE
+   Guest/User mode  : read winner.json from GitHub Pages
+   Admin mode       : use GAS API for publish / clear / full data
+   Interface        : same as previous version
+===================================================== */
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwBCulntEyf1UIU7PjLUELWgq_hBKgXTaDiyJpdzQyjJxtwY3v0ICPNzvtdKrSHoomj/exec";
+const PUBLIC_JSON_URL = "winner.json";
+
 const ROWS_PER_PAGE = 10;
 const PUBLISH_WORD = "PUBLISH";
+const GUEST_REFRESH_MS = 20000;   // User biasa: 20 saat, ringan untuk 200 guest
+const ADMIN_REFRESH_MS = 3000;    // Admin mode: lebih cepat sikit untuk semak publish
 
 let allData = [];
 let visibleData = [];
 let slideInterval = null;
+let refreshInterval = null;
 let currentPage = 1;
 let lastDataHash = "";
 let isAdminMode = false;
@@ -18,7 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupModal();
   setupAdminPublishButtons();
   requestAdminStatusFromParent();
-  loadData();
+  loadData(true);
+  startAutoRefresh();
 });
 
 window.addEventListener("message", (event) => {
@@ -42,6 +55,8 @@ function requestAdminStatusFromParent(){
 }
 
 function enableAdminMode(){
+  if(isAdminMode) return;
+
   isAdminMode = true;
 
   const panel = document.getElementById("publishPanel");
@@ -49,8 +64,19 @@ function enableAdminMode(){
     panel.style.display = "block";
   }
 
-  applyVisibilityRule();
-  renderAfterDataChange();
+  // Admin perlu nampak semua row, jadi admin baca terus dari GAS.
+  loadData(true);
+  startAutoRefresh();
+}
+
+function startAutoRefresh(){
+  if(refreshInterval){
+    clearInterval(refreshInterval);
+  }
+
+  refreshInterval = setInterval(() => {
+    loadData(false);
+  }, isAdminMode ? ADMIN_REFRESH_MS : GUEST_REFRESH_MS);
 }
 
 /* =========================
@@ -118,7 +144,6 @@ async function publishWinnerRange(){
 
   const fromInput = document.getElementById("publishFrom");
   const toInput = document.getElementById("publishTo");
-  const note = document.getElementById("publishNote");
 
   const from = Number(fromInput?.value || 0);
   const to = Number(toInput?.value || 0);
@@ -128,7 +153,7 @@ async function publishWinnerRange(){
     return;
   }
 
-  setPublishNote("Publishing...", false);
+  setPublishNote("Publishing winner list and updating winner.json...", false);
 
   try{
     const url = `${API_URL}?action=publishRange&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&time=${Date.now()}`;
@@ -136,14 +161,14 @@ async function publishWinnerRange(){
     const result = await response.json();
 
     if(result.success){
-      setPublishNote(`Done. ${result.publishedCount || 0} winner(s) published for place ${from} to ${to}.`, false);
+      setPublishNote(`Done. ${result.publishedCount || 0} winner(s) published. winner.json updated for guest display.`, false);
       await loadData(true);
     }else{
       setPublishNote(result.message || "Publish failed.", true);
     }
   }catch(err){
     console.error(err);
-    setPublishNote("Publish failed. Check Apps Script deployment / permission.", true);
+    setPublishNote("Publish failed. Check Apps Script deployment, GitHub token or permission.", true);
   }
 }
 
@@ -157,7 +182,7 @@ async function clearAllPublish(){
     return;
   }
 
-  setPublishNote("Clearing...", false);
+  setPublishNote("Clearing publish status and updating winner.json...", false);
 
   try{
     const response = await fetch(`${API_URL}?action=clearPublish&time=${Date.now()}`, {
@@ -167,14 +192,14 @@ async function clearAllPublish(){
     const result = await response.json();
 
     if(result.success){
-      setPublishNote("Done. Semua word PUBLISH dekat column H sudah dipadam.", false);
+      setPublishNote("Done. Semua PUBLISH dipadam dan winner.json dikosongkan untuk guest display.", false);
       await loadData(true);
     }else{
       setPublishNote(result.message || "Clear failed.", true);
     }
   }catch(err){
     console.error(err);
-    setPublishNote("Clear failed. Check Apps Script deployment / permission.", true);
+    setPublishNote("Clear failed. Check Apps Script deployment, GitHub token or permission.", true);
   }
 }
 
@@ -207,13 +232,11 @@ function escapeHTML(text){
 
 async function loadData(forceRender = false){
   try{
-    const response = await fetch(API_URL + "?action=getWinners&time=" + Date.now(), {
-      cache:"no-store"
-    });
+    const rawData = isAdminMode
+      ? await fetchAdminWinners()
+      : await fetchGuestWinnerJson();
 
-    const rawData = await response.json();
-
-    const sortedData = rawData
+    const sortedData = normalizeWinnerData(rawData)
       .filter(item => (item.luckyNo || "").toString().trim() !== "")
       .sort((a, b) => extractPlaceNumber(a.place) - extractPlaceNumber(b.place));
 
@@ -231,7 +254,64 @@ async function loadData(forceRender = false){
 
   }catch(err){
     console.error("FETCH ERROR:", err);
+
+    if(!isAdminMode){
+      showLoadError("Winner list is not available yet. Please refresh again.");
+    }
   }
+}
+
+async function fetchGuestWinnerJson(){
+  // Guest baca fail statik dari GitHub Pages. Timestamp kecil bantu elak browser simpan data lama.
+  const response = await fetch(`${PUBLIC_JSON_URL}?v=${Date.now()}`, {
+    cache:"no-store"
+  });
+
+  if(!response.ok){
+    throw new Error("Cannot load winner.json");
+  }
+
+  return await response.json();
+}
+
+async function fetchAdminWinners(){
+  const response = await fetch(API_URL + "?action=getWinners&time=" + Date.now(), {
+    cache:"no-store"
+  });
+
+  if(!response.ok){
+    throw new Error("Cannot load admin winner data");
+  }
+
+  return await response.json();
+}
+
+function normalizeWinnerData(data){
+  if(!Array.isArray(data)) return [];
+
+  return data.map(item => ({
+    place: item.place || item.Place || "",
+    luckyNo: item.luckyNo || item.luckyNumber || item["Lucky No"] || "",
+    winner: item.winner || item.employeeName || item["Employee Name"] || "",
+    company: item.company || item["Company"] || "",
+    prize: item.prize || item["Prize"] || "",
+    collection: item.collection || item["Collection"] || "",
+    imageUrl: item.imageUrl || item.picturePrize || item["Picture Prize"] || "",
+    rangeOutput: item.rangeOutput || item.publish || item["Publish"] || ""
+  }));
+}
+
+function showLoadError(message){
+  const tbody = document.getElementById("winnerTable");
+  if(!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="4" class="no-data">
+        ${escapeHTML(message)}
+      </td>
+    </tr>
+  `;
 }
 
 function applyVisibilityRule(){
@@ -240,6 +320,7 @@ function applyVisibilityRule(){
     return;
   }
 
+  // Guest winner.json memang hanya published data, tapi filter ni dikekalkan untuk keselamatan.
   visibleData = allData.filter(item => {
     return (item.rangeOutput || "").toString().trim().toUpperCase() === PUBLISH_WORD;
   });
@@ -545,10 +626,3 @@ function handleFullscreenChange(){
 
 document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-
-/* =========================
-   AUTO REFRESH
-========================= */
-
-setInterval(() => loadData(false), 3000);
- 
