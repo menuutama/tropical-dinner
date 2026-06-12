@@ -6,7 +6,7 @@
 ===================================================== */
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwBCulntEyf1UIU7PjLUELWgq_hBKgXTaDiyJpdzQyjJxtwY3v0ICPNzvtdKrSHoomj/exec";
-const PUBLIC_JSON_URL = "winner.json";
+const PUBLIC_JSON_URL = "winner.json"; 
 
 const ROWS_PER_PAGE = 10;
 const PUBLISH_WORD = "PUBLISH";
