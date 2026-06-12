@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "place": "90th",
+    "luckyNo": "0001",
+    "winner": "AHMAD LUTFI BIN MUHAMAD NAIM",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH"
+  },
+  {
+    "place": "89th",
+    "luckyNo": "0002",
+    "winner": "CHAN KAM CHEN",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH"
+  },
+  {
+    "place": "88th",
+    "luckyNo": "0003",
+    "winner": "CHAN SAI KHUEN",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH"
+  },
+  {
+    "place": "87th",
+    "luckyNo": "0004",
+    "winner": "CHAN SEE AI",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "COLLECT",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH"
+  },
+  {
+    "place": "86th",
+    "luckyNo": "0012",
+    "winner": "HABIBULLAH BIN HUSSIN",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "COLLECT",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH"
+  },
+  {
+    "place": "85th",
+    "luckyNo": "0016",
+    "winner": "LAU JIA TIAN",
+    "company": "TROPICAL CONSOLIDATED",
+    "prize": "RUSSELL TAYLORS DRY IRON NON STICKY",
+    "collection": "COLLECT",
+    "imageUrl": "https://i.ibb.co/sdTt8sTS/NO-76-85.webp",
+    "rangeOutput": "PUBLISH"
+  }
+]
