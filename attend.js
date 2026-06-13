@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwRr8l0f3ZkitO6E5e3om4G85Ts9j22o2QKoi0-EodrOp3TMSH3dqjF9HqbpG9BwxsA/exec";
+const API_URL = window.TROPICAL_API_URL;
 
 let allAttendData = [];
 let selectedRow = null;
