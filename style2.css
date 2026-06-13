@@ -6,7 +6,7 @@ body{
   padding-bottom:70px !important;
   font-family:'Poppins', Arial, sans-serif;
   background:radial-gradient(circle at center,#0c1f40 0%,#050d1a 100%);
-  color:#ffffff;
+  color:#ffffff;  
   min-height:100vh;
   box-sizing:border-box;
 }
