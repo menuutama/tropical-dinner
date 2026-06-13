@@ -1,5 +1,5 @@
 /* =====================================================
-   TROPICAL DINNER 2026 - WINNER DISPLAY UPGRADE
+   TROPICAL DINNER 2026 - WINNER DISPLAY UPGRADE 
    Guest/User mode  : read winner.json from GitHub Pages
    Admin mode       : use GAS API for publish / clear / full data  
    Interface        : same as previous version  
