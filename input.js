@@ -470,8 +470,12 @@ async function editRow(row){
         </button>
 
         <input
-          type="text"
+          type="tel"
           id="modal-input"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="4"
+          autocomplete="off"
           style="
             width:80%;
             padding:10px;
@@ -507,6 +511,11 @@ async function editRow(row){
 
   const modalBox = document.getElementById("modal-box");
   const inputField = document.getElementById("modal-input");
+  inputField.type = "tel";
+  inputField.inputMode = "numeric";
+  inputField.pattern = "[0-9]*";
+  inputField.maxLength = 4;
+  inputField.autocomplete = "off";
   const btnSubmit = document.getElementById("modal-submit");
   const btnCancel = document.getElementById("modal-cancel");
 
@@ -548,6 +557,13 @@ async function editRow(row){
   }
 
   toggleModalSaveButton();
+
+  inputField.onkeypress = function(e){
+    if(!/[0-9]/.test(e.key)){
+      e.preventDefault();
+      triggerModalShake();
+    }
+  };
 
   inputField.oninput = function(e){
     let value = e.target.value;
