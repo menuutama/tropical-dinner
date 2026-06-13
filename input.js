@@ -1,7 +1,7 @@
 const API_URL = window.TROPICAL_API_URL; 
 
 let allData = [];
-let attendList = [];
+let attendList = []; 
 let currentPage = 1;
 let selectedActionRow = null;
 const rowsPerPage = 10;
