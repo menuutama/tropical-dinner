@@ -6,11 +6,11 @@
 ===================================================== */
 
 const API_URL = window.TROPICAL_API_URL;
-const PUBLIC_JSON_URL = window.TROPICAL_WINNER_JSON_URL || "winner.json"; 
+const PUBLIC_JSON_URL = window.TROPICAL_WINNER_JSON_URL; 
 
 const ROWS_PER_PAGE = 10;
 const PUBLISH_WORD = "PUBLISH";
-const GUEST_REFRESH_MS = window.TROPICAL_GUEST_REFRESH_MS || 10000;   // User biasa: 20 saat, ringan untuk 200 guest
+const GUEST_REFRESH_MS = window.TROPICAL_GUEST_REFRESH_MS || 10000;   // User biasa: 10 saat, ringan untuk 200 guest
 const ADMIN_REFRESH_MS = 3000;    // Admin mode: lebih cepat sikit untuk semak publish
 
 let allData = [];
