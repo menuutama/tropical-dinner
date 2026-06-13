@@ -1,4 +1,4 @@
-const API_URL = window.TROPICAL_API_URL;
+const API_URL = window.TROPICAL_API_URL; 
 
 let allData = [];
 let attendList = [];
