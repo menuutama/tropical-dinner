@@ -1,5 +1,35 @@
 [
   {
+    "place": "84th",
+    "luckyNo": "0045",
+    "winner": "TAN POH CHEK",
+    "employeeName": "TAN POH CHEK",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "RUSSELL TAYLORS DRY IRON NON STICKY",
+    "collection": "",
+    "collectionStatus": "",
+    "imageUrl": "https://i.ibb.co/sdTt8sTS/NO-76-85.webp",
+    "picturePrize": "https://i.ibb.co/sdTt8sTS/NO-76-85.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  },
+  {
+    "place": "85th",
+    "luckyNo": "0016",
+    "winner": "LAU JIA TIAN",
+    "employeeName": "LAU JIA TIAN",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "RUSSELL TAYLORS DRY IRON NON STICKY",
+    "collection": "COLLECT",
+    "collectionStatus": "COLLECT",
+    "imageUrl": "https://i.ibb.co/sdTt8sTS/NO-76-85.webp",
+    "picturePrize": "https://i.ibb.co/sdTt8sTS/NO-76-85.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  },
+  {
     "place": "86th",
     "luckyNo": "0012",
     "winner": "HABIBULLAH BIN HUSSIN",
