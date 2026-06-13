@@ -65,14 +65,27 @@ function escapeHTML(text){
 }
 
 function hasWinnerDetails(item){
-  return String(item && item.luckyNo || "").trim() !== "" ||
-         String(item && item.winner || "").trim() !== "" ||
-         String(item && item.company || "").trim() !== "";
+  if(!item) return false;
+
+  const luckyNo = String(item.luckyNo || item.lucky || "").trim();
+  const winner = String(item.winner || item.employeeName || item.name || "").trim();
+  const company = String(item.company || item.companyName || "").trim();
+
+  return luckyNo !== "" || winner !== "" || company !== "";
 }
 
 function getVisibleWinnerData(){
   return allData.filter(hasWinnerDetails);
 }
+
+function getWinnerName(item){
+  return item.winner || item.employeeName || item.name || "";
+}
+
+function getCompanyName(item){
+  return item.company || item.companyName || "";
+}
+
 
 function sortData(data){
   return data.sort((a,b)=>{
@@ -105,15 +118,13 @@ function filterFromLuckyInput(){
     return;
   }
 
-  const filtered = visibleData.filter(item=>{
-    const luckyNo = (item.luckyNo || "").toString();
-    const winner = (item.winner || "").toString().toLowerCase();
-    const company = (item.company || "").toString().toLowerCase();
-    const key = keyword.toLowerCase();
+  const key = keyword.toLowerCase();
 
-    return luckyNo.includes(keyword) ||
-           winner.includes(key) ||
-           company.includes(key);
+  const filtered = visibleData.filter(item=>{
+    return String(item.place || "").toLowerCase().includes(key) ||
+           String(item.luckyNo || item.lucky || "").toLowerCase().includes(key) ||
+           String(getWinnerName(item)).toLowerCase().includes(key) ||
+           String(getCompanyName(item)).toLowerCase().includes(key);
   });
 
   renderRows(filtered);
@@ -167,9 +178,9 @@ function renderRows(data){
   tbody.innerHTML = data.map(item=>`
     <tr>
       <td>${escapeHTML(item.place || "")}</td>
-      <td>${escapeHTML(item.luckyNo || "")}</td>
-      <td>${escapeHTML(item.winner || "")}</td>
-      <td>${escapeHTML(item.company || "")}</td>
+      <td>${escapeHTML(item.luckyNo || item.lucky || "")}</td>
+      <td>${escapeHTML(getWinnerName(item))}</td>
+      <td>${escapeHTML(getCompanyName(item))}</td>
       <td class="action-cell">
         <button class="btn-edit" onclick="editRow('${escapeHTML(item.row || "")}')">Edit</button>
         <button class="btn-danger" onclick="deleteRow('${escapeHTML(item.row || "")}')">Delete</button>
