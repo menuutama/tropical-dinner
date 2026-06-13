@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzYh7RkpdgmhzChhnoLKz9Ie7D8oH-XrtoUfGDe3jGoowFn9NrdXc8lkwlpHXAFXXyZ/exec";
+const API_URL = window.TROPICAL_API_URL;
 
 let allData = [];
 let attendList = [];
@@ -74,7 +74,7 @@ function sortData(data){
 
 async function loadData(){
   try{
-    const res = await fetch(API_URL);
+    const res = await fetch(`${API_URL}?action=getWinners&time=${Date.now()}`);
     const data = await res.json();
 
     allData = sortData(data);
