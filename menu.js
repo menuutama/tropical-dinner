@@ -168,3 +168,4 @@ function openReportWindow(url){
 }
 
 initReportMenu();
+ 
