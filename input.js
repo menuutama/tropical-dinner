@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function(){
       }
     }
   });
+  
 
   clearBtn.addEventListener("click", clearInput);
   addBtn.addEventListener("click", addItem);
