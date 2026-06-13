@@ -64,6 +64,16 @@ function escapeHTML(text){
     .replace(/'/g,"&#039;");
 }
 
+function hasWinnerDetails(item){
+  return String(item && item.luckyNo || "").trim() !== "" ||
+         String(item && item.winner || "").trim() !== "" ||
+         String(item && item.company || "").trim() !== "";
+}
+
+function getVisibleWinnerData(){
+  return allData.filter(hasWinnerDetails);
+}
+
 function sortData(data){
   return data.sort((a,b)=>{
     const numA = parseInt((a.place || "").match(/\d+/) ? (a.place || "").match(/\d+/)[0] : 999,10);
@@ -74,7 +84,7 @@ function sortData(data){
 
 async function loadData(){
   try{
-    const res = await fetch(`${API_URL}?action=getWinners&time=${Date.now()}`);
+    const res = await fetch(API_URL);
     const data = await res.json();
 
     allData = sortData(data);
@@ -88,15 +98,22 @@ async function loadData(){
 
 function filterFromLuckyInput(){
   const keyword = document.getElementById("luckyNo").value.trim();
+  const visibleData = getVisibleWinnerData();
 
   if(keyword === ""){
     renderTable();
     return;
   }
 
-  const filtered = allData.filter(item=>{
+  const filtered = visibleData.filter(item=>{
     const luckyNo = (item.luckyNo || "").toString();
-    return luckyNo.includes(keyword);
+    const winner = (item.winner || "").toString().toLowerCase();
+    const company = (item.company || "").toString().toLowerCase();
+    const key = keyword.toLowerCase();
+
+    return luckyNo.includes(keyword) ||
+           winner.includes(key) ||
+           company.includes(key);
   });
 
   renderRows(filtered);
@@ -119,9 +136,11 @@ function toggleAddButton(){
 }
 
 function renderTable(){
+  const visibleData = getVisibleWinnerData();
+
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedItems = allData.slice(startIndex,endIndex);
+  const paginatedItems = visibleData.slice(startIndex,endIndex);
 
   if(paginatedItems.length === 0 && currentPage > 1){
     currentPage--;
@@ -136,14 +155,22 @@ function renderTable(){
 function renderRows(data){
   const tbody = document.getElementById("winnerTable");
 
+  if(!data || data.length === 0){
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="no-data-row">No lucky draw winner data yet</td>
+      </tr>
+    `;
+    return;
+  }
+
   tbody.innerHTML = data.map(item=>`
     <tr>
       <td>${escapeHTML(item.place || "")}</td>
       <td>${escapeHTML(item.luckyNo || "")}</td>
       <td>${escapeHTML(item.winner || "")}</td>
       <td>${escapeHTML(item.company || "")}</td>
-      <td>${escapeHTML(item.prize || "")}</td>
-      <td>
+      <td class="action-cell">
         <button class="btn-edit" onclick="editRow('${escapeHTML(item.row || "")}')">Edit</button>
         <button class="btn-danger" onclick="deleteRow('${escapeHTML(item.row || "")}')">Delete</button>
       </td>
@@ -155,7 +182,7 @@ function setupPagination(){
   const paginationContainer = document.getElementById("pagination");
   paginationContainer.innerHTML = "";
 
-  const totalPages = Math.ceil(allData.length / rowsPerPage);
+  const totalPages = Math.ceil(getVisibleWinnerData().length / rowsPerPage);
   if(totalPages <= 1) return;
 
   const firstBtn = document.createElement("button");
