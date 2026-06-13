@@ -1248,3 +1248,123 @@ body.input-page .clickable-input-row:hover td{
     font-size:19px;
   }
 }
+
+
+/* =====================================================
+   INPUT WINNER MOBILE COLUMN FIX V4
+   - Place & Lucky No. columns reduced
+   - Winner/Company columns widened
+   - Wrap by WORD only, not by letter
+   - No horizontal scroll
+===================================================== */
+
+@media screen and (max-width:1024px){
+
+  body.input-page .table-wrapper{
+    overflow-x:hidden !important;
+  }
+
+  body.input-page table{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    table-layout:fixed !important;
+  }
+
+  /* 4 columns only: PLACE | LUCKY NO. | WINNER | COMPANY */
+  body.input-page th:nth-child(1),
+  body.input-page td:nth-child(1){
+    width:13% !important;
+  }
+
+  body.input-page th:nth-child(2),
+  body.input-page td:nth-child(2){
+    width:17% !important;
+  }
+
+  body.input-page th:nth-child(3),
+  body.input-page td:nth-child(3){
+    width:36% !important;
+  }
+
+  body.input-page th:nth-child(4),
+  body.input-page td:nth-child(4){
+    width:34% !important;
+  }
+
+  body.input-page th:nth-child(n+5),
+  body.input-page td:nth-child(n+5){
+    display:none !important;
+  }
+
+  body.input-page th,
+  body.input-page td{
+    white-space:normal !important;
+    word-break:normal !important;
+    overflow-wrap:normal !important;
+    word-wrap:normal !important;
+    hyphens:none !important;
+    text-align:center !important;
+    padding:13px 4px !important;
+    line-height:1.28 !important;
+  }
+
+  body.input-page td{
+    font-size:13px !important;
+  }
+
+  body.input-page th{
+    font-size:10.8px !important;
+    letter-spacing:.3px !important;
+  }
+
+  /* Keep short columns compact */
+  body.input-page td:nth-child(1),
+  body.input-page td:nth-child(2){
+    white-space:nowrap !important;
+    font-size:13px !important;
+  }
+
+  /* Winner & company wrap at spaces only */
+  body.input-page td:nth-child(3),
+  body.input-page td:nth-child(4){
+    white-space:normal !important;
+    word-break:normal !important;
+    overflow-wrap:normal !important;
+    hyphens:none !important;
+  }
+}
+
+@media screen and (max-width:420px){
+
+  body.input-page th:nth-child(1),
+  body.input-page td:nth-child(1){
+    width:12% !important;
+  }
+
+  body.input-page th:nth-child(2),
+  body.input-page td:nth-child(2){
+    width:16% !important;
+  }
+
+  body.input-page th:nth-child(3),
+  body.input-page td:nth-child(3){
+    width:37% !important;
+  }
+
+  body.input-page th:nth-child(4),
+  body.input-page td:nth-child(4){
+    width:35% !important;
+  }
+
+  body.input-page td{
+    font-size:12.5px !important;
+    padding:13px 3px !important;
+  }
+
+  body.input-page th{
+    font-size:10px !important;
+    letter-spacing:.15px !important;
+    padding:12px 2px !important;
+  }
+}
