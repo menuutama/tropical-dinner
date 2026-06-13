@@ -1575,3 +1575,272 @@ body.collect-page td:nth-child(2){
   }
 }
   
+
+
+
+/* =====================================================
+   COLLECTION FINAL CSS ONLY FIX V5
+   Apply at the VERY END of style2.css
+===================================================== */
+
+body.collect-page{
+  overflow-x:hidden !important;
+}
+
+body.collect-page .container{
+  width:100% !important;
+  max-width:760px !important;
+  padding:10px !important;
+}
+
+body.collect-page .main-content,
+body.collect-page .table-wrapper{
+  width:100% !important;
+  max-width:100% !important;
+}
+
+body.collect-page .table-wrapper{
+  overflow:hidden !important;
+  padding:8px !important;
+  border-radius:18px !important;
+}
+
+body.collect-page table{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  table-layout:fixed !important;
+  border-collapse:separate !important;
+  border-spacing:0 8px !important;
+}
+
+body.collect-page th:nth-child(1),
+body.collect-page td:nth-child(1){ width:13% !important; }
+
+body.collect-page th:nth-child(2),
+body.collect-page td:nth-child(2){ width:16% !important; }
+
+body.collect-page th:nth-child(3),
+body.collect-page td:nth-child(3){ width:38% !important; }
+
+body.collect-page th:nth-child(4),
+body.collect-page td:nth-child(4){ width:33% !important; }
+
+body.collect-page th:nth-child(n+5),
+body.collect-page td:nth-child(n+5){
+  display:none !important;
+}
+
+body.collect-page th,
+body.collect-page td{
+  box-sizing:border-box !important;
+  text-align:center !important;
+  vertical-align:middle !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  word-wrap:normal !important;
+  hyphens:none !important;
+  overflow:hidden !important;
+  line-height:1.25 !important;
+}
+
+body.collect-page th{
+  padding:12px 2px !important;
+  font-size:9.8px !important;
+  letter-spacing:.35px !important;
+  font-weight:800 !important;
+  color:#9ed0ff !important;
+  background:rgba(15,45,94,.76) !important;
+}
+
+body.collect-page td{
+  padding:13px 3px !important;
+  font-size:12px !important;
+  color:#eaf2ff !important;
+  background:rgba(16,40,79,.48) !important;
+}
+
+body.collect-page td:nth-child(1),
+body.collect-page td:nth-child(2){
+  white-space:nowrap !important;
+  font-size:12px !important;
+}
+
+body.collect-page td:nth-child(3),
+body.collect-page td:nth-child(4){
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:break-word !important;
+  word-wrap:break-word !important;
+  hyphens:none !important;
+}
+
+body.collect-page .mini-photo-label{
+  display:block !important;
+  margin-top:4px !important;
+  font-size:9.5px !important;
+  line-height:1.1 !important;
+  color:#66d98a !important;
+  font-weight:800 !important;
+  white-space:normal !important;
+}
+
+body.collect-page .collected-row-red td{
+  color:#ff6b75 !important;
+  font-weight:800 !important;
+}
+
+body.collect-page tr td:first-child{
+  border-top-left-radius:10px !important;
+  border-bottom-left-radius:10px !important;
+}
+
+body.collect-page tr td:last-child{
+  border-top-right-radius:10px !important;
+  border-bottom-right-radius:10px !important;
+}
+
+/* Popup prize image bigger */
+#collectPopup .modal-image{
+  width:100% !important;
+  max-width:100% !important;
+  max-height:160px !important;
+  object-fit:contain !important;
+  margin:8px auto 7px !important;
+  padding:5px !important;
+  background:#ffffff !important;
+}
+
+/* Photo preview box white */
+#collectPopup .winner-photo-box{
+  background:#ffffff !important;
+  border:1px solid rgba(77,163,255,.35) !important;
+  border-radius:14px !important;
+  box-shadow:0 0 12px rgba(77,163,255,.18) !important;
+}
+
+#collectPopup .winner-photo-preview{
+  background:#ffffff !important;
+  object-fit:contain !important;
+  box-shadow:none !important;
+}
+
+#collectPopup .photo-status{
+  color:#34445c !important;
+  font-weight:600 !important;
+}
+
+/* Fixed compact popup */
+#collectPopup.winner-modal{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100dvh !important;
+  max-height:100dvh !important;
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  padding:8px !important;
+  box-sizing:border-box !important;
+}
+
+#collectPopup.winner-modal.show{
+  display:flex !important;
+}
+
+#collectPopup .collect-modal-box{
+  width:100% !important;
+  max-width:430px !important;
+  max-height:calc(100dvh - 16px) !important;
+  overflow:hidden !important;
+  margin:0 auto !important;
+  padding:12px 16px 12px !important;
+  border-radius:18px !important;
+  box-sizing:border-box !important;
+}
+
+#collectPopup .modal-place{
+  font-size:25px !important;
+  margin:0 0 3px !important;
+}
+
+#collectPopup .modal-winner{
+  font-size:17px !important;
+  line-height:1.1 !important;
+  margin:0 0 7px !important;
+}
+
+#collectPopup .modal-info{
+  font-size:12px !important;
+  line-height:1.15 !important;
+  margin:0 0 4px !important;
+}
+
+#collectPopup .modal-prize{
+  font-size:18px !important;
+  line-height:1.08 !important;
+  margin:0 0 6px !important;
+}
+
+#collectPopup .modal-note{
+  font-size:9.4px !important;
+  line-height:1.15 !important;
+  margin:0 0 7px !important;
+}
+
+#collectPopup .photo-action-btn{
+  min-height:38px !important;
+  font-size:13px !important;
+}
+
+#collectPopup .winner-photo-preview{
+  max-height:142px !important;
+  margin:8px auto 5px !important;
+}
+
+#collectPopup .photo-status{
+  font-size:11px !important;
+  margin-top:5px !important;
+  line-height:1.15 !important;
+}
+
+#collectPopup .collect-action-btn{
+  height:39px !important;
+  min-height:39px !important;
+  font-size:14px !important;
+  margin-top:0 !important;
+}
+
+@media screen and (max-width:420px){
+  body.collect-page th{
+    font-size:8.8px !important;
+    letter-spacing:.15px !important;
+    padding:11px 1px !important;
+  }
+
+  body.collect-page td{
+    font-size:11.5px !important;
+    padding:12px 2px !important;
+  }
+
+  body.collect-page td:nth-child(1),
+  body.collect-page td:nth-child(2){
+    font-size:11.5px !important;
+  }
+
+  #collectPopup .collect-modal-box{
+    max-width:94vw !important;
+    max-height:calc(100dvh - 12px) !important;
+    padding:10px 14px 10px !important;
+  }
+
+  #collectPopup .modal-image{
+    max-height:145px !important;
+  }
+
+  #collectPopup .winner-photo-preview{
+    max-height:130px !important;
+  }
+}
