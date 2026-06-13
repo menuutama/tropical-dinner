@@ -4,7 +4,7 @@
    Semua page lain akan baca API dari sini.
 ========================================================= */
 
-window.TROPICAL_API_URL = "https://script.google.com/macros/s/AKfycbwh2yJfQRzpp24vNW_O1MrDDYIHuX5sUtlI1ogmwChiQZFZ-YWM22M2ZYNveQmSM3Ys/exec";
+window.TROPICAL_API_URL = "https://script.google.com/macros/s/AKfycbxn-xEA102rhPCeNRRp7x0yMAeAWI48w7LoL7zZs-eh0Ky6XDi9wX3yrOUwzUFQH14U/exec";
 
 // Winner display guest baca JSON statik dari GitHub Pages.
 // Kalau winner.json duduk folder root tropical-dinner, biar macam ni.
