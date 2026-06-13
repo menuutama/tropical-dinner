@@ -1,7 +1,9 @@
 const API_URL = window.TROPICAL_API_URL;
+
 let allData = [];
 let attendList = [];
 let currentPage = 1;
+let selectedActionRow = null;
 const rowsPerPage = 10;
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -168,22 +170,18 @@ function renderRows(data){
   if(!data || data.length === 0){
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" class="no-data-row">No lucky draw winner data yet</td>
+        <td colspan="4" class="no-data-row">No lucky draw winner data yet</td>
       </tr>
     `;
     return;
   }
 
   tbody.innerHTML = data.map(item=>`
-    <tr>
+    <tr class="clickable-input-row" onclick="openActionPopup('${escapeHTML(item.row || "")}')">
       <td>${escapeHTML(item.place || "")}</td>
       <td>${escapeHTML(item.luckyNo || item.lucky || "")}</td>
       <td>${escapeHTML(getWinnerName(item))}</td>
       <td>${escapeHTML(getCompanyName(item))}</td>
-      <td class="action-cell">
-        <button class="btn-edit" onclick="editRow('${escapeHTML(item.row || "")}')">Edit</button>
-        <button class="btn-danger" onclick="deleteRow('${escapeHTML(item.row || "")}')">Delete</button>
-      </td>
     </tr>
   `).join("");
 }
@@ -339,6 +337,78 @@ function clearInput(){
   renderTable();
 }
 
+
+function openActionPopup(row){
+  const item = allData.find(x => String(x.row) === String(row));
+  if(!item) return;
+
+  selectedActionRow = String(row);
+
+  let modal = document.getElementById("input-action-modal");
+
+  if(!modal){
+    modal = document.createElement("div");
+    modal.id = "input-action-modal";
+    modal.className = "input-action-modal";
+
+    modal.innerHTML = `
+      <div class="input-action-box">
+        <button type="button" class="input-action-close" id="inputActionClose">×</button>
+        <div class="input-action-title" id="inputActionTitle"></div>
+        <div class="input-action-info" id="inputActionLucky"></div>
+        <div class="input-action-info" id="inputActionCompany"></div>
+        <div class="input-action-buttons">
+          <button type="button" class="input-popup-edit" id="inputPopupEditBtn">Edit</button>
+          <button type="button" class="input-popup-delete" id="inputPopupDeleteBtn">Delete</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById("inputActionClose").onclick = closeActionPopup;
+
+    modal.addEventListener("click", function(e){
+      if(e.target === modal){
+        closeActionPopup();
+      }
+    });
+
+    document.getElementById("inputPopupEditBtn").onclick = function(){
+      const targetRow = selectedActionRow;
+      closeActionPopup();
+      editRow(targetRow);
+    };
+
+    document.getElementById("inputPopupDeleteBtn").onclick = function(){
+      const targetRow = selectedActionRow;
+      closeActionPopup();
+      deleteRow(targetRow);
+    };
+  }
+
+  document.getElementById("inputActionTitle").textContent = getWinnerName(item) || "Winner Detail";
+  document.getElementById("inputActionLucky").textContent = "Lucky No: " + (item.luckyNo || item.lucky || "");
+  document.getElementById("inputActionCompany").textContent = "Company: " + getCompanyName(item);
+
+  modal.classList.add("show");
+}
+
+function closeActionPopup(){
+  const modal = document.getElementById("input-action-modal");
+  if(modal){
+    modal.classList.remove("show");
+  }
+  selectedActionRow = null;
+}
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closeActionPopup();
+  }
+});
+
+
 async function deleteRow(row){
   if(!confirm("Adakah anda pasti mahu memadam baris ini?")) return;
 
@@ -348,6 +418,7 @@ async function deleteRow(row){
 
     if(result.status === "success"){
       allData = allData.filter(item=>String(item.row) !== String(row));
+      closeActionPopup();
       filterFromLuckyInput();
       toggleAddButton();
     }else{
