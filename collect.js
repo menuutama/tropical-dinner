@@ -1,7 +1,7 @@
 /* =========================================================
    LUCKY DRAW PRIZE COLLECTION SYSTEM
    - Camera photo required before collect
-   - Compress photo on phone/tablet
+   - Compress photo on phone/tablet 
    - Add watermark before upload
    - Upload photo to Google Drive through Code.gs
    - Save COLLECT status + photo link in Google Sheet
