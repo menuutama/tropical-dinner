@@ -91,7 +91,7 @@ function loadData(showLoading){
   if(showLoading){
     tableBody.innerHTML = `
       <tr>
-        <td colspan="5">Loading...</td>
+        <td colspan="4">Loading...</td>
       </tr>
     `;
   }
@@ -117,7 +117,7 @@ function loadData(showLoading){
     console.error("FETCH ERROR:", err);
     tableBody.innerHTML = `
       <tr>
-        <td colspan="5">Failed to load data</td>
+        <td colspan="4">Failed to load data</td>
       </tr>
     `;
   });
@@ -147,7 +147,7 @@ function renderTable(){
   if(filtered.length === 0){
     tableBody.innerHTML = `
       <tr>
-        <td colspan="5">No data found</td>
+        <td colspan="4">No data found</td>
       </tr>
     `;
     return;
@@ -167,7 +167,6 @@ function renderTable(){
         <td>${escapeHTML(item.luckyNo || "")}</td>
         <td>${escapeHTML(item.winner || item.employeeName || "")}${hasPhoto ? '<div class="mini-photo-label">📷 Photo Saved</div>' : ''}</td>
         <td>${escapeHTML(item.company || item.companyName || "")}</td>
-        <td>${escapeHTML(item.prize || "")}</td>
       </tr>
     `;
   }).join("");
