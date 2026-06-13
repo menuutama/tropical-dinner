@@ -7,7 +7,7 @@
    - Save COLLECT status + photo link in Google Sheet
 ========================================================= */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxLpfMSprrhUZz6qCWOWv7SLyouKHls5d8wCFcOyPr5CIDQTTVz23gfpNTPdFUHORz8/exec";
+const API_URL = window.TROPICAL_API_URL;
 
 const PHOTO_MAX_WIDTH = 800;
 const PHOTO_JPEG_QUALITY = 0.62;
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function(){
     if(!popup.classList.contains("show") && !isSaving){
       loadData(false);
     }
-  }, 3000);
+  }, window.TROPICAL_COLLECT_REFRESH_MS || 10000);
 });
 
 searchInput.addEventListener("input", function(){
@@ -96,7 +96,7 @@ function loadData(showLoading){
     `;
   }
 
-  fetch(API_URL + "?time=" + Date.now(), {
+  fetch(API_URL + "?action=getWinners&time=" + Date.now(), {
     cache:"no-store"
   })
   .then(function(res){
