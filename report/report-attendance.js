@@ -1,4 +1,10 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwZ-_mSRM8zU_2RaTckjXcmWJzYU8E8ehko5Mk9hqGl8EgC9DfJZbLl-0NOlNERZaXc/exec";
+/* =========================================================
+   REPORT ATTENDANCE
+   API link ambil dari ../api.js:
+   window.TROPICAL_API_URL
+========================================================= */
+
+const API_URL = window.TROPICAL_API_URL || "";
 
 let allData = [];
 let filteredData = [];
@@ -6,8 +12,19 @@ let summaryData = [];
 
 async function loadAttendanceReport() {
   try {
-    const res = await fetch(API_URL);
-    allData = await res.json();
+    if (!API_URL) {
+      throw new Error("API URL not found. Make sure ../api.js is loaded before report-attendance.js");
+    }
+
+    const url = `${API_URL}?action=reportAttendance&ts=${Date.now()}`;
+    const res = await fetch(url, { cache: "no-store" });
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error(data && data.message ? data.message : "Attendance report data is not an array");
+    }
+
+    allData = data.map(normalizeAttendanceItem);
 
     loadCompanyDropdown();
     applyFilterAndSort();
@@ -22,6 +39,17 @@ async function loadAttendanceReport() {
   }
 }
 
+
+function normalizeAttendanceItem(item) {
+  return {
+    row: item.row || "",
+    luckyNo: item.luckyNo || "",
+    employeeName: item.employeeName || item.employee || item.name || "",
+    company: item.company || item.companyName || "",
+    attendance: item.attendance || item.status || ""
+  };
+}
+
 function isAttend(value) {
   return String(value || "").trim().toLowerCase() === "attend";
 }
@@ -32,6 +60,15 @@ function getAttendIcon(value) {
 
 function getAttendanceText(value) {
   return isAttend(value) ? "Attend" : "Not Attend";
+}
+
+function escapeHTML(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function cleanText(value) {
@@ -134,8 +171,8 @@ function renderAttendanceTable() {
     tbody.innerHTML += `
       <tr>
         <td>${index + 1}</td>
-        <td>${item.employeeName || ""}</td>
-        <td>${item.company || ""}</td>
+        <td>${escapeHTML(item.employeeName || "")}</td>
+        <td>${escapeHTML(item.company || "")}</td>
         <td class="attendance-icon">${getAttendIcon(item.attendance)}</td>
       </tr>
     `;
@@ -177,7 +214,7 @@ function renderSummaryTable() {
   summaryData.forEach(item => {
     tbody.innerHTML += `
       <tr>
-        <td>${item.company}</td>
+        <td>${escapeHTML(item.company)}</td>
         <td>${item.attend}</td>
         <td>${item.notAttend}</td>
       </tr>
