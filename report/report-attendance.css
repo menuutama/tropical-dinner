@@ -140,19 +140,23 @@ body {
 
 .report-table th:nth-child(2),
 .report-table td:nth-child(2) {
-  width: auto;
+  width: 340px;
   text-align: left;
+  white-space: nowrap !important;
 }
 
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
-  width: 120px;
-  text-align: center;
+  width: 175px;
+  text-align: left;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
-  width: 70px;
+  width: 68px;
   text-align: center;
 }
 
@@ -175,7 +179,7 @@ body {
 }
 
 .summary-table {
-  width: 70%;
+  width: 85%;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -201,12 +205,24 @@ body {
   text-align: center;
 }
 
+.summary-table th:first-child,
 .summary-table td:first-child {
+  width: 250px;
   text-align: left;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
-.summary-table td:nth-child(2),
+.summary-table th:nth-child(2),
+.summary-table td:nth-child(2) {
+  width: 120px;
+  text-align: center;
+}
+
+.summary-table th:nth-child(3),
 .summary-table td:nth-child(3) {
+  width: 140px;
   text-align: center;
 }
 
@@ -307,19 +323,23 @@ body {
 
   .report-table th:nth-child(2),
   .report-table td:nth-child(2) {
-    width: auto !important;
+    width: 300px !important;
     text-align: left !important;
+    white-space: nowrap !important;
   }
 
   .report-table th:nth-child(3),
   .report-table td:nth-child(3) {
-    width: 92px !important;
-    text-align: center !important;
+    width: 145px !important;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
   }
 
   .report-table th:nth-child(4),
   .report-table td:nth-child(4) {
-    width: 62px !important;
+    width: 52px !important;
     text-align: center !important;
   }
 
@@ -336,8 +356,8 @@ body {
   }
 
   .summary-table {
-    width: 65% !important;
-    max-width: 65% !important;
+    width: 85% !important;
+    max-width: 85% !important;
     table-layout: fixed !important;
     border-collapse: collapse !important;
   }
