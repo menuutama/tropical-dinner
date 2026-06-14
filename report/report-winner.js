@@ -1,14 +1,26 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwo632zOEaTl3_rZavOKpQvKjOjnYGseOzGqCKB2NG7nAfw18JqgvNGK1YY_g-hrmyJ/exec";
+const API_URL = window.TROPICAL_API_URL || "";
+
+function normalizeApiData(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  if (payload && Array.isArray(payload.winners)) return payload.winners;
+  return [];
+}
+
 
 let allData = [];
 let filteredData = [];
 let summaryData = [];
 
-async function loadWinnerReport() { 
-  
+async function loadWinnerReport() {
   try {
-    const res = await fetch(API_URL);
-    allData = await res.json();
+    if (!API_URL) {
+      throw new Error("API URL not found. Make sure ../api.js is loaded before report-winner.js");
+    }
+
+    const res = await fetch(`${API_URL}?action=reportWinner&t=${Date.now()}`);
+    const payload = await res.json();
+    allData = normalizeApiData(payload);
 
     loadCompanyDropdown();
     applyFilterAndSort();
@@ -163,26 +175,38 @@ function renderWinnerTable() {
   });
 
   setTimeout(equalizeWinnerRowHeights, 50);
+  setTimeout(equalizeWinnerRowHeights, 250);
 }
 
 function equalizeWinnerRowHeights() {
-  const rows = [...document.querySelectorAll("#winnerBody tr")];
+  const rows = [...document.querySelectorAll("#winnerBody tr")]
+    .filter(row => row.querySelectorAll("td").length >= 6);
+
   if (rows.length === 0) return;
 
   rows.forEach(row => {
-    row.style.height = "auto";
-    [...row.children].forEach(cell => cell.style.height = "auto");
+    row.style.removeProperty("height");
+    row.style.removeProperty("min-height");
+
+    [...row.children].forEach(cell => {
+      cell.style.removeProperty("height");
+      cell.style.removeProperty("min-height");
+    });
   });
 
-  let maxHeight = 22;
+  let maxHeight = 24;
 
   rows.forEach(row => {
     maxHeight = Math.max(maxHeight, Math.ceil(row.getBoundingClientRect().height));
   });
 
   rows.forEach(row => {
-    row.style.height = maxHeight + "px";
-    [...row.children].forEach(cell => cell.style.height = maxHeight + "px");
+    row.style.setProperty("height", maxHeight + "px", "important");
+
+    [...row.children].forEach(cell => {
+      cell.style.setProperty("height", maxHeight + "px", "important");
+      cell.style.setProperty("min-height", maxHeight + "px", "important");
+    });
   });
 }
 
