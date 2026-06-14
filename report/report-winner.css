@@ -121,8 +121,9 @@ body {
   min-height: 22px;
   line-height: 1.15;
   vertical-align: middle;
-  word-break: normal;
-  overflow-wrap: break-word;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
 }
 
 .report-table th {
@@ -146,30 +147,37 @@ body {
   white-space: nowrap;
 }
 
+/* Employee Name - lebar besar, wrap ikut word sahaja */
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
   width: auto !important;
   text-align: left;
   white-space: normal !important;
   word-break: normal !important;
-  overflow-wrap: break-word !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
 }
 
+/* Company - wrap ikut word sahaja, jangan potong huruf */
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
   width: 95px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
+  text-align: left !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
 }
 
+/* Prize - lebar kecil bekas Employee Name */
 .report-table th:nth-child(5),
 .report-table td:nth-child(5) {
   width: 145px !important;
   text-align: left;
   white-space: normal !important;
   word-break: normal !important;
-  overflow-wrap: break-word !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
 }
 
 .report-table th:nth-child(6),
@@ -304,6 +312,9 @@ body {
     color: #000 !important;
     border: 1px solid #000 !important;
     vertical-align: middle !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .report-table th {
@@ -327,30 +338,37 @@ body {
     white-space: nowrap !important;
   }
 
+  /* Print: Employee Name - lebar besar, wrap ikut word sahaja */
   .report-table th:nth-child(3),
   .report-table td:nth-child(3) {
     width: auto !important;
     text-align: left !important;
     white-space: normal !important;
     word-break: normal !important;
-    overflow-wrap: break-word !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
+  /* Print: Company - wrap ikut word sahaja */
   .report-table th:nth-child(4),
   .report-table td:nth-child(4) {
     width: 85px !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
+    text-align: left !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
+  /* Print: Prize - lebar kecil bekas Employee Name */
   .report-table th:nth-child(5),
   .report-table td:nth-child(5) {
     width: 120px !important;
     text-align: left !important;
     white-space: normal !important;
     word-break: normal !important;
-    overflow-wrap: break-word !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .report-table th:nth-child(6),
@@ -404,7 +422,7 @@ body {
   }
 }
 
-/* RESPONSIVE */ 
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
   .preview-wrapper {
