@@ -4,7 +4,8 @@ let allData = [];
 let filteredData = [];
 let summaryData = [];
 
-async function loadWinnerReport() {
+async function loadWinnerReport() { 
+  
   try {
     const res = await fetch(API_URL);
     allData = await res.json();
