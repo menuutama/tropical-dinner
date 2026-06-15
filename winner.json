@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "place": "87th",
+    "luckyNo": "0002",
+    "winner": "CHAN KAM CHEN",
+    "employeeName": "CHAN KAM CHEN",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "collectionStatus": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "picturePrize": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  },
+  {
+    "place": "88th",
+    "luckyNo": "0001",
+    "winner": "AHMAD LUTFI BIN MUHAMAD NAIM",
+    "employeeName": "AHMAD LUTFI BIN MUHAMAD NAIM",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "collectionStatus": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "picturePrize": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  },
+  {
+    "place": "89th",
+    "luckyNo": "0032",
+    "winner": "NUUR ELLIZA BINTI ROSLAN",
+    "employeeName": "NUUR ELLIZA BINTI ROSLAN",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "",
+    "collectionStatus": "",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "picturePrize": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  },
+  {
+    "place": "90th",
+    "luckyNo": "0011",
+    "winner": "GOI AI CHENG",
+    "employeeName": "GOI AI CHENG",
+    "company": "TROPICAL CONSOLIDATED",
+    "companyName": "TROPICAL CONSOLIDATED",
+    "prize": "SIMPLUS SMART SCALE",
+    "collection": "COLLECT",
+    "collectionStatus": "COLLECT",
+    "imageUrl": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "picturePrize": "https://i.ibb.co/rR3qD6MT/NO-86-90.webp",
+    "rangeOutput": "PUBLISH",
+    "publish": "PUBLISH"
+  }
+]
