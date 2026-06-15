@@ -5,7 +5,7 @@ let reportUnlocked = false;
 function initReportMenu(){
 
   const btn = document.getElementById("reportBtn");
-  const menu = document.getElementById("reportSubmenu");
+  const menu = document.getElementById("reportSubmenu"); 
   const dropdown = document.querySelector(".report-dropdown");
 
   const modal = document.getElementById("reportPasswordModal");
