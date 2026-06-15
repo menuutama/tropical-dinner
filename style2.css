@@ -7,7 +7,7 @@ body{
   font-family:'Poppins', Arial, sans-serif;
   background:radial-gradient(circle at center,#0c1f40 0%,#050d1a 100%);
   color:#ffffff;  
-  min-height:100vh; 
+  min-height:100vh;
   box-sizing:border-box;
 }
 
@@ -1742,164 +1742,99 @@ body.collect-page .mini-photo-label{
 }
 
 /* =====================================================
-   SEMI CORPORATE + LUXURY THEME OVERRIDE
-   Navy / White / Gold | H1 RED KEKAL
-   Added by Zainab
+   FIX REQUEST - ATTENDANCE POPUP + BLUE GRAY BACKGROUND
+   1) Close X default blue, hover red
+   2) Back page/background changed to blue gray only
+   3) H1 red remains untouched
 ===================================================== */
+
 :root{
-  --lux-navy:#071D49;
-  --lux-navy-2:#0B2D67;
-  --lux-blue:#123A8F;
-  --lux-gold:#D4AF37;
-  --lux-gold-2:#B88925;
-  --lux-red:#D72638;
-  --lux-white:#FFFFFF;
-  --lux-soft:#F5F7FB;
-  --lux-text:#10213F;
+  --luxury-blue:#0b2f6f;
+  --luxury-blue-dark:#071d49;
+  --luxury-red:#ff3344;
+  --blue-gray-bg:#6f7f96;
+  --blue-gray-bg-2:#5d6f88;
 }
 
-body{
+/* Background belakang page sahaja - blue gray */
+html,
+body,
+body.attend-page,
+body.input-page,
+body.collect-page{
   background:
-    radial-gradient(circle at 12% 8%, rgba(212,175,55,.13), transparent 26%),
-    radial-gradient(circle at 90% 10%, rgba(18,58,143,.14), transparent 28%),
-    linear-gradient(135deg,#ffffff 0%,#f7f8fb 46%,#eef2f8 100%) !important;
-  color:var(--lux-text) !important;
-}
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  background:
-    linear-gradient(135deg, transparent 0 72%, rgba(7,29,73,.08) 72.2%, transparent 73%),
-    linear-gradient(45deg, transparent 0 82%, rgba(212,175,55,.11) 82.2%, transparent 83%),
-    radial-gradient(circle, rgba(7,29,73,.10) 1px, transparent 1.8px);
-  background-size:auto,auto,38px 38px;
-  opacity:.72;
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.20) 0%, transparent 32%),
+    linear-gradient(135deg, var(--blue-gray-bg) 0%, var(--blue-gray-bg-2) 48%, #4d5f78 100%) !important;
+  background-attachment:fixed !important;
 }
 
-.hero-header h1{
-  color:var(--lux-red) !important;
-  background:linear-gradient(180deg,#ff4d4d 0%,#d72638 48%,#8b0000 100%) !important;
+/* Pastikan H1 merah kekal */
+.hero-header h1,
+.login-box h1{
+  background:linear-gradient(to bottom,#ff4d4d 0%,#d7192f 48%,#8b0000 100%) !important;
   -webkit-background-clip:text !important;
   background-clip:text !important;
   -webkit-text-fill-color:transparent !important;
-  text-shadow:0 0 10px rgba(215,38,56,.15) !important;
-}
-.hero-header h2,
-.popup-box h2{
-  background:linear-gradient(135deg,var(--lux-navy),var(--lux-blue)) !important;
-  -webkit-background-clip:text !important;
-  background-clip:text !important;
-  -webkit-text-fill-color:transparent !important;
-  filter:none !important;
-}
-.hero-header::after{
-  content:"";
-  display:block;
-  width:min(540px,78%);
-  height:1px;
-  margin:16px auto 0;
-  background:linear-gradient(90deg,transparent,var(--lux-gold),transparent);
-  box-shadow:0 0 10px rgba(212,175,55,.35);
+  text-shadow:0 0 9px rgba(215,25,47,.28) !important;
 }
 
-.input-container input,
-.attend-filter-box select{
-  background:#ffffff !important;
-  color:var(--lux-text) !important;
-  border:1px solid rgba(7,29,73,.22) !important;
-  box-shadow:0 6px 18px rgba(7,29,73,.08) !important;
-}
-.input-container input::placeholder{ color:rgba(16,33,63,.48) !important; }
-.input-container input:focus,
-.attend-filter-box select:focus{
-  border-color:var(--lux-gold) !important;
-  box-shadow:0 0 18px rgba(212,175,55,.25) !important;
-}
-.attend-filter-box select option{ background:#ffffff !important; color:var(--lux-text) !important; }
-
-.input-box button:not(.clear-btn),
-.attend-btn,
-#collectPopup .collect-action-btn,
-.photo-action-btn{
-  background:linear-gradient(135deg,var(--lux-navy),var(--lux-blue)) !important;
-  color:#ffffff !important;
-  border:1px solid rgba(212,175,55,.42) !important;
-  box-shadow:0 10px 22px rgba(7,29,73,.18) !important;
-}
-.clear-btn{ color:var(--lux-red) !important; }
-
-.table-wrapper{
-  background:rgba(255,255,255,.82) !important;
-  border:1px solid rgba(212,175,55,.38) !important;
-  box-shadow:0 18px 42px rgba(7,29,73,.14), inset 0 0 0 1px rgba(255,255,255,.55) !important;
-}
-table{ color:var(--lux-text) !important; }
-th{
-  background:linear-gradient(180deg,var(--lux-navy),var(--lux-navy-2)) !important;
-  color:#ffffff !important;
-  border-bottom:2px solid var(--lux-gold) !important;
-}
-td{
-  background:rgba(255,255,255,.88) !important;
-  color:var(--lux-text) !important;
-  border-top:1px solid rgba(7,29,73,.06) !important;
-  border-bottom:1px solid rgba(7,29,73,.06) !important;
-}
-tr:hover td{
-  background:rgba(7,29,73,.06) !important;
-  color:var(--lux-navy) !important;
-  border-color:rgba(212,175,55,.32) !important;
-}
-.attended-row-green td{ color:#128A45 !important; }
-.collected-row-red td{ color:var(--lux-red) !important; }
-.no-data-row{ color:var(--lux-blue) !important; }
-
-.pagination-btn{
-  background:#ffffff !important;
-  border:1px solid rgba(7,29,73,.18) !important;
-  color:var(--lux-navy) !important;
-}
-.pagination-btn:hover:not(:disabled),
-.pagination-btn.active{
-  background:linear-gradient(135deg,var(--lux-navy),var(--lux-blue)) !important;
-  color:#ffffff !important;
-  border-color:var(--lux-gold) !important;
+/* Attendance detail popup X - default biru, hover merah */
+.popup-close,
+#collectPopup .modal-close,
+.modal-close,
+.input-action-close{
+  color:var(--luxury-blue) !important;
+  opacity:1 !important;
+  text-shadow:0 0 8px rgba(11,47,111,.25) !important;
+  background:transparent !important;
+  box-shadow:none !important;
 }
 
-.popup-overlay,
-#collectPopup.winner-modal,
-.input-action-modal{
-  background:rgba(7,29,73,.60) !important;
+.popup-close:hover,
+#collectPopup .modal-close:hover,
+.modal-close:hover,
+.input-action-close:hover{
+  color:var(--luxury-red) !important;
+  text-shadow:0 0 10px rgba(255,51,68,.38) !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+/* Biar popup attendance detail nampak corporate/luxury atas blue-gray background */
+.popup-overlay{
+  background:rgba(30,43,64,.58) !important;
   backdrop-filter:blur(8px) !important;
 }
-.popup-box,
-#collectPopup .collect-modal-box,
-.input-action-box{
-  background:rgba(255,255,255,.94) !important;
-  color:var(--lux-text) !important;
-  border:1px solid rgba(212,175,55,.42) !important;
-  box-shadow:0 24px 48px rgba(7,29,73,.25), inset 0 0 0 1px rgba(255,255,255,.55) !important;
+
+.popup-box{
+  background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 100%) !important;
+  border:1.5px solid rgba(201,162,39,.70) !important;
+  box-shadow:
+    0 24px 55px rgba(9,29,73,.28),
+    0 0 0 1px rgba(255,255,255,.45) inset !important;
 }
-.popup-box p,
-#collectPopup .modal-info,
-.input-action-info{ color:var(--lux-text) !important; }
-#collectPopup .modal-place{ color:var(--lux-red) !important; -webkit-text-fill-color:var(--lux-red) !important; }
-#collectPopup .modal-winner,
-.input-action-title{ color:var(--lux-navy) !important; }
-#collectPopup .modal-prize{ color:var(--lux-blue) !important; text-shadow:none !important; }
-#collectPopup .modal-note,.photo-status{ color:rgba(16,33,63,.68) !important; }
-#collectPopup .modal-image,
-.winner-photo-preview{
-  background:#ffffff !important;
-  border:1px solid rgba(212,175,55,.30) !important;
-  box-shadow:0 10px 20px rgba(7,29,73,.12) !important;
+
+.popup-box h2{
+  color:var(--luxury-blue-dark) !important;
+  background:none !important;
+  -webkit-text-fill-color:var(--luxury-blue-dark) !important;
+  text-shadow:none !important;
 }
-.winner-photo-box{
-  background:rgba(7,29,73,.04) !important;
-  border:1px solid rgba(212,175,55,.28) !important;
+
+.popup-box p{
+  color:#162846 !important;
 }
-.input-popup-edit{ background:linear-gradient(135deg,#F3D37A,var(--lux-gold-2)) !important; color:#111 !important; }
-.input-popup-delete{ background:linear-gradient(135deg,#ff4d4d,#b30000) !important; color:#fff !important; }
+
+.popup-box p strong,
+.popup-box b{
+  color:#0a2457 !important;
+}
+
+.attend-btn{
+  background:linear-gradient(135deg,#08285f 0%,#123f91 100%) !important;
+  box-shadow:0 8px 20px rgba(8,40,95,.28) !important;
+}
+
+.attend-btn:hover{
+  filter:brightness(1.08) !important;
+}
