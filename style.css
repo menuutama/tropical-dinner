@@ -587,3 +587,138 @@ body.fullscreen-active .place-badge{ font-size:1.3vw; padding:12px 20px; }
   body.fullscreen-active .place-badge{ font-size:30px; }
 }
  
+
+/* =====================================================
+   SEMI CORPORATE + LUXURY THEME OVERRIDE
+   Navy / White / Gold | H1 / TROPICAL RED KEKAL
+   Added by Zainab
+===================================================== */
+:root{
+  --lux-navy:#071D49;
+  --lux-navy-2:#0B2D67;
+  --lux-blue:#123A8F;
+  --lux-gold:#D4AF37;
+  --lux-gold-2:#B88925;
+  --lux-red:#D72638;
+  --lux-white:#FFFFFF;
+  --lux-soft:#F5F7FB;
+  --lux-text:#10213F;
+}
+
+html,body{ background:#ffffff !important; }
+body{
+  color:var(--lux-text) !important;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(212,175,55,.13), transparent 26%),
+    radial-gradient(circle at 90% 10%, rgba(18,58,143,.14), transparent 28%),
+    linear-gradient(135deg,#ffffff 0%,#f7f8fb 45%,#eef2f8 100%) !important;
+}
+body::before{
+  background:
+    linear-gradient(135deg, transparent 0 70%, rgba(7,29,73,.08) 70.2%, transparent 71%),
+    linear-gradient(45deg, transparent 0 82%, rgba(212,175,55,.12) 82.2%, transparent 83%),
+    radial-gradient(circle, rgba(7,29,73,.10) 1px, transparent 1.7px) !important;
+  background-size:auto,auto,38px 38px !important;
+  opacity:.68 !important;
+  animation:none !important;
+}
+body::after{
+  background:radial-gradient(ellipse at 50% 0%, rgba(7,29,73,.08), transparent 45%) !important;
+  opacity:1 !important;
+}
+
+.sub-title{
+  color:var(--lux-red) !important;
+  -webkit-text-fill-color:initial !important;
+  background:none !important;
+  text-shadow:0 0 10px rgba(215,38,56,.16) !important;
+}
+.title{
+  color:var(--lux-navy) !important;
+  text-shadow:none !important;
+}
+.header::after{
+  background:linear-gradient(90deg,transparent,var(--lux-gold),transparent) !important;
+  box-shadow:0 0 10px rgba(212,175,55,.35) !important;
+}
+
+.live-box,
+.notice,
+.search-box input,
+.publish-panel,
+.table-wrapper,
+.winner-modal-box{
+  background:rgba(255,255,255,.86) !important;
+  color:var(--lux-text) !important;
+  border:1px solid rgba(212,175,55,.42) !important;
+  box-shadow:0 18px 42px rgba(7,29,73,.14), inset 0 0 0 1px rgba(255,255,255,.55) !important;
+}
+.live-box{ color:var(--lux-navy) !important; }
+.search-box input{ height:58px; color:var(--lux-text) !important; }
+.search-box input::placeholder{ color:rgba(16,33,63,.50) !important; }
+.search-box input:focus{ border-color:var(--lux-gold) !important; box-shadow:0 0 18px rgba(212,175,55,.25) !important; }
+.search-box::after{ color:var(--lux-gold) !important; text-shadow:none !important; }
+.clear-btn,
+.pagination button.active,
+.control-buttons button:hover,
+.publish-row button{
+  background:linear-gradient(135deg,var(--lux-navy),var(--lux-blue)) !important;
+  color:#ffffff !important;
+  border-color:var(--lux-gold) !important;
+  box-shadow:0 10px 22px rgba(7,29,73,.18) !important;
+}
+
+.table-wrapper{ overflow:hidden !important; }
+thead{ background:linear-gradient(180deg,var(--lux-navy),var(--lux-navy-2)) !important; }
+thead th{
+  color:#ffffff !important;
+  border-right:1px solid rgba(212,175,55,.25) !important;
+  border-bottom:2px solid var(--lux-gold) !important;
+  text-shadow:none !important;
+}
+tbody td{
+  background:rgba(255,255,255,.88) !important;
+  color:var(--lux-text) !important;
+  border-bottom:1px solid rgba(7,29,73,.08) !important;
+  border-right:1px solid rgba(7,29,73,.06) !important;
+}
+tbody tr:nth-child(even){ background:rgba(7,29,73,.03) !important; }
+tbody tr:hover{ background:rgba(7,29,73,.06) !important; transform:none !important; }
+.place-badge,.winner-name{ color:var(--lux-navy) !important; }
+.no-data{ color:var(--lux-blue) !important; }
+
+.pagination button,
+.control-buttons button{
+  background:#ffffff !important;
+  color:var(--lux-navy) !important;
+  border:1px solid rgba(7,29,73,.18) !important;
+  box-shadow:0 8px 18px rgba(7,29,73,.08) !important;
+}
+.notice{ color:var(--lux-text) !important; }
+.notice::before{ background:var(--lux-gold) !important; color:var(--lux-navy) !important; }
+
+.publish-title{ color:var(--lux-navy) !important; text-shadow:none !important; }
+.publish-panel::before,
+.publish-panel::after{ background:linear-gradient(90deg,transparent,var(--lux-gold),transparent) !important; filter:none !important; }
+.publish-row input{
+  background:#ffffff !important;
+  color:var(--lux-text) !important;
+  border:1px solid rgba(7,29,73,.20) !important;
+}
+.publish-row span{ color:var(--lux-gold-2) !important; }
+.publish-row button.danger{ background:linear-gradient(135deg,#ff4d4d,#b30000) !important; }
+.publish-note{ color:rgba(16,33,63,.72) !important; }
+.publish-note.error{ color:var(--lux-red) !important; }
+
+.winner-modal{ background:rgba(7,29,73,.60) !important; backdrop-filter:blur(8px) !important; }
+.modal-close{ background:linear-gradient(135deg,var(--lux-navy),var(--lux-blue)) !important; box-shadow:0 0 14px rgba(7,29,73,.25) !important; }
+.modal-place{ color:var(--lux-red) !important; text-shadow:none !important; }
+.modal-winner{ color:var(--lux-navy) !important; }
+.modal-info{ color:var(--lux-text) !important; }
+.modal-image{ border:1px solid rgba(212,175,55,.32) !important; box-shadow:0 12px 22px rgba(7,29,73,.12) !important; }
+.modal-prize{ color:var(--lux-blue) !important; text-shadow:none !important; }
+.modal-note{ color:rgba(16,33,63,.68) !important; }
+
+@media(max-width:768px){
+  body{ background:linear-gradient(135deg,#ffffff 0%,#f7f8fb 50%,#eef2f8 100%) !important; }
+}
