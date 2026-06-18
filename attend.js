@@ -249,16 +249,6 @@ async function markAttend(){
 
   if(selectedRow.status === "ATTEND"){
 
-    const pass = prompt(
-      "Enter password to cancel attendance:"
-    );
-
-    if(pass !== "abc123" && pass !== "ABC123"){
-
-      alert("Wrong password.");
-      return;
-    }
-
     const confirmEdit = confirm(
       "Cancel attendance for this person?"
     );
